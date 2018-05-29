@@ -60,7 +60,7 @@ deploy each container. For how to configure please reference Helm Charts
 
 ## Usage ##
 
-See [Commerce DevOps Utilites End2End Usage](doc/End2EndUsage.md)
+See [Commerce DevOps Utilities End2End Usage](doc/End2EndUsage.md)
 
 ## Development ##
 
