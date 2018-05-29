@@ -4,7 +4,7 @@ Commerce DevOps Utilities，as a sample tool chain for reference, support Commer
 
 Commerce DevOps Utilities also can well support Commerce V9+ deploy on IBM Cloud Private, see [IBM Cloud Private](https://www.ibm.com/cloud/private)
 
-Commerce DevOps Utilities will be build and deploy as Docker container. It includes DeployController , DeploySlave and SupportContainer
+Commerce DevOps Utilities will be build and deploy as Docker container. It includes DeployController, DeploySlave and SupportContainer
 
 Docker Image  |  Embed Assets  | Usage
 ------------- | -------------| -------------
@@ -21,9 +21,9 @@ For quick deploy HelmChart be provided. see [Commerce DevOps Utilities Helm Char
 
 ## Build  ##
 
-Note: before you run build, make user your machine has installed docker ( DockerCE or EE  17.06 ) and You can connect to internet well
+Note: before you run build, make user your machine has installed Docker ( DockerCE or EE  17.06 ) and You can connect to internet well
 
-1. Located to path commerce-devops-utilities/kubernetes/DeployController and run command to build DeployController Docker image
+1. Located to path `commerce-devops-utilities/kubernetes/DeployController` and run command to build DeployController Docker image
 
     ```
     ./BuildDocker.sh
@@ -31,7 +31,7 @@ Note: before you run build, make user your machine has installed docker ( Docker
     ( you can specify docker image tag by ./BuildDocker.sh deploycontroller:newtag )
     ```
 
-2. Located to path commerce-devops-utilities/kubernetes/DeploySlave and run command to build DeploySlave Docker image
+2. Located to path `commerce-devops-utilities/kubernetes/DeploySlave` and run command to build DeploySlave Docker image
 
    ```
    ./BuildDocker.sh
@@ -39,7 +39,7 @@ Note: before you run build, make user your machine has installed docker ( Docker
    ( you can specify docker image tag by ./BuildDocker.sh deployslave:newtag )
    ```
 
-3. Located to path commerce-devops-utilities/kubernetes/DeploySupport and run command to build DeploySupport Docker image
+3. Located to path `commerce-devops-utilities/kubernetes/DeploySupport` and run command to build DeploySupport Docker image
    ```
    ./BuildDocker.sh
 
@@ -82,7 +82,7 @@ For DeployController:
 
 
 For DevOps backend scripts:<br>
-They are be put under commerce-deveops-utilities/utilities
+They are be put under `commerce-deveops-utilities/utilities`
 
 
 ## Support ##
