@@ -1,8 +1,8 @@
 # Commerce DevOps Utilities #
 
-Commerce DevOps Utilities support Commerce V9+ deploy on Kubernetes, see [Commerce Version 9](https://www.ibm.com/support/knowledgecenter/SSZLC2_9.0.0/landing/wc_welcome.htm)
+Commerce DevOps Utilities，as a sample tool chain for reference, support Commerce V9+ deploy on Kubernetes, see [Commerce Version 9](https://www.ibm.com/support/knowledgecenter/SSZLC2_9.0.0/landing/wc_welcome.htm)
 
-Commerce DevOps Utitilies also can well support Commerce V9+ deploy on IBM Cloud Private also Support, see [IBM Cloud Private]()
+Commerce DevOps Utilities also can well support Commerce V9+ deploy on IBM Cloud Private also Support, see [IBM Cloud Private](https://www.ibm.com/cloud/private)
 
 Commerce DevOps Utilities will be build and deploy as Docker container. It includes DeployController , DeploySlave and SupportContainer
 
@@ -50,8 +50,13 @@ Note: before you run build, make user your machine has installed docker ( Docker
 
 For quick deploy HelmChart be provided. see [Commerce DevOps Utilities Helm Charts](https://github.com/IBM/wc-helmchart)
 
+Please deploy Commerce DevOps Utilities under `default` namespace. Otherwise you need to create BACE to make the backend scripts has right permission
+
+You can access DeployController UI through http://IngressIPAddress:31899, default user and accound is admin/admin
+
 IF you already have a environment or you don't want to deploy Utilities inside of Kubernetes cluster ( or IBM Cloud Private ), you can choose manually
 deploy each container. For how to configure please reference Helm Charts
+
 
 ## Usage ##
 
@@ -80,9 +85,13 @@ For DevOps backend scripts:<br>
 They are be put under commerce-deveops-utilities/utilities
 
 
-
-
 ## Support ##
+
 * Issue Report
+
+  You can create issue in this project or raise a new enhancement. We will evaluate and assign contributor to fix or handle it
+
 * Slack Channel
-* Contact List
+
+
+* [Contact List](CONTACT.md)
