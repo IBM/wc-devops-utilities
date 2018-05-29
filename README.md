@@ -12,8 +12,8 @@ DeployController | Jenkins / Pre defined Job / DevOps backend scripts |  As the 
 DeploySlave  | Dockerd / Helm client / DevOps backend scripts | Triggered by DeployController to build customized docker image and deploy with helm
 SupportContainer | DevOps backend scripts | handle helm pre and post install hook / as InitContainer to controller startup sequence
 
-Vault and Nexus Docker image, as default integration with DevOps Utilities. [Vault] will be the Certification Agent to auto issue certification and Remote Configuration Center to store
-environment related configuration. Nexus will store /  manage customization package and support build customization Docker Image.
+Vault and Nexus Docker image, as default integration with DevOps Utilities. [Vault](https://www.vaultproject.io/) will be the Certification Agent to auto issue certification and Remote Configuration Center to store
+environment related configuration. [Nexus](https://www.sonatype.com/nexus-repository-sonatype) will store /  manage customization package and support build customization Docker Image.
 
 For quick deploy HelmChart be provided. see [Commerce DevOps Utilities Helm Charts](https://github.com/IBM/wc-helmchart)
 
@@ -52,7 +52,7 @@ For quick deploy HelmChart be provided. see [Commerce DevOps Utilities Helm Char
 
 Please deploy Commerce DevOps Utilities under `default` namespace. Otherwise you need to create BACE to make the backend scripts has right permission
 
-You can access DeployController UI through http://IngressIPAddress:31899, default user and accound is admin/admin
+You can access DeployController UI through `http://IngressIPAddress:31899`, default user and accound is `admin/admin`
 
 IF you already have a environment or you don't want to deploy Utilities inside of Kubernetes cluster ( or IBM Cloud Private ), you can choose manually
 deploy each container. For how to configure please reference Helm Charts
