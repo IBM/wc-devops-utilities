@@ -2,7 +2,7 @@
 
 Commerce DevOps Utilities，as a sample tool chain for reference, support Commerce V9+ deploy on Kubernetes, see [Commerce Version 9](https://www.ibm.com/support/knowledgecenter/SSZLC2_9.0.0/landing/wc_welcome.htm)
 
-Commerce DevOps Utilities also can well support Commerce V9+ deploy on IBM Cloud Private also Support, see [IBM Cloud Private](https://www.ibm.com/cloud/private)
+Commerce DevOps Utilities also can well support Commerce V9+ deploy on IBM Cloud Private, see [IBM Cloud Private](https://www.ibm.com/cloud/private)
 
 Commerce DevOps Utilities will be build and deploy as Docker container. It includes DeployController , DeploySlave and SupportContainer
 
