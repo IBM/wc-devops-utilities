@@ -18,6 +18,10 @@ environment related configuration. [Nexus](https://www.sonatype.com/nexus-reposi
 For quick deploy HelmChart be provided. see [Commerce DevOps Utilities Helm Charts](https://github.com/IBM/wc-helmchart)
 
   <img src="https://github.com/IBM/wc-devops-utilities/raw/master/doc/images/Overview.png" width = "700" height = "450" alt="Overview" align=center /><br>
+  
+## Architecture Design ##
+
+see [Architecture Design](doc/ArchitectureDesign.md)
 
 ## Build  ##
 
