@@ -39,11 +39,11 @@ Parameter  |  Usage
 VaultUrl |  Specify Vault URL ( e.g http://9.112.245.194:30552/v1 ). If InCluster equal true, this value is not mandatory
 VaultToken  | Specify Vault Root Token for rest access . If InCluster equal true, this value is not mandatory
 BundleRepo | Specify customize package repository, Nexus is the default bundle repository ( e.g  http://9.110.182.156:8081/nexus/content/repositories/releases/commerce )
-DockerRepo | Specify Docker Image repository
+DockerRepo | Specify Docker Image repository (e.g DockerRepoHostname:RepoPort )
 KubernetesUrl | Specify Kubernetes url for remote call from Jenkins. If InCluster equal true, this value is not mandatory
 DockerRepoUser   | Specify User Name of Docker Image Repository for logon when download Docker Image
 DockerRepoPwd  | Specify User Password of Docker Image Repository for logon when download Docker Image
-HelmChartsRepo  | Specify Helm Charts Repository for update Helm Charts | handle helm pre and post install hook / as InitContainer to controller startup sequence
+HelmChartsRepo  | Specify Helm Charts Repository for update Helm Charts | handle helm pre and post install hook / as InitContainer to controller startup sequence (e.g http://9.112.245.194:8879/charts)
 InCluster | true or false as default.  Specify if this deploy controler be deployed inside of out side of Kubernetes cluster, if InCluster equal true, DeployController will auto defect Vault token and use default Vault and Jenkins Service
 
 ### Start DeployController Without Configurtion ###
