@@ -12,7 +12,7 @@ Utilities. See [End2End Usage Story](End2EndUsage.md)
 
 The core component in DevOps Utilities are DeployController /  Vault / Nexus. They are the `Long Run Pod`.
 There also have independent component like SupportContainer /  DeploySlave, They are the `Temporary Run Pod`.
-All those Utilities are Dockerlized, so you can easy leverage Kubernetes platform to deploy it without any manually setup.
+All those Utilities are Dockerlized, so you can easily leverage Kubernetes platform to deploy it without any manually setup.
 
 DevOps Utilities mainly leverage the Jenkins's capacity of task scheduling and the Kubernetes's capacity of resource scheduling.
 So when user trigger some long run or asynchronous action through Jenkins Job ( for example Helm Install / Build Docker Image ),
@@ -31,6 +31,36 @@ It be build as Jenkins Master and most like a "hub" to orchestrate deployment Jo
 3. Connect to Docker Repository to push customized Docker Image
 4. Connect to Kubernetes as InCluster Mode to manage environment related data with ConfigMap ( e.g Environment Info / Dockerfile )
 5. Connect to Kubernetes and assign Jenkins Job on DeploySlave Pod.
+
+When start DeployController, some parameters need to be input as below table shows
+
+Parameter  |  Usage
+------------- | -------------
+VaultUrl |  Specify Vault URL ( e.g http://9.112.245.194:30552/v1 ). If InCluster equal true, this value is not mandatory
+VaultToken  | Specify Vault Root Token for rest access . If InCluster equal true, this value is not mandatory
+BundleRepo | Specify customize package repository, Nexus is the default bundle repository ( e.g  http://9.110.182.156:8081/nexus/content/repositories/releases/commerce )
+DockerRepo | Specify Docker Image repository
+KubernetesUrl | Specify Kubernetes url for remote call from Jenkins. If InCluster equal true, this value is not mandatory
+DockerRepoUser   | Specify User Name of Docker Image Repository for logon when download Docker Image
+DockerRepoPwd  | Specify User Password of Docker Image Repository for logon when download Docker Image
+HelmChartsRepo  | Specify Helm Charts Repository for update Helm Charts | handle helm pre and post install hook / as InitContainer to controller startup sequence
+InCluster | true or false as default.  Specify if this deploy controler be deployed inside of out side of Kubernetes cluster, if InCluster equal true, DeployController will auto defect Vault token and use default Vault and Jenkins Service
+
+### Start DeployController Without Configurtion ###
+```
+docker run -d -p 8080:8080 -p 50000:50000 deploycontroller:latest
+```
+
+by this way, deploycontroller will be startup without any configuration. When it startup, you can logon it and edit
+
+Manage Jenkins --> Configure System --> Environment variables
+
+to input those parameter by manually then save the change
+
+ <img src="https://github.com/IBM/wc-devops-utilities/raw/master/doc/images/DeployController-GlobalConfig1.png" width = "700" height = "450" alt="Overview" align=center /><br>
+
+ <img src="https://github.com/IBM/wc-devops-utilities/raw/master/doc/images/DeployController-GlobalConfig2.png" width = "700" height = "450" alt="Overview" align=center /><br>
+
 
 You can trigger Jenkins Job through UI. For better integrate with existed CD pipeline, it also can be triggered from web hook or Jenkins API.
 
