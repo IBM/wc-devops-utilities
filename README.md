@@ -4,7 +4,7 @@ Commerce DevOps Utilities，as a sample tool chain for reference, support Commer
 
 Commerce DevOps Utilities also can well support Commerce V9+ deploy on IBM Cloud Private, see [IBM Cloud Private](https://www.ibm.com/cloud/private)
 
-Commerce DevOps Utilities will be build and deploy as Docker container. It includes DeployController, DeploySlave and SupportContainer
+Commerce DevOps Utilities will be build and deploy as Docker container. It includes DeployController , DeploySlave and SupportContainer
 
 Docker Image  |  Embed Assets  | Usage
 ------------- | -------------| -------------
@@ -18,16 +18,19 @@ environment related configuration. [Nexus](https://www.sonatype.com/nexus-reposi
 For quick deploy HelmChart be provided. see [Commerce DevOps Utilities Helm Charts](https://github.com/IBM/wc-helmchart)
 
   <img src="https://github.com/IBM/wc-devops-utilities/raw/master/doc/images/Overview.png" width = "700" height = "450" alt="Overview" align=center /><br>
-  
-## Architecture Design ##
 
-see [Architecture Design](doc/ArchitectureDesign.md)
+## Design ##
 
+* [Architecture Design](doc/ArchitectureDesign.md) <br>
+* [DeployController Design](doc/DeployControllerDesign.md) <br>
+* [Utilites Design](doc/UtilitiesDesign.md) <br>
+* [DeploySlave Design](doc/DeploySlaveDesign.md) <br>
+* [SupportContainer Design](doc/SupportContainerDesign.md)
 ## Build  ##
 
-Note: before you run build, make user your machine has installed Docker ( DockerCE or EE  17.06 ) and You can connect to internet well
+Note: before you run build, make user your machine has installed docker ( DockerCE or EE  17.06 ) and You can connect to internet well
 
-1. Located to path `commerce-devops-utilities/kubernetes/DeployController` and run command to build DeployController Docker image
+1. Located to path commerce-devops-utilities/kubernetes/DeployController and run command to build DeployController Docker image
 
     ```
     ./BuildDocker.sh
@@ -35,7 +38,7 @@ Note: before you run build, make user your machine has installed Docker ( Docker
     ( you can specify docker image tag by ./BuildDocker.sh deploycontroller:newtag )
     ```
 
-2. Located to path `commerce-devops-utilities/kubernetes/DeploySlave` and run command to build DeploySlave Docker image
+2. Located to path commerce-devops-utilities/kubernetes/DeploySlave and run command to build DeploySlave Docker image
 
    ```
    ./BuildDocker.sh
@@ -43,7 +46,7 @@ Note: before you run build, make user your machine has installed Docker ( Docker
    ( you can specify docker image tag by ./BuildDocker.sh deployslave:newtag )
    ```
 
-3. Located to path `commerce-devops-utilities/kubernetes/DeploySupport` and run command to build DeploySupport Docker image
+3. Located to path commerce-devops-utilities/kubernetes/DeploySupport and run command to build DeploySupport Docker image
    ```
    ./BuildDocker.sh
 
@@ -54,17 +57,24 @@ Note: before you run build, make user your machine has installed Docker ( Docker
 
 For quick deploy HelmChart be provided. see [Commerce DevOps Utilities Helm Charts](https://github.com/IBM/wc-helmchart)
 
-Please deploy Commerce DevOps Utilities under `default` namespace. Otherwise you need to create BACE to make the backend scripts has right permission
+Please deploy Commerce DevOps Utilities under `default` namespace. Otherwise you need to create Role Based Access Control to make the backend scripts has right permission
 
-You can access DeployController UI through `http://IngressIPAddress:31899`, default user and accound is `admin/admin`
+You can access DeployController UI through `http://IngressIPAddress:31899`, default user and account is `admin/admin`
 
 IF you already have a environment or you don't want to deploy Utilities inside of Kubernetes cluster ( or IBM Cloud Private ), you can choose manually
-deploy each container. For how to configure please reference Helm Charts
+deploy each container.
 
+When you logon DeployController you could see those pre-defined Job
+
+<img src="https://github.com/IBM/wc-devops-utilities/raw/master/doc/images/DeployControllerJobList.png" width = "700" height = "450" alt="Overview" align=center /><br>
+
+Tips:
+
+ `For each Job in DeployController, you must open "config" page for each job and save it to make the auto parameter plugin can be load.`
 
 ## Usage ##
 
-See [Commerce DevOps Utilities End2End Usage](doc/End2EndUsage.md)
+See [Commerce DevOps Utilites End2End Usage](doc/End2EndUsage.md)
 
 ## Development ##
 
@@ -86,7 +96,7 @@ For DeployController:
 
 
 For DevOps backend scripts:<br>
-They are be put under `commerce-deveops-utilities/utilities`
+They are be put under commerce-deveops-utilities/utilities
 
 
 ## Support ##
@@ -97,5 +107,8 @@ They are be put under `commerce-deveops-utilities/utilities`
 
 * Slack Channel
 
-
 * [Contact List](CONTACT.md)
+
+## Notice ##
+
+We are working hard right now to writing document to help you can better understand this Utilities tool chain
