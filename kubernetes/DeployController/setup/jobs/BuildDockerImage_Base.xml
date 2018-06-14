@@ -1,0 +1,137 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.13">
+  <actions/>
+  <description>Use this job to build customzied docker image</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>Tenant</name>
+          <description>Input target group name here
+
+Pipeline will based on the group name to fetch assets and push docker image</description>
+          <defaultValue>demo</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>EnvName</name>
+          <description>current environment ( default value is empty )
+
+IF you want to build environment specified docker image, you can input target environment name here
+The final docker image tag will compose as &lt;version&gt;&lt;env_name&gt;</description>
+          <defaultValue></defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>ForcePush_Image</name>
+          <description>Define if need pipeline to push image to docker registry ( Default: False )</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>True</string>
+              <string>False</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>ForcePull_Image</name>
+          <description>Define if need pipeline to pull image from docker registry for each build ( Default: False )</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>True</string>
+              <string>False</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>BuildInfo</name>
+          <description>Please provide images information you want to build 
+base    --&gt; based OOB docker image ( the full name will be &lt;docker repo&gt;/&lt;docker project name&gt;/&lt;current component&gt;:&lt;base&gt;
+bundle --&gt; customized bundle version ( the version you bundled on nexus )
+version --&gt; specify the new docker image tag, if empty, will use bundle version as tag for new docker image</description>
+          <defaultValue>{
+    &quot;name&quot;:&quot;ts-app&quot;,
+     &quot;base&quot;:&quot;v22&quot;,
+     &quot;bundle&quot;: &quot;1.1.2&quot;,
+     &quot;version&quot;: &quot;v1&quot;,
+      &quot;dockerfile&quot;: &quot;&quot;
+},
+{
+     &quot;name&quot;:&quot;ts-web&quot;,
+     &quot;base&quot;:&quot;v10&quot;,
+     &quot;bundle&quot;: &quot;1.1.2&quot;,
+     &quot;version&quot;: &quot;v1&quot;
+     &quot;dockerfile&quot;: &quot;&quot;
+},
+{
+     &quot;name&quot;:&quot;search-app&quot;,
+     &quot;base&quot;:&quot;v14&quot;,
+     &quot;bundle&quot;: &quot;1.1.2&quot;,
+     &quot;version&quot;: &quot;v1&quot;,
+     &quot;dockerfile&quot;: &quot;&quot;
+},
+{
+     &quot;name&quot;:&quot;crs-app&quot;,
+     &quot;base&quot;:&quot;v9&quot;,
+     &quot;bundle&quot;: &quot;1.1.2&quot;,
+     &quot;version&quot;: &quot;v1&quot;,
+     &quot;dockerfile&quot;: &quot;&quot;
+}</defaultValue>
+        </hudson.model.TextParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+      <triggers/>
+    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.36.1">
+    <script>def label = &quot;build-customize-${UUID.randomUUID().toString()}&quot;
+podTemplate(label: label,  containers: [
+     containerTemplate(
+            name: &apos;dind&apos;,
+            image: &quot;${dockerRepoHost}/commerce/deployslave:latest&quot;,
+            ttyEnabled: true,
+            privileged: true,
+            command: &apos;cat&apos;,
+            alwaysPullImage: true
+        ),
+    containerTemplate(
+            name: &apos;jnlp&apos;,
+            image: &quot;${dockerRepoHost}/commerce/jnlp-slave:alpine&quot;,
+            args: &apos;${computer.jnlpmac} ${computer.name}&apos;,
+            command: &apos;&apos;
+
+        )
+  ],
+  volumes: [
+  	configMapVolume(mountPath: &apos;/tmp/templates/&apos;,configMapName: &quot;${params.Tenant}${params.EnvName}-dockerfile&quot;)
+  ]
+  ) 
+{
+    node (label) {
+        
+        container(&apos;dind&apos;) {
+            def build_info=&quot;&quot;&quot;
+			{
+				&quot;group&quot;: &quot;${Tenant}&quot;,
+				&quot;env&quot;: &quot;${EnvName}&quot;,
+				&quot;dockerRepo&quot;: &quot;${dockerRepoHost}&quot;,
+				&quot;bundleRepo&quot;: &quot;${bundleRepo}&quot;,
+				&quot;images&quot;: [
+   				 ${BuildInfo}
+ 				]
+    
+			}
+			&quot;&quot;&quot;
+            stage(&apos;Build WC V9 Customization Docker Image&apos;) {
+                sh(&quot;dockerd --insecure-registry=${dockerRepoHost} &amp;&quot;)
+                sh(&quot;sleep 4&quot;)
+                sh(&quot;echo y | docker login ${dockerRepoHost} -u ${dockerRepoUser} -p ${dockerRepoPwd}&quot;)
+                sh(&quot;python3.6 /commerce-devops-utilities/utilities/dockerbuild/buildCusDocker.py -vu $vault_url -vt $vault_token -ru $dockerRepoUser -rp $dockerRepoPwd -fpl $ForcePull_Image -fph $ForcePush_Image -i &apos;${build_info}&apos; -rl commerce&quot;)
+            }
+        }
+    }
+}</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>

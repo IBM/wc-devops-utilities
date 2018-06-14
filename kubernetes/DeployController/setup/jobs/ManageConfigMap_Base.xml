@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.13">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.1.8">
+      <jobProperties/>
+      <triggers/>
+      <parameters/>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>Tenant</name>
+          <description>Tenant Name</description>
+          <defaultValue>demo</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>EnvName</name>
+          <description>environment name</description>
+          <defaultValue>qa</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>EnvType</name>
+          <description>target environment type [auth | live ]</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>auth</string>
+              <string>live</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>NameSpace</name>
+          <description>namespace name</description>
+          <defaultValue>default</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>FileName</name>
+          <description>Will be the key name  in ConfigMap</description>
+          <defaultValue></defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <org.biouno.unochoice.DynamicReferenceParameter plugin="uno-choice@1.5.3">
+          <name>ValueData</name>
+          <description>Value Data  which stored as ConfigMap for particular environment</description>
+          <randomName>choice-parameter-5533183353447394</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <secureScript plugin="script-security@1.29.1">
+              <script>
+def process = [&quot;python&quot;,&quot;/commerce-devops-utilities/utilities/kube/kubcli.py&quot;,&quot;fetchconfmap&quot;,&quot;-tenant&quot;,Tenant,&quot;-env&quot;,EnvName,&quot;-envtype&quot;,EnvType,&quot;-name&quot;,FileName,&quot;-namespace&quot;,NameSpace].execute()
+result=process.in.text
+
+html=
+&quot;&quot;&quot;
+&lt;p&gt;
+  &lt;textarea type=&quot;text&quot; style=&quot;width:700px;height:400px;&quot; name=&quot;value&quot; &gt;${result}&lt;/textarea&gt;
+&lt;/p&gt;
+&quot;&quot;&quot;
+return html</script>
+              <sandbox>false</sandbox>
+            </secureScript>
+            <secureFallbackScript plugin="script-security@1.29.1">
+              <script></script>
+              <sandbox>false</sandbox>
+            </secureFallbackScript>
+          </script>
+          <projectName>ManageConfigMap_Base</projectName>
+          <parameters class="linked-hash-map">
+            <entry>
+              <string>Tenant</string>
+              <string>demo4</string>
+            </entry>
+            <entry>
+              <string>EnvName</string>
+              <string>qa</string>
+            </entry>
+            <entry>
+              <string>EnvType</string>
+              <string>auth</string>
+            </entry>
+            <entry>
+              <string>NameSpace</string>
+              <string>demo4</string>
+            </entry>
+            <entry>
+              <string>FileName</string>
+              <string>config.properties</string>
+            </entry>
+          </parameters>
+          <referencedParameters>Tenant,EnvName,EnvType,NameSpace,FileName</referencedParameters>
+          <choiceType>ET_FORMATTED_HTML</choiceType>
+          <omitValueField>true</omitValueField>
+        </org.biouno.unochoice.DynamicReferenceParameter>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.36.1">
+    <script>pipeline {
+    agent none
+    stages {
+        stage(&apos;Create or Patch ConfigMap&apos;) {
+            agent { label &apos;master&apos; }
+            steps {
+                script{
+                         sh &quot;mkdir -p /tmp/${JOB_NAME}-${BUILD_NUMBER}&quot;
+                         sh &quot;echo &apos;${ValueData}&apos; &gt; /tmp/${JOB_NAME}-${BUILD_NUMBER}/${FileName}&quot;
+                         sh &quot;python3.6 /commerce-devops-utilities/utilities/kube/kubcli.py createconfmap -tenant ${Tenant} -env ${EnvName} -envtype ${EnvType} -name ${FileName} -namespace ${NameSpace} -configmaptype fromfile -configfiles &apos;/tmp/${JOB_NAME}-${BUILD_NUMBER}/${FileName}&apos; &quot;
+                         sh &quot;rm -rf /tmp/${JOB_NAME}-${BUILD_NUMBER}&quot;
+                } 
+            }
+        }
+    }
+}</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>

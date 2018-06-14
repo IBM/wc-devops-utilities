@@ -1,0 +1,49 @@
+apiVersion: v1
+clusters:
+- cluster:
+    insecure-skip-tls-verify: true
+    server: https://9.112.245.194:8001
+  name: mycluster.icp
+contexts:
+- context:
+    cluster: mycluster.icp
+    namespace: default
+    user: admin
+  name: mycluster.icp-context
+- context:
+    cluster: mycluster.icp
+    namespace: demo
+    user: admin
+  name: mycluster.icp-context-demo
+- context:
+    cluster: mycluster.icp
+    namespace: demo1
+    user: admin
+  name: mycluster.icp-context-demo1
+- context:
+    cluster: mycluster.icp
+    namespace: demo2
+    user: admin
+  name: mycluster.icp-context-demo2
+- context:
+    cluster: mycluster.icp
+    namespace: demo3
+    user: admin
+  name: mycluster.icp-context-demo3
+- context:
+    cluster: mycluster.icp
+    namespace: demo4
+    user: admin
+  name: mycluster.icp-context-demo4
+- context:
+    cluster: mycluster.icp
+    namespace: demo5
+    user: admin
+  name: mycluster.icp-context-demo5
+current-context: mycluster.icp-context-demo4
+kind: Config
+preferences: {}
+users:
+- name: admin
+  user:
+    token: eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImF0X2hhc2giOiJkamdJMnhhRWhKMzRvUW5paVBLRGdnIiwiaXNzIjoiaHR0cHM6Ly9teWNsdXN0ZXIuaWNwOjk0NDMvb2lkYy9lbmRwb2ludC9PUCIsImF1ZCI6IjQ3ODkwNWJhZDlhYmI4NzBiM2JkN2ExNDJkYThmZjEwIiwiZXhwIjoxNTI4MTQ4NjY3LCJpYXQiOjE1MjgxMDU0Njd9.tC7GL9vI9HKT418EaTsSv0wtYXQuOBVpUh3Ot2udgyRGk_nUNoyLDtRmPae8xb77Cu1rFs7kCAKJndc0ffsMRNe60rXDsVtkwNe4IF5XuyvkshQJaEgxBiygfe0KATE-OXzTusr8D_2SW5HUCpuNZCUkPToXf7hgQiFwS9EqO7Jgg7HpYzX2R_2U2aVJBFgPuGbflqb7-9LNF4Ssetm1v66NjS8Du3aLlXhbWviFdM8bp6FMPanQUC0Pf23N7h_M2qIcfCcwTj7y9DiykE0EtXBEcbeLp2ZQA7LJ7G18giIPxhbrJV5VGEvDpsAaDd8WKc8ud2GIWjBrxJh_SamNAg

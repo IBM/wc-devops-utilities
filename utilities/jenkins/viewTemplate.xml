@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hudson.model.ListView>
+  <name>{{name}}</name>
+  <filterExecutors>false</filterExecutors>
+  <filterQueue>false</filterQueue>
+  <properties class="hudson.model.View$PropertyList"/>
+  <jobNames>
+    <comparator class="hudson.util.CaseInsensitiveComparator"/>
+    <string>{{AddCert}}</string>
+    <string>{{BuildDockerName}}</string>
+    <string>{{BundleCert}}</string>
+    <string>{{CloudName}}</string>
+    <string>{{CustomTemp}}</string>
+    <string>{{EnvName}}</string>
+    <string>{{TriggerIndexName}}</string>
+    <string>{{IndexRep}}</string>
+  </jobNames>
+  <jobFilters/>
+  <columns>
+    <hudson.views.StatusColumn/>
+    <hudson.views.WeatherColumn/>
+    <hudson.views.JobColumn/>
+    <hudson.views.LastSuccessColumn/>
+    <hudson.views.LastFailureColumn/>
+    <hudson.views.LastDurationColumn/>
+    <hudson.views.BuildButtonColumn/>
+  </columns>
+  <recurse>false</recurse>
+</hudson.model.ListView>

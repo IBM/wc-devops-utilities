@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.13">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.1.8">
+      <jobProperties/>
+      <triggers/>
+      <parameters/>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>Tenant</name>
+          <description>Target Tenant</description>
+          <defaultValue>demo</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>EnvName</name>
+          <description>Target environment name</description>
+          <defaultValue>qa</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>EnvType</name>
+          <description></description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>auth</string>
+              <string>live</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>NameSpace</name>
+          <description>namespace for target environment </description>
+          <defaultValue>default</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>MasterCatalogId</name>
+          <description>target masterCatalogId which need to build index on it</description>
+          <defaultValue>10001</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>SpiUser</name>
+          <description>spiuser for target environment</description>
+          <defaultValue>spiuser</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.PasswordParameterDefinition>
+          <name>SpiPwd</name>
+          <description>Default spiuser password is &quot;passw0rd&quot;</description>
+          <defaultValue></defaultValue>
+        </hudson.model.PasswordParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.36.1">
+    <script>pipeline {
+    agent none
+    stages {
+        stage(&apos;Trigger Build Index&apos;) {
+            agent { label &apos;master&apos; }
+            steps {
+                sh &quot;python3.6 /commerce-devops-utilities/utilities/commerce/triggerBuildIndex.py ${params.Tenant} ${params.EnvName} ${params.EnvType} ${params.NameSpace} ${params.MasterCatalogId} ${params.SpiUser} ${params.SpiPwd}&quot;
+            }
+        }
+    }
+}</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>

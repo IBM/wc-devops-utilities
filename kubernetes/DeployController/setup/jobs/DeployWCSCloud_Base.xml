@@ -1,0 +1,339 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.13">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.1.8">
+      <jobProperties/>
+      <triggers/>
+      <parameters/>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
+  <description>Deploy WCS Cloud Environment</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>Tenant</name>
+          <description>tenant name</description>
+          <defaultValue>demo</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>EnvName</name>
+          <description>environment name</description>
+          <defaultValue>qa</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>EnvType</name>
+          <description>environment type [auth|live|all]</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>auth</string>
+              <string>live</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>NameSpace</name>
+          <description></description>
+          <defaultValue>default</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>DeployAction</name>
+          <description>support install / update / delete action</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>install</string>
+              <string>update</string>
+              <string>delete</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <org.biouno.unochoice.DynamicReferenceParameter plugin="uno-choice@1.5.3">
+          <name>HelmChart_Values</name>
+          <description>Before you trigger this job, please make sure all value in HelmChart_Values are correct.
+
+Tenant / EnvType / NameSpace / EnvType / Vault Token / Vault URL will be updated based on the input from field on UI or get from Jenkins global variables.
+
+But there still have some other important configuration must set correctly
+1. ImageRepo
+2. SPIUserName
+3. SPIUserPWDAES
+4. SPIUserPWDBase64
+5. Merchantkey
+6. Commerce V9 Image Tag
+7. SupportC Image Tag
+8. ExternalDomian
+9. ConfigureMode ( Vault is the default config mode )
+</description>
+          <randomName>choice-parameter-1625930349815673</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <secureScript plugin="script-security@1.29.1">
+              <script>vaule_configmap_name=&quot;helmchart-values&quot;
+
+def process = [&quot;python&quot;,&quot;/commerce-devops-utilities/utilities/kube/kubcli.py&quot;,&quot;fetchconfmap&quot;,&quot;-tenant&quot;,Tenant,&quot;-env&quot;,EnvName,&quot;-envtype&quot;,EnvType,&quot;-name&quot;,vaule_configmap_name,&quot;-namespace&quot;,NameSpace].execute()
+result=process.in.text
+
+if( result == &quot;&quot; ){
+      result=
+        &quot;&quot;&quot;
+# Default values for wcv9.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Common configuration for all component docker 
+Common:
+  ReplicaCount: 1
+  Cpu: 0.5m
+  Memory: 2048Mi
+  ## VaultToken specify the Vault token which will be used to connect to Vault server to fetch issue CA or fetch encrypted value based on tenant / env / envtype
+  VaultToken: ${vault_token}
+  ## DBType just will work since 9.0.0.4, because since 9.0.0.4, Commerce V9 start to support mutliple database.
+  DBType: db2
+  Tenant: ${Tenant}
+  EnvironmentName: ${EnvName}
+  EnvironmentType: ${EnvType}  
+  ImageRepo: ${dockerRepoHost}/commerce/
+  SPIUserName: spiuser
+  SPIUserPWDAES: eNdqdvMAUGRUbiuqadvrQfMELjNScudSp5CBWQ8L6aw=
+  SPIUserPWDBase64: c3BpdXNlcjpwYXNzdzByZA==
+  NameSpace: ${NameSpace}
+  ## SessionAffinity is not enable as default, for using it, the connection between store and transaction will passthrough ingress. Meanwhile, the TLS termination is on Ingress. For make the transaction server point
+  ## to Loadbalance, you need to provide Loadbalance address.
+  SessionAffinity:
+        Enable: false
+        LoadBalanceAddress:
+  VaultURL: ${vault_url}
+  ExternalDomian: ibm.com
+  CommerceVersion:
+  OverridePreconfig: 
+  ## IngressSecrete used to specify if need Helm to auto generate the secret for ingress. For production env, customer can choose generate the secret with real CA certification
+  IngressSecrete:
+    AutoCreate: true
+    ReplaceExist: true
+  ## PersistenVolumeClaim
+  PersistenVolumeClaim:
+    AutoCreate: false
+    StorageClass: glusterfs
+    AccessModes: ReadWriteMany
+    StorageSize: 1Gi
+    Force: false
+    ClearPVC: false 
+  ConfigureMode: Vault
+  BindingConfigMap: 
+  VaultCA:
+       Enable: true
+       DNSNAME_IN_SubjectAlternativeName: None
+       CONTAINER_HOSTNAME: None
+  NodeSelector: {}
+Tsdb:
+  Name: ts-db
+  Replica: 1
+  Image: ts-db
+  Tag: 9.0.0.4
+  EnvParameters: {}
+  NodeSelector: {}
+Tsapp:
+  Name: ts-app
+  Replica: 1
+  Image: ts-app
+  Tag: 9.0.0.4
+  Merchantkey: eZrWIdOyaDv5FCOTK32Uni288jgIHDv/P9wxhzKmHdiGZ+n8WJ+Ah56uPbfZ9yJWtjQlGczlmr6OgvArFHCgZQ==
+  EnvParameters: {}
+  NodeSelector: {}
+SearchappMaster:
+  Name: search-app-master
+  Replica: 1
+  Image: search-app
+  Tag: 9.0.0.4
+  EnvParameters: {}
+  NodeSelector: {}
+SearchappRepeater:
+  Name: search-app-repeater
+  Replica: 1
+  Image: search-app
+  Tag: 9.0.0.4
+  EnvParameters: {}
+  NodeSelector: {}
+SearchappSlave:
+  Name: search-app-slave
+  Replica: 1
+  Image: search-app
+  Tag: 9.0.0.4
+  EnvParameters: {}
+  NodeSelector: {}
+Tsweb:
+  Name: ts-web
+  Replica: 1
+  Image: ts-web
+  Tag: 9.0.0.4
+  EnvParameters: {}
+  NodeSelector: {}
+Crsapp:
+  Name: crs-app
+  Image: crs-app
+  Tag: 9.0.0.4
+  Replica: 1
+  EnvParameters: {}
+  NodeSelector: {}
+#Just keep this for support 9.0.0.0 and 9.0.0.1
+InitC:
+  Image: init-wcs
+  Tag: 1.6
+SupportC:
+  Image: supportcontainer
+  Tag: 1.9.6
+        &quot;&quot;&quot;
+}
+
+
+html=
+&quot;&quot;&quot;
+&lt;p&gt;
+  &lt;textarea type=&quot;text&quot; style=&quot;width:700px;height:400px;&quot; name=&quot;value&quot; &gt;${result}&lt;/textarea&gt;
+&lt;/p&gt;
+&quot;&quot;&quot;</script>
+              <sandbox>false</sandbox>
+            </secureScript>
+            <secureFallbackScript plugin="script-security@1.29.1">
+              <script></script>
+              <sandbox>false</sandbox>
+            </secureFallbackScript>
+          </script>
+          <projectName>DeployWCSCloud_Base</projectName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters>Tenant,EnvName,EnvType,NameSpace</referencedParameters>
+          <choiceType>ET_FORMATTED_HTML</choiceType>
+          <omitValueField>true</omitValueField>
+        </org.biouno.unochoice.DynamicReferenceParameter>
+        <hudson.model.StringParameterDefinition>
+          <name>HelmChart</name>
+          <description>deployslave will be startup by set the helm chart repo which be configured in global variables with repo name as stable.  Please make sure the Helm Cart name exist on remote helm chart repo</description>
+          <defaultValue>stable/WCSV9</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>ForceCreate</name>
+          <description>True means will remove existed release with same name if it exist </description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>true</string>
+              <string>false</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>ReuseValues</name>
+          <description></description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>true</string>
+              <string>false</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>DeleteAllAssociatedObject</name>
+          <description></description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>true</string>
+              <string>false</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+      <triggers/>
+    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.36.1">
+    <script>def label = &quot;HelmsDeploy-${UUID.randomUUID().toString()}&quot;
+
+podTemplate(label: label,  containers: [
+     containerTemplate(
+            name: &apos;slaver&apos;,
+            image: &quot;${dockerRepoHost}/commerce/deployslave:latest&quot;,
+            ttyEnabled: true,
+            privileged: true,
+            command: &apos;cat&apos;,
+            alwaysPullImage: true,
+            envVars: [
+                containerEnvVar(key: &apos;repo_name&apos;, value: &apos;test&apos;),
+                containerEnvVar(key: &apos;repo_url&apos;, value: &apos;${helmChartsRepo}&apos;)
+                ]
+        ),
+    containerTemplate(
+            name: &apos;jnlp&apos;,
+            image: &quot;${dockerRepoHost}/commerce/jnlp-slave:alpine&quot;,
+            args: &apos;${computer.jnlpmac} ${computer.name}&apos;,
+            command: &apos;&apos;
+
+        )
+  ],
+  )
+
+
+{
+  node(label){
+    container(&apos;slaver&apos;){
+        stage(&apos;Update Helm Chart Index&apos;) {
+                script {
+                   sh &quot;helm init --stable-repo-url ${helmChartsRepo}&quot;
+
+                   if(env.DeployAction != &apos;delete&apos;){
+                      sh &quot;helm repo update&quot;
+                   }else{
+                       sh &quot;echo &apos;ignore this steps&apos;&quot;
+                   }
+
+                }
+
+        }
+        stage(&apos;Generate Template HelmChart Values&apos;) {
+                script {
+                   if(env.DeployAction != &apos;delete&apos;){
+                      sh &quot;mkdir -p /tmp/${Tenant}${EnvName}${EnvType}&quot;
+                      sh &quot;echo &apos;${HelmChart_Values}&apos; &gt; /tmp/${Tenant}${EnvName}${EnvType}/values.yaml&quot;
+                   }else{
+                       sh &quot;echo &apos;ignore this steps&apos;&quot;
+                   }
+                }
+
+        }
+        stage(&apos;Update Helm Chart Values Configuration&apos;) {
+                script {
+                   if(env.DeployAction != &apos;delete&apos;){
+                      sh &quot;python3.6 /commerce-devops-utilities/utilities/kube/kubcli.py createconfmap -tenant ${Tenant} -env ${EnvName} -envtype ${EnvType} -namespace ${NameSpace} -name helmchart-values -configmaptype fromfile -configfiles /tmp/${Tenant}${EnvName}${EnvType}/values.yaml&quot;
+                   }else{
+                       sh &quot;echo &apos;ignore this steps&apos;&quot;
+                   }
+                }
+        }
+        stage(&apos;Deploy Commerce With HelmChart&apos;) {
+               script {
+                   if (env.DeployAction == &apos;install&apos;) {
+                      sh &quot;python3.6 /commerce-devops-utilities/utilities/helm/helmcli.py helminstall -releasename ${Tenant}${EnvName}${EnvType} -helmchart ${HelmChart} -valuefile /tmp/${Tenant}${EnvName}${EnvType}/values.yaml -forcecreate ${ForceCreate} -namespace ${NameSpace}&quot;
+                   }else if (env.DeployAction == &apos;update&apos;){
+                      sh &quot;python3.6 /commerce-devops-utilities/utilities/helm/helmcli.py helmupgrade -releasename ${Tenant}${EnvName}${EnvType} -helmchart ${HelmChart} -valuefile /tmp/${Tenant}${EnvName}${EnvType}/values.yaml&quot;
+                   }else if (env.DeployAction == &apos;delete&apos;){
+                      sh &quot;python3.6 /commerce-devops-utilities/utilities/helm/helmcli.py helmdelete -releasename ${Tenant}${EnvName}${EnvType}&quot;
+                      if(env.Action == &apos;DeleteAllAssociatedObject&apos;){
+                          sh &quot;python3.6 /commerce-devops-utilities/utilities/kube/kubcli.py deleteconfmap -tenant ${Tenant} -env ${EnvName} -envtype ${EnvType} -name helmchart-values -namespace ${NameSpace}&quot;
+                          sh &quot;python3.6 /commerce-devops-utilities/utilities/kube/kubcli.py deleteconfmap -releasename -env ${EnvName} -envtype ${EnvType} -name &apos;.*-dockerfile&apos; -namespace ${NameSpace}&quot;
+                      }
+                   }else{
+                      sh &quot;echo &apos;unkonw action ${Action}, ignore it!&apos;&quot;
+                   }
+               }
+        }
+    }
+  }
+}
+
+</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>
