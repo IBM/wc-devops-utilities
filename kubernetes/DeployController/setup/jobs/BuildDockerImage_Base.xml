@@ -1,7 +1,43 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <flow-definition plugin="workflow-job@2.13">
   <actions/>
-  <description>Use this job to build customzied docker image</description>
+  <description>Job Description:&#xd;
+&#xd;
+Use this job to build customzied docker image&#xd;
+&#xd;
+Dockerfile need to be store on ConfigMap in Kubernetes.&#xd;
+&#xd;
+Backend scripts will based on your input to find the target Dockerfile on specified namespace.&#xd;
+&#xd;
+For example:  IF you input Tenant=demo Namespace=default  EnvName=qa In DockerImage you defined the search-app  as below&#xd;
+{&#xd;
+     &quot;name&quot;:&quot;search-app&quot;,&#xd;
+     &quot;base&quot;:&quot;xxxxx&quot;,   // this is the base docker image tag, as default it will download docker image from &lt;dockerRepo&gt;/commerce/&lt;name&gt;:&lt;base&gt;&#xd;
+     &quot;bundle&quot;: &quot;xxxx&quot;, // this is customization package url, you can input a http://... link directly here or you can integrate with Nexus&#xd;
+     &quot;version&quot;: &quot;xxx&quot;   // this is the new docker image tag. For example. when finish build the docker image, it will be tag as  &lt;dockerRepo&gt;/&lt;Tenant&gt;/search-app-cus:&lt;version&gt; and based on this docker image name to push to dockerRepo&#xd;
+}&#xd;
+&#xd;
+Backend scripts will try to find demoqa-search-app-dockerfile in namespace default&#xd;
+&#xd;
+IF you specify the EnvType is auth&#xd;
+&#xd;
+Backend scripts will try to find demoqaauth--search-app-dockerfile in namespace default &#xd;
+&#xd;
+IF backend scripts can not find the target ConfigMap object which named as the dockerfile mentioned above.&#xd;
+&#xd;
+It will demote to find ConfigMap object which named as high-level.  For example, if can not find demoqaauth--search-app-dockerfile, Backend scripts will try to find demoqa--search-app-dockerfile. If still can not find demoqa--search-app-dockerfile Finally, if not Dockerfile can be found the Job will failed.&#xd;
+&#xd;
+You also can specify the dockerfile name like this way to fix the logic just to find the target ConfigMap &#xd;
+&#xd;
+{&#xd;
+     &quot;name&quot;:&quot;search-app&quot;,&#xd;
+     &quot;base&quot;:&quot;xxxxx&quot;,&#xd;
+     &quot;bundle&quot;: &quot;xxxx&quot;,&#xd;
+     &quot;version&quot;: &quot;xxx&quot;,&#xd;
+     &quot;dockerfile&quot;:&quot;demoqa-search-app-dockerfile&quot;&#xd;
+}&#xd;
+&#xd;
+Before you start to trigger this Job, please make sure you already create a Dockerfile !  You can create Dockerfile through ManageDockerfile_Base Job.</description>
   <keepDependencies>false</keepDependencies>
   <properties>
     <hudson.model.ParametersDefinitionProperty>
@@ -14,11 +50,21 @@ Pipeline will based on the group name to fetch assets and push docker image</des
           <defaultValue>demo</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
+          <name>Namespace</name>
+          <description></description>
+          <defaultValue>demo</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
           <name>EnvName</name>
           <description>current environment ( default value is empty )
 
 IF you want to build environment specified docker image, you can input target environment name here
 The final docker image tag will compose as &lt;version&gt;&lt;env_name&gt;</description>
+          <defaultValue></defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>EnvType</name>
+          <description>you can build specific image for this envtype.</description>
           <defaultValue></defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.ChoiceParameterDefinition>
@@ -36,8 +82,8 @@ The final docker image tag will compose as &lt;version&gt;&lt;env_name&gt;</desc
           <description>Define if need pipeline to pull image from docker registry for each build ( Default: False )</description>
           <choices class="java.util.Arrays$ArrayList">
             <a class="string-array">
-              <string>True</string>
               <string>False</string>
+              <string>True</string>
             </a>
           </choices>
         </hudson.model.ChoiceParameterDefinition>
@@ -51,29 +97,25 @@ version --&gt; specify the new docker image tag, if empty, will use bundle versi
     &quot;name&quot;:&quot;ts-app&quot;,
      &quot;base&quot;:&quot;v22&quot;,
      &quot;bundle&quot;: &quot;1.1.2&quot;,
-     &quot;version&quot;: &quot;v1&quot;,
-      &quot;dockerfile&quot;: &quot;&quot;
+     &quot;version&quot;: &quot;v1&quot;
 },
 {
      &quot;name&quot;:&quot;ts-web&quot;,
      &quot;base&quot;:&quot;v10&quot;,
      &quot;bundle&quot;: &quot;1.1.2&quot;,
      &quot;version&quot;: &quot;v1&quot;
-     &quot;dockerfile&quot;: &quot;&quot;
 },
 {
      &quot;name&quot;:&quot;search-app&quot;,
      &quot;base&quot;:&quot;v14&quot;,
      &quot;bundle&quot;: &quot;1.1.2&quot;,
-     &quot;version&quot;: &quot;v1&quot;,
-     &quot;dockerfile&quot;: &quot;&quot;
+     &quot;version&quot;: &quot;v1&quot;
 },
 {
      &quot;name&quot;:&quot;crs-app&quot;,
      &quot;base&quot;:&quot;v9&quot;,
      &quot;bundle&quot;: &quot;1.1.2&quot;,
-     &quot;version&quot;: &quot;v1&quot;,
-     &quot;dockerfile&quot;: &quot;&quot;
+     &quot;version&quot;: &quot;v1&quot;
 }</defaultValue>
         </hudson.model.TextParameterDefinition>
       </parameterDefinitions>
@@ -100,9 +142,6 @@ podTemplate(label: label,  containers: [
             command: &apos;&apos;
 
         )
-  ],
-  volumes: [
-  	configMapVolume(mountPath: &apos;/tmp/templates/&apos;,configMapName: &quot;${params.Tenant}${params.EnvName}-dockerfile&quot;)
   ]
   ) 
 {
@@ -113,6 +152,7 @@ podTemplate(label: label,  containers: [
 			{
 				&quot;group&quot;: &quot;${Tenant}&quot;,
 				&quot;env&quot;: &quot;${EnvName}&quot;,
+				&quot;envType&quot;: &quot;${EnvType}&quot;,
 				&quot;dockerRepo&quot;: &quot;${dockerRepoHost}&quot;,
 				&quot;bundleRepo&quot;: &quot;${bundleRepo}&quot;,
 				&quot;images&quot;: [
@@ -125,7 +165,7 @@ podTemplate(label: label,  containers: [
                 sh(&quot;dockerd --insecure-registry=${dockerRepoHost} &amp;&quot;)
                 sh(&quot;sleep 4&quot;)
                 sh(&quot;echo y | docker login ${dockerRepoHost} -u ${dockerRepoUser} -p ${dockerRepoPwd}&quot;)
-                sh(&quot;python3.6 /commerce-devops-utilities/utilities/dockerbuild/buildCusDocker.py -vu $vault_url -vt $vault_token -ru $dockerRepoUser -rp $dockerRepoPwd -fpl $ForcePull_Image -fph $ForcePush_Image -i &apos;${build_info}&apos; -rl commerce&quot;)
+                sh(&quot;python3.6 /commerce-devops-utilities/utilities/dockerbuild/buildCusDocker.py -vu $vault_url -vt $vault_token -ru $dockerRepoUser -rp $dockerRepoPwd -fpl $ForcePull_Image -fph $ForcePush_Image -i &apos;${build_info}&apos; -rl commerce -ns $Namespace&quot;)
             }
         }
     }
