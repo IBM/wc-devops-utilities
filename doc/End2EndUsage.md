@@ -3,7 +3,7 @@
 This page will guide you how to leverage the Commerce DevOps Utilities to manage configuration through Vault and ConfigMap
 and Deploy / Update / Delete Commerce V9 environment.
 
-For better understand the whole process, I prefer to introduce it as story mode with some special role. This role based store can
+For better understand the whole process, I prefer to introduce it as story mode with some special role. This role based story can
 help you better understand how to control a distribute environment on cloud platform. But this is not the best practice can match
 all case. When you read this story, please base on your company's situation to thinking how to organize the process
 
@@ -14,9 +14,21 @@ As Operator, support Dev team to init environment and manage deploycontroller <b
 
 Role：Developer <br>
 Name: Steve <br>
-As Developer, develop code and use deploycontroller UI to build customzied docker image
+As Developer, develop code and use deploycontroller UI to build customized docker image
 and update environment to verify new code change <br>
 <img src="./images/Steve.png" width = "50" height = "40" alt="Overview" align=center /><br>
 
 
-To be continues...
+# Background #
+
+One day, that must be a big day.  The Boss find David and Steve and told them Company decide to buildup self-hosted
+E-Commerce site with IBM Commerce V9.  He want David and Steve and cooperate together to buildup this site from scratch.
+
+Get this news update, David and Steve
+
+# Section #
+
+1. [PrepareInfrastructure](End2EndUsage_PrepareInfrastructure.md)
+2. [InitTenantEnviornment](End2EndUsage_InitTenantEnvironment.md)
+3. [DevelopeAndBuildCustomizedCode](End2EndUsage_DevelopAndBuildCustomizeCode.md)
+4. [UpdateEnvWithCustomizedDocker](End2EndUsage_UpdateEnvWithCustomizeDocker.md)

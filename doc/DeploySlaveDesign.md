@@ -1,2 +1,2 @@
-# Deploy Controller Design #
+# Deploy Slave Design #
 To be continued ..........
