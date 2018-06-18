@@ -66,14 +66,14 @@ After ready the story of David. Hope you can understand what assistant tool you 
 Before deploy DevOps utilities, you need to setup
 1. Kubernetes Cluster ( 1.7 + ) or ICP ( 2.1.0.1 )
 
-Kubernetes Component| Usage
+Kubernetes Component   |  Usage
 ------------- | -------------
-Flanel  | Provide per-container-per IP capacity
-Sky-DNS  | Provide DNS parse
-Ingress | Provide Loadbalance capacity
-Helm Server | Communicate with Helm Client and Kuberentes to deploy Kubernetes object
+Flanel | Provide per-container-per IP capacity
+Sky-DNS | Provide DNS parse
+Ingress| Provide Loadbalance capacity
+Helm Server| Communicate with Helm Client and Kuberentes to deploy Kubernetes object
 
-IF you setup ICP, those dependent component already be included.
+   IF you setup ICP, those dependent component already be included.
 
 2. Vault/Consul ( You can use WCSDevOps Helm Charts deploy it )
 
