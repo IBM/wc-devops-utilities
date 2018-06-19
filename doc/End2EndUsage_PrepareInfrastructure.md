@@ -61,7 +61,7 @@ other assistant tooling. To make whole
 
 
 ## Retrospective  ##
-After ready the story of David. Hope you can understand what assistant tool you need to prepare with DevOps Utilites to make the infrastructure ready.
+After read the story of David. Hope you can understand what assistant tool you need to prepare with DevOps Utilites to make the infrastructure ready.
 
 Before deploy DevOps utilities, you need to setup
 1. Kubernetes Cluster ( 1.7 + ) or ICP ( 2.1.0.1 )
@@ -77,7 +77,7 @@ Helm Server| Communicate with Helm Client and Kuberentes to deploy Kubernetes ob
 
 2. Vault/Consul ( You can use WCSDevOps Helm Charts deploy it )
 
-   IF you use WCSDevOps Helm Charts to deploy Vault/Consul with DevOps Utilites together. The DevOps Utilites will
+   IF you use WCSDevOps Helm Charts to deploy Vault/Consul with DevOps Utilites togeIFther. The DevOps Utilites will
    do initial setup. But if you want to setup Vault/Consul by your self. You need to enable PKI backend your-self with
    below commands:
 
@@ -94,7 +94,7 @@ Helm Server| Communicate with Helm Client and Kuberentes to deploy Kubernetes ob
         curl --header "X-Vault-Token: $vault_token" --request POST --data "$data" http://VaultIPAddres:8200/v1/selfserve_production_pki/roles/generate-cert
    ```
 
-3. Nexus ( This is not mandatory, it you don't want to manage the customization package with it )
+3. Nexus ( This is not mandatory, if you don't want to manage the customization package with it )
 
    IF you plan to use Nexus to manage customization package. Here is sample about how to organize package under 'release' repository
 
