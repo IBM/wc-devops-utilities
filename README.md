@@ -4,7 +4,7 @@ Commerce DevOps Utilities，as a sample tool chain for reference, support Commer
 
 Commerce DevOps Utilities also can well support Commerce V9+ deploy on IBM Cloud Private, see [IBM Cloud Private](https://www.ibm.com/cloud/private)
 
-Commerce DevOps Utilities will be build and deploy as Docker container. It includes DeployController , DeploySlave and SupportContainer
+Commerce DevOps Utilities will be build and deploy as Docker container. It includes DeployController, DeploySlave and SupportContainer
 
 Docker Image  |  Embed Assets  | Usage
 ------------- | -------------| -------------
@@ -26,11 +26,12 @@ For quick deploy HelmChart be provided. see [Commerce DevOps Utilities Helm Char
 * [Utilites Design](doc/UtilitiesDesign.md) <br>
 * [DeploySlave Design](doc/DeploySlaveDesign.md) <br>
 * [SupportContainer Design](doc/SupportContainerDesign.md)
+
 ## Build  ##
 
 Note: before you run build, make user your machine has installed docker ( DockerCE or EE  17.06 ) and You can connect to internet well
 
-1. Located to path commerce-devops-utilities/kubernetes/DeployController and run command to build DeployController Docker image
+1. Located to path `commerce-devops-utilities/kubernetes/DeployController` and run command to build DeployController Docker image
 
     ```
     ./BuildDocker.sh
@@ -38,7 +39,7 @@ Note: before you run build, make user your machine has installed docker ( Docker
     ( you can specify docker image tag by ./BuildDocker.sh deploycontroller:newtag )
     ```
 
-2. Located to path commerce-devops-utilities/kubernetes/DeploySlave and run command to build DeploySlave Docker image
+2. Located to path `commerce-devops-utilities/kubernetes/DeploySlave` and run command to build DeploySlave Docker image
 
    ```
    ./BuildDocker.sh
@@ -46,7 +47,7 @@ Note: before you run build, make user your machine has installed docker ( Docker
    ( you can specify docker image tag by ./BuildDocker.sh deployslave:newtag )
    ```
 
-3. Located to path commerce-devops-utilities/kubernetes/DeploySupport and run command to build DeploySupport Docker image
+3. Located to path `commerce-devops-utilities/kubernetes/DeploySupport` and run command to build DeploySupport Docker image
    ```
    ./BuildDocker.sh
 
@@ -61,8 +62,7 @@ Please deploy Commerce DevOps Utilities under `default` namespace. Otherwise you
 
 You can access DeployController UI through `http://IngressIPAddress:31899`, default user and account is `admin/admin`
 
-IF you already have a environment or you don't want to deploy Utilities inside of Kubernetes cluster ( or IBM Cloud Private ), you can choose manually
-deploy each container.
+IF you already have a environment or you don't want to deploy Utilities inside of Kubernetes cluster (or IBM Cloud Private), you can choose manually deploy each container.
 
 When you logon DeployController you could see those pre-defined Job
 
@@ -88,15 +88,15 @@ kubernetes  | Scripts for build Docker Images
 utilities |  DevOps backend scripts
 
 For DeployController:
-* Add new or update plugin version in commerce-devops-utilities/kubernetes/DeployController/plugins.txt
-* Modify the pre defined Jenkins job under path commerce-deveops-utilities/kubernetes/DeployController/setup/jobs
-* Modify the default admin user by edit commerce-deveops-utilities/kubernetes/DeployController/users/admin/config.xml
-* Modify global variables for Jenkins by edit commerce-deveops-utilities/kubernetes/DeployController/config.xml
-* Modify jenkins startup logic by modify jenkins.sh
+* Add new or update plugin version in `commerce-devops-utilities/kubernetes/DeployController/plugins.txt`
+* Modify the pre defined Jenkins job under path `commerce-deveops-utilities/kubernetes/DeployController/setup/jobs`
+* Modify the default admin user by edit `commerce-deveops-utilities/kubernetes/DeployController/users/admin/config.xml`
+* Modify global variables for Jenkins by edit `commerce-deveops-utilities/kubernetes/DeployController/config.xml`
+* Modify jenkins startup logic by modify `jenkins.sh`
 
 
 For DevOps backend scripts:<br>
-They are be put under commerce-deveops-utilities/utilities
+They are be put under `commerce-deveops-utilities/utilities`
 
 
 ## Support ##
