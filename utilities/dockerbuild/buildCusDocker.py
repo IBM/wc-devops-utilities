@@ -165,7 +165,7 @@ def generateDockerfileNew(image, env, namespace, dockerRepo, dockerRepoLib, grou
     dockerfileName = image.get("dockerfile")
     componentName = image.get("name")
     if dockerfileName:
-        dockefileInfo = DockerFileInfo(tennant, env, namespace, envType, dockefileName, configType, configFile)
+        dockerfileInfo = DockerFileInfo(group_id, env, namespace, envType, dockerfileName, configType, configFile)
         dockerfileContent = kube_configmap.FetchConfigMap(dockerfileInfo)
     else:
         dockerfileName = group_id + env + "-" + componentName + "-dockerfile"
@@ -176,7 +176,7 @@ def generateDockerfileNew(image, env, namespace, dockerRepo, dockerRepoLib, grou
             dockerfileContent = kube_configmap.FetchConfigMap(dockerfileInfo)
             if envType:
                 dockerfileInfo = DockerFileInfo(group_id, env, namespace, envType, "", configType, configFile)
-                dockerfileContentSeparate = getConifgMap(dockerfileInfo)
+                dockerfileContentSeparate = kube_configmap.FetchConfigMap(dockerfileInfo)
                 if not dockerfileContentSeparate:
                     dockerfileContent = dockerfileContentSeparate
     if dockerfileContent == "":
