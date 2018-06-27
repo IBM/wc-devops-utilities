@@ -14,6 +14,7 @@
     <string>{{EnvName}}</string>
     <string>{{TriggerIndexName}}</string>
     <string>{{IndexRep}}</string>
+    <string>{{VaultName}}</string>
   </jobNames>
   <jobFilters/>
   <columns>

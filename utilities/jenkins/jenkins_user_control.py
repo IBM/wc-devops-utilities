@@ -19,7 +19,7 @@ import json
 import argparse
 import tempfile
 from jinja2 import Environment, FileSystemLoader
-
+#from jenkinsapi.jenkins import Jenkins
 #input tenant_id to complete creation
 
 cmd_parser = argparse.ArgumentParser()
@@ -34,37 +34,40 @@ args = cmd_parser.parse_args()
 
 server = jenkins.Jenkins(args.jenkins_server, username=args.username, password=args.password)
 print("Jenkis server " + server.server + " is connected")
-
+#print(server.version)
 
 #Copy Jobs "PrepareEnv" and "CreateWCSCloud"
-copyEnvName = "PrepareEnv_" + args.tenant_id
+copyConfigName = "ManageConfigMap_" + args.tenant_id
 copyCloudName = "DeployWCSCloud_" + args.tenant_id
 copyBuildDockerName = "BuildDockerImage_" + args.tenant_id
 copyTriggerIndexName = "TriggerBuildIndex_" + args.tenant_id
-copyCustomTemp = "PopCustomTemp_" + args.tenant_id
+copyDockerfileName = "ManageDockerfile_" + args.tenant_id
 copyIndexRep = "TriggerIndexReplica_" + args.tenant_id
 copyBundleCert = "BundleCert_" + args.tenant_id
 copyAddCert = "AddCert_" + args.tenant_id
+copyVaultName = "ManageVaultConfig_" + args.tenant_id
 
-server.copy_job('PrepareEnv_Base', copyEnvName)
+server.copy_job('ManageConfigMap_Base', copyConfigName)
 server.copy_job('DeployWCSCloud_Base', copyCloudName)
 server.copy_job('BuildDockerImage_Base', copyBuildDockerName)
 server.copy_job('TriggerBuildIndex_Base', copyTriggerIndexName)
-server.copy_job('PopCustomTemp_Base', copyCustomTemp)
+server.copy_job('ManageDockerfile_Base', copyDockerfileName)
 server.copy_job('TriggerIndexReplica_Base', copyIndexRep)
+server.copy_job('ManageVaultConfig_Base', copyVaultName)
 server.copy_job('AddCert_Base', copyAddCert)
 server.copy_job('BundleCert_Base', copyBundleCert)
 
 #Create a unique group for the tenant_id.
 templateVars = {
-    "EnvName" : copyEnvName,
+    "EnvName" : copyConfigName,
     "CloudName" : copyCloudName,
     "BuildDockerName": copyBuildDockerName,
     "TriggerIndexName": copyTriggerIndexName,
-    "CustomTemp": copyCustomTemp,
+    "CustomTemp": copyDockerfileName,
     "IndexRep": copyIndexRep,
     "AddCert" : copyAddCert,
     "BundleCert": copyBundleCert,
+    "VaultName": copyVaultName,
     "name" : args.tenant_id
 }
 print(templateVars)
@@ -76,6 +79,7 @@ TEMPLATE_ENVIRONMENT = Environment(
 )
 appXmlStr = TEMPLATE_ENVIRONMENT.get_template("viewTemplate.xml").render(templateVars)
 print(appXmlStr)
+# server.views.create(args.tenant_id, appXmlStr)
 
 server.create_view(args.tenant_id, appXmlStr)
 server.reconfig_view(args.tenant_id, appXmlStr)
