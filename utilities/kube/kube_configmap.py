@@ -80,6 +80,24 @@ def readFileForConfigMap(parser_args):
         print("can not find input parameters")
         exit(1)
 
+# Delete configMap
+def deleteConfigMap(parser_args,CorV1Client):
+        print("delete config map")
+        if listConfigMap(parser_args,CorV1Client):
+            # create an instance of the API class
+            name = parser_args.name  # str | name of the ConfigMap
+            namespace = parser_args.namespace  # str | object name and auth scope, such as for teams and projects
+            body = client.V1DeleteOptions()  # V1DeleteOptions |
+            pretty = 'pretty_example'  # str | If 'true', then the output is pretty printed. (optional)
+
+            try:
+                api_response = CorV1Client.delete_namespaced_config_map(name, namespace, body, pretty=pretty)
+                print(api_response)
+            except ApiException as e:
+                print("Exception when calling CoreV1Api->delete_namespaced_config_map: %s\n" % e)
+        else:
+            print("Not Found target cofigMap ojbect %s exist" % parser_args.name)
+
 #Delete configMap
 def DeleteConfigMap(parser_args):
     _CoreV1Api = globalvars.get_value('KubCoreV1Api')
