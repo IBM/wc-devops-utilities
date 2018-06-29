@@ -27,33 +27,36 @@
           <description>IF you are the first time to configure those values on Vault. Please fill in the correct values for each path.  
 
 This is the mini scope configuration on Vault for deploy Commerce
-
-${Tenant}/${EnvName}/auth/dbHost=Value
-${Tenant}/${EnvName}/auth/dbName=Value
-${Tenant}/${EnvName}/auth/dbPassword=Value
-${Tenant}/${EnvName}/auth/dbPort=Value
-${Tenant}/${EnvName}/auth/dbUser=Value
-${Tenant}/${EnvName}/auth/dbType=db2
-${Tenant}/${EnvName}/auth/merchantKeyEncrypte=Value
-${Tenant}/${EnvName}/auth/spiUserName=Value
-${Tenant}/${EnvName}/live/spiUserPwd=Value
-${Tenant}/${EnvName}/domainName=default.svc.cluster.local   ( this specify the internal service domain name.  service domain name on default namespace is default value )
-${Tenant}/${EnvName}/live/dbHost=Value
-${Tenant}/${EnvName}/live/dbName=Value
-${Tenant}/${EnvName}/live/dbPassword=Value
-${Tenant}/${EnvName}/live/dbPort=Value
-${Tenant}/${EnvName}/live/dbUser=Value
-${Tenant}/${EnvName}/live/dbType=db2
-${Tenant}/${EnvName}/live/merchantKeyEncrypte=Value
-${Tenant}/${EnvName}/live/spiUserName=Value
-${Tenant}/${EnvName}/live/spiUserPwd=Value</description>
+</description>
           <randomName>choice-parameter-5619527128633032</randomName>
           <visibleItemCount>1</visibleItemCount>
           <script class="org.biouno.unochoice.model.GroovyScript">
             <secureScript plugin="script-security@1.29.1">
               <script>def process = [&quot;python&quot;,&quot;/commerce-devops-utilities/utilities/vault/vault_keyvalue.py&quot;,&quot;fetchkv&quot;,&quot;-tenant&quot;,Tenant,&quot;-env&quot;,EnvName,&quot;-vault_url&quot;,vault_url,&quot;-vault_token&quot;,vault_token].execute()
 result=process.in.text
-
+if(result == &quot;None\n&quot;){
+result = &quot;&quot;&quot;
+${Tenant}/${EnvName}/domainName=default.svc.cluster.local
+${Tenant}/${EnvName}/auth/dbHost=
+${Tenant}/${EnvName}/auth/dbName=
+${Tenant}/${EnvName}/auth/dbPassword=
+${Tenant}/${EnvName}/auth/dbPort=
+${Tenant}/${EnvName}/auth/dbUser=
+${Tenant}/${EnvName}/auth/dbType=db2
+${Tenant}/${EnvName}/auth/merchantKeyEncrypte=
+${Tenant}/${EnvName}/auth/spiUserName=
+${Tenant}/${EnvName}/auth/spiUserPwd=
+${Tenant}/${EnvName}/live/dbHost=
+${Tenant}/${EnvName}/live/dbName=
+${Tenant}/${EnvName}/live/dbPassword=
+${Tenant}/${EnvName}/live/dbPort=
+${Tenant}/${EnvName}/live/dbUser=
+${Tenant}/${EnvName}/live/dbType=db2
+${Tenant}/${EnvName}/live/merchantKeyEncrypte=
+${Tenant}/${EnvName}/live/spiUserName=
+${Tenant}/${EnvName}/live/spiUserPwd=
+&quot;&quot;&quot;
+}
 html=
 &quot;&quot;&quot;
 &lt;p&gt;
