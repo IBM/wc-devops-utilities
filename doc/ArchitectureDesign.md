@@ -1,28 +1,31 @@
 # Architecture Design #
 
-This doc will illustrate the architecture design with the DevOps Utilities. After read this doc，
-you could better understand how each utilities container works and the basic flow to manage multiple
-Commerce V9 environment for Dev\QA\PreProd\Prod environment.
+This topic illustrates the architecture design of the DevOps Utilities. After reading this doc，
+you will be able to understand how each utilities container works and the basic flow of managing multiple WebSphere Commerce V9 environments for Dev\QA\PreProd\Prod purposes.
 
-For better understand it, there also have a End2End Usage which be draft as a story with several
+<!--For better understand it, there also have a End2End Usage which be draft as a story with several
 Role which is more close a real scenario that a team or a company will pass through with DevOps
 Utilities. See [End2End Usage Story](End2EndUsage.md)
 
- <img src="https://github.com/IBM/wc-devops-utilities/raw/master/doc/images/Overview.png" width = "700" height = "450" alt="Overview" align=center /><br>
+ <img src="https://github.com/IBM/wc-devops-utilities/raw/master/doc/images/Overview.png" width = "700" height = "450" alt="Overview" align=center /><br>-->
 
-The core component in DevOps Utilities are DeployController /  Vault / Nexus. They are the `Long Run Pod`.
-There also have independent component like SupportContainer /  DeploySlave, They are the `Temporary Run Pod`.
-All those Utilities are Dockerlized, so you can easily leverage Kubernetes platform to deploy it without any manually setup.
+In the DevOps Utilities:
 
-DevOps Utilities mainly leverage the Jenkins's capacity of task scheduling and the Kubernetes's capacity of resource scheduling.
-So when user trigger some long run or asynchronous action through Jenkins Job ( for example Helm Install / Build Docker Image ),
-the pre-defined Jenkins pipeline in Job will use Kubernetes plugin start up DeploySlave container
-as a temporary Pod. When Job finish, temporary Pod will be release. This can bring very good user experience. In
-DevOps Utilises, we also involved the concept of "Docker Build In Docker", so when you trigger build customized Docker Image
-The process will be launched in a temporary Pod which start up with DeploySalve Docker Image.
+* `Long Run Pod`<!--Tiffany: Need to explain the meaning--> are the core components, including DeployController, Vault, and Nexus.
+* `Temporary Run Pod`<!--Tiffany: Need to explain the meaning--> are the independent components such as SupportContainer and DeploySlave.
+
+All these components are dockerlized, so you can easily leverage the Kubernetes platform to deploy the components without manual setup.
+
+DevOps Utilities leverage Jenkins capability of task scheduling and Kubernetes capability of resource scheduling.
+Thus, when you trigger some long-run or asynchronous job through Jenkins, such as installing Helm or building Docker images,
+the pre-defined Jenkins job pipeline will start a  temporary Pod using the DeploySlave Docker container. When the job is complete, the temporary Pod is also released.
+
+In DevOps Utilises, the concept "Docker Build In Docker" is also involved, which mean, when you start to build customized Docker image, the build process will be launched in a temporary Pod with the DeploySalve Docker Image.
+
+<!--Tiffany: I don't think we need to include this paragraph. It is too detailed.
 
 The backend logic be implemented with Python. For each Jenkins Job, finally, it call a "command style" python scripts. All python scripts be
-grouped as a python package which compose with several python module. You can find them under commerce-devops-utilities/utilises.
+grouped as a python package which compose with several python module. You can find them under commerce-devops-utilities/utilises.-->
 
 ## DeployController  ##
 It be build as Jenkins Master and most like a "hub" to orchestrate deployment Job

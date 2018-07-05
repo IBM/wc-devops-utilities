@@ -81,7 +81,7 @@ After the deployment is completed, you can access the DeployController user inte
 **Tips**:
  For each job in DeployController, make sure to open the `config` page to save it<!--Tiffany: What does "it" refer to? Is it the job?-->, so that the auto parameter<!--Tiffany: What is auto marameter?--> plugin can be loaded.
 
-## Usage ##
+## How to use WebSphere Commerce Utilities ##
 
 See [Commerce DevOps Utilites End2End Usage](doc/End2EndUsage.md)
 

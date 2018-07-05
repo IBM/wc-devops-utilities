@@ -1,9 +1,9 @@
-# Commerce DevOps Utilities End2End Usage #
+# End-to-end guide on WebSphere Commerce DevOps Utilities#
 
-This page will guide you how to leverage the Commerce DevOps Utilities to manage configuration through Vault and ConfigMap
-and Deploy / Update / Delete Commerce V9 environment.
+This page provides you with end-to-end guidance on how to manage configuration through Vault and ConfigMap,
+and deploy, update, delete the WebSphere Commerce V9 environment by leveraging the Commerce DevOps Utilities.
 
-For better understand the whole process, I prefer to introduce it as story mode with some special role. This role based story can
+To better understand the entire process, I prefer to introduce it as story mode with some special role. This role based story can
 help you better understand how to control a distribute environment on cloud platform. But this is not the best practice can match
 all case. When you read this story, please base on your company's situation to thinking how to organize the process
 
