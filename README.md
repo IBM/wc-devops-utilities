@@ -68,7 +68,7 @@ Before you run build Docker images, ensure that your machine has Docker ( Docker
 
 ## Deploying DevOps Utilites##
 
-To quickly deploy DevOps Utilities, you need to use Helm Chart. For more information, see [Commerce DevOps Utilities Helm Charts](https://github.com/IBM/wc-helmchart).
+To quickly deploy DevOps Utilities, you need to use Helm Chart. For more information, see [Commerce DevOps Utilities Helm Charts](https://github.com/IBM/wc-helmchart/tree/master/WCSDevOps).
 
 Ensure to deploy WebSphere Commerce DevOps Utilities under the `default` Kubernetes namespace.
 
@@ -83,7 +83,7 @@ After the deployment is completed, you can access the DeployController user inte
 
 ## How to use WebSphere Commerce Utilities ##
 
-See [Commerce DevOps Utilites End2End Usage](doc/End2EndUsage.md)
+See [DeployController design](doc/DeployControllerDesign.md)
 
 ## Developing ##
 
