@@ -113,4 +113,4 @@ You can also create issues directly to propose enhancements. We will evaluate an
 
 * Slack Channel
 
-* [contact list](CONTACT.md)
+* [Contact list](CONTACT.md)
