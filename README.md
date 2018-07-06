@@ -1,6 +1,6 @@
-# WebSphere Commerce DevOps Utilities #
+# Deploying WebSphere Commerce V9 with the DevOps Utilities #
 
-WebSphere commerce DevOps Utilities is a reference tool chain to support deploying and operating WebSphere Commerce V9 in a Kubernetes environment.
+WebSphere commerce DevOps Utilities are provided as a reference tool chain to support deploying and operating WebSphere Commerce V9 in a Kubernetes environment.
 
 For more information about WebSphere Commerce V9, see [WebSphere Commerce Version 9 knowledge Center](https://www.ibm.com/support/knowledgecenter/SSZLC2_9.0.0/landing/wc_welcome.htm).
 
@@ -66,7 +66,7 @@ Before you run build Docker images, ensure that your machine has Docker (DockerC
    **Note**: You can specify the Docker image tag in the following pattern:
        ./BuildDocker.sh deploysuppor:<newtag>
 
-## Deploying DevOps Utilites##
+## Deploying DevOps Utilites ##
 
 To quickly deploy DevOps Utilities, you need to use Helm Chart. For more information about Helm Chart, see [Commerce DevOps Utilities Helm Charts](https://github.com/IBM/wc-helmchart/tree/master/WCSDevOps).
 
@@ -85,33 +85,32 @@ After the deployment is completed, you can access the DeployController user inte
 
 Refer to [DeployController design](doc/DeployControllerDesign.md) for detailed information.
 
-##### Project structure  #####
-Structure  |   Description
+### Project structure  ###
+The following table shows the folders included in the project.
+
+Folder |   Description
 ------------- | -------------
-doc | Documents and pictures
-kubernetes  | Scripts for building Docker images
-utilities |  DevOps backend scripts
+doc | Includes documents created in Markdown
+kubernetes*  | Includes the scripts for building Docker images
+utilities |  Includes DevOps backend scripts
 
-For DeployController<!--Tiffany:After reading through the list, I didn't get what it relates to the users. -->:
-* Add new or updated plugin version in `commerce-devops-utilities/kubernetes/DeployController/plugins.txt`
-* Modify the pre-defined Jenkins job under `commerce-deveops-utilities/kubernetes/DeployController/setup/jobs`
-* Modify the default admin user by editing `commerce-deveops-utilities/kubernetes/DeployController/users/admin/config.xml`
-* Modify global variables for Jenkins by editing `commerce-deveops-utilities/kubernetes/DeployController/config.xml`
-* Modify Jenkins startup logic by modifying `jenkins.sh`
+**Note**: The `kubernetes/DeployController` folder contains the following files for customization:
+* `plugins.txt`: Includes New or updated plugin version
+* `setup/jobs`: Includes pre-defined Jenkins job
+* `users/admin/config.xml`: Includes the default admin user information
+* `config.xml`:Includes global variables for Jenkins
+* `jenkins.sh`: Includes Jenkins startup logic
 
+## Contributing to the project ##
 
-You can find DevOps backend scripts at:<br> `commerce-deveops-utilities/utilities`
+After you try the DevOps utilities out, you are welcomed to contribute to this project by enriching the files list above and improving the documents.
 
-## Contrbuting to the project ##
+If you'd like to do so, contact the administrators in the [contact list](CONTACT.md) so that you can be added as a project member.
 
-After you try the DevOps utilities out, you are welcomed to contribute to this project. If you'd like to do so, contact the administrators in [Contact List](CONTACT.md) so that you can be added as a project member.
+You can also create issues directly to propose enhancements. We will evaluate and assign project members to fix or handle issues.
 
-## Support ##
-
-* Creating issues
-
-  You can create issues in this project or propose enhancements whenever needed. We will evaluate and assign contributors to fix or handle issues.
+#### Related links ####
 
 * Slack Channel
 
-* To be added as a contributor, see the [Contact List](CONTACT.md).
+* [contact list](CONTACT.md)
