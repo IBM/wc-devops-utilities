@@ -1,4 +1,4 @@
-# DeployController Design #
+#  Using WebSphere Commerce DevOps utility #
 
 ## Overview ##
 The DeployController component is built as a Jenkins Master, which includes pre-defined Jenkins jobs and backend scripts. There are global variables to define and control the execution context of the utility, such as the global configuration center and Docker repository host.
