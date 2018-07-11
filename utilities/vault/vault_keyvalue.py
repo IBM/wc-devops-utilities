@@ -15,22 +15,40 @@ def InsertKV(parser_args):
   print("Insert Key-Value")
   # Set the REQUESTS_CA_BUNDLE environment variable
   vault_reader.set_requests_ca_bundle()
-
+  base_vault_path = "{}/{}/".format(parser_args.tenant, parser_args.env)
   # Set Vault connection
   client = hvac.Client(url=args.vault_url, token=args.vault_token)
+  exist_keys=[]
+
+  # Get Exist Keys
+  keyvalues=listKeyPaths(client,base_vault_path)
+  if keyvalues != None:
+    keyvalues=keyvalues.replace(("{}/{}/".format(parser_args.tenant, parser_args.env)),"")
+    keyvalueList=keyvalues.split()
+    for kv in keyvalueList:
+      if kv!='':
+          splitindex=kv.index("=") 
+          k=kv[:splitindex]
+          exist_keys.append(k)
+      #print(list_keys)
 
   # Insert Key-Value into Vault KV
   try:
     if parser_args.keyvalues != None or parser_args.keyvalues != '':
+          newInsertKeys=[]
           _kvpairs= parser_args.keyvalues.split(parser_args.separater)
           print(_kvpairs)
           for kv in _kvpairs:
-              if kv != '':
+              if kv.strip() != '':
                 _splitindex=kv.index("=")
                 key = kv[:_splitindex]
+                newInsertKeys.append(key)
                 value = kv[_splitindex+1:]
-                client.write(key, value=value)
+                client.write(base_vault_path+key, value=value)
                 print("insert key: {key} with value: {value}".format(key=key, value=value))
+          for key in exist_keys:
+              if key not in newInsertKeys:
+                  client.delete(base_vault_path+key)
     else:
         print("Target key-value is empty!")
   except Exception as e:
@@ -39,10 +57,9 @@ def InsertKV(parser_args):
     sys.exit(vault_errors)
 
 def FetchKV(parser_args):
-   #print("Fetch Key-Value pairs from Vault")
+   # print("Fetch Key-Value pairs from Vault")
    # Set the REQUESTS_CA_BUNDLE environment variable
    vault_reader.set_requests_ca_bundle()
-
    # Set basic path
    base_vault_path = "{}/{}/".format(parser_args.tenant, parser_args.env)
 
@@ -50,8 +67,10 @@ def FetchKV(parser_args):
    client = hvac.Client(url=parser_args.vault_url, token=parser_args.vault_token)
 
    result=listKeyPaths(client,base_vault_path+parser_args.rootpath)
-
-   print(result)
+   if result != None:
+       print(result.replace(("{}/{}/".format(parser_args.tenant, parser_args.env)), "").strip())
+   else:
+       print("None")
 
 
 def listKeyPaths(client,path):

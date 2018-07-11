@@ -39,7 +39,7 @@ When start DeployController, some parameters need to be input as below table sho
 
 Parameter  |  Usage
 ------------- | -------------
-VaultUrl |  Specify Vault URL ( e.g http://9.112.245.194:30552/v1 ). If InCluster equal true, this value is not mandatory
+VaultUrl |  Specify Vault URL ( e.g http://9.112.245.194:30552 ). If InCluster equal true, this value is not mandatory
 VaultToken  | Specify Vault Root Token for rest access . If InCluster equal true, this value is not mandatory
 BundleRepo | Specify customize package repository, Nexus is the default bundle repository ( e.g  http://9.110.182.156:8081/nexus/content/repositories/releases/commerce )
 DockerRepo | Specify Docker Image repository (e.g DockerRepoHostname:RepoPort )
