@@ -82,8 +82,8 @@ The final docker image tag will compose as &lt;version&gt;&lt;env_name&gt;</desc
           <description>Define if need pipeline to pull image from docker registry for each build ( Default: False )</description>
           <choices class="java.util.Arrays$ArrayList">
             <a class="string-array">
-              <string>False</string>
               <string>True</string>
+              <string>False</string>
             </a>
           </choices>
         </hudson.model.ChoiceParameterDefinition>

@@ -313,7 +313,7 @@
           <string>vault_token</string>
           <string>vault_token_value</string>
           <string>vault_url</string>
-          <string>http://vault-consul.default.svc:8200/v1</string>
+          <string>http://vault-consul.default.svc:8200</string>
         </tree-map>
       </envVars>
     </hudson.slaves.EnvironmentVariablesNodeProperty>
