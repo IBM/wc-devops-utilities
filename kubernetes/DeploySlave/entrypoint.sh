@@ -18,5 +18,4 @@ echo "Repo_url has been updated to "$repo_url
 
 
 echo "The container is running normally"
-
-tail -f /entrypoint.sh
+#tail -f /dev/null

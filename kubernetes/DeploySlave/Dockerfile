@@ -13,4 +13,4 @@ COPY ./helm /usr/bin
 RUN  chmod 777 /entrypoint.sh /usr/bin/helm /commerce-devops-utilities && \
      ln -s /usr/bin/python3.6 /usr/bin/python
 
-CMD /entrypoint.sh
+#CMD /entrypoint.sh
