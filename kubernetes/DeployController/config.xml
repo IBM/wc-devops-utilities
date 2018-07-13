@@ -243,6 +243,8 @@
         <string>ManageVaultConfig_Base</string>
         <string>TriggerBuildIndex_Base</string>
         <string>TriggerIndexReplica_Base</string>
+        <string>Utilities_UpdateDB_Base</string>
+        <string>Utilities_VersionInfo_Base</string>
       </jobNames>
       <jobFilters/>
       <columns>

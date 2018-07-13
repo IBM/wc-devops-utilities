@@ -37,37 +37,43 @@ print("Jenkis server " + server.server + " is connected")
 #print(server.version)
 
 #Copy Jobs "PrepareEnv" and "CreateWCSCloud"
-copyConfigName = "ManageConfigMap_" + args.tenant_id
-copyCloudName = "DeployWCSCloud_" + args.tenant_id
-copyBuildDockerName = "BuildDockerImage_" + args.tenant_id
-copyTriggerIndexName = "TriggerBuildIndex_" + args.tenant_id
-copyDockerfileName = "ManageDockerfile_" + args.tenant_id
-copyIndexRep = "TriggerIndexReplica_" + args.tenant_id
-copyBundleCert = "BundleCert_" + args.tenant_id
-copyAddCert = "AddCert_" + args.tenant_id
-copyVaultName = "ManageVaultConfig_" + args.tenant_id
+ManageConfigMapName = "ManageConfigMap_" + args.tenant_id
+DeployWCSCloudName = "DeployWCSCloud_" + args.tenant_id
+BuildDockerImageName = "BuildDockerImage_" + args.tenant_id
+TriggerBuildIndexName = "TriggerBuildIndex_" + args.tenant_id
+ManageDockerfilName = "ManageDockerfile_" + args.tenant_id
+TriggerIndexReplicaName = "TriggerIndexReplica_" + args.tenant_id
+BundleCertName = "BundleCert_" + args.tenant_id
+AddCertName = "AddCert_" + args.tenant_id
+ManageVaultConfigName = "ManageVaultConfig_" + args.tenant_id
+UtilsVersionInfoName = "Utilities_VersionInfo_" + args.tenant_id
+UtilsUpdateDBName = "Utilities_UpdateDB_" + args.tenant_id
 
-server.copy_job('ManageConfigMap_Base', copyConfigName)
-server.copy_job('DeployWCSCloud_Base', copyCloudName)
-server.copy_job('BuildDockerImage_Base', copyBuildDockerName)
-server.copy_job('TriggerBuildIndex_Base', copyTriggerIndexName)
-server.copy_job('ManageDockerfile_Base', copyDockerfileName)
-server.copy_job('TriggerIndexReplica_Base', copyIndexRep)
-server.copy_job('ManageVaultConfig_Base', copyVaultName)
-server.copy_job('AddCert_Base', copyAddCert)
-server.copy_job('BundleCert_Base', copyBundleCert)
+server.copy_job('ManageConfigMap_Base', ManageConfigMapName)
+server.copy_job('DeployWCSCloud_Base', DeployWCSCloudName)
+server.copy_job('BuildDockerImage_Base', BuildDockerImageName)
+server.copy_job('TriggerBuildIndex_Base', TriggerBuildIndexName)
+server.copy_job('ManageDockerfile_Base', ManageDockerfilName)
+server.copy_job('TriggerIndexReplica_Base', TriggerIndexReplicaName)
+server.copy_job('ManageVaultConfig_Base', ManageVaultConfigName)
+server.copy_job('AddCert_Base', AddCertName)
+server.copy_job('BundleCert_Base', BundleCertName)
+server.copy_job('Utilities_UpdateDB_Base', UtilsUpdateDBName)
+server.copy_job('Utilities_VersionInfo_Base', UtilsVersionInfoName)
 
 #Create a unique group for the tenant_id.
 templateVars = {
-    "EnvName" : copyConfigName,
-    "CloudName" : copyCloudName,
-    "BuildDockerName": copyBuildDockerName,
-    "TriggerIndexName": copyTriggerIndexName,
-    "CustomTemp": copyDockerfileName,
-    "IndexRep": copyIndexRep,
-    "AddCert" : copyAddCert,
-    "BundleCert": copyBundleCert,
-    "VaultName": copyVaultName,
+    "ManageConfigMap" : ManageConfigMapName,
+    "DeployWCSCloud" : DeployWCSCloudName,
+    "BuildDockerImage": BuildDockerImageName,
+    "TriggerIndex": TriggerBuildIndexName,
+    "ManageDockerfile": ManageDockerfilName,
+    "TriggerIndexRep": TriggerIndexReplicaName,
+    "AddCert" : AddCertName,
+    "BundleCert": BundleCertName,
+    "ManageVaultConfig": ManageVaultConfigName,
+    "UtilsUpdateDB": UtilsUpdateDBName,
+    "UtilsVersinInfo": UtilsVersionInfoName,
     "name" : args.tenant_id
 }
 print(templateVars)

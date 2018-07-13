@@ -9,12 +9,14 @@
     <string>{{AddCert}}</string>
     <string>{{BuildDockerName}}</string>
     <string>{{BundleCert}}</string>
-    <string>{{CloudName}}</string>
-    <string>{{CustomTemp}}</string>
-    <string>{{EnvName}}</string>
-    <string>{{TriggerIndexName}}</string>
-    <string>{{IndexRep}}</string>
-    <string>{{VaultName}}</string>
+    <string>{{DeployWCSCloud}}</string>
+    <string>{{ManageConfigMap}}</string>
+    <string>{{ManageDockerfile}}</string>
+    <string>{{ManageVaultConfig}}</string>
+    <string>{{TriggerIndex}}</string>
+    <string>{{TriggerIndexRep}}</string>
+    <string>{{UtilsUpdateDB}}</string>
+    <string>{{UtilsVersinInfo}}</string>
   </jobNames>
   <jobFilters/>
   <columns>
