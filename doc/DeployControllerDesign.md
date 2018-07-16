@@ -154,7 +154,7 @@ HelmChart (*)|| Specify the helm chart name will be used (e.g stable/HelmChartNa
 ForceCreate | Specify if need to force create a new environment. IF select 'true', will delete exist release then do the deploy
 ReuseVaules | Specify if need to reuse values when do upgrade
 DeleteAllAssociatedObject | No good test yet, not suggest to use it
-EnableTLS | 'false' as default value. IF true, the helm client will be add '--tls'. This Filed specified if Helm enalbed TLS ( IF you use ICP 2.1.0.3, Helm TLS will be enaled as default, you need to build specify deployslave for it, see [How to build deployslave for helm TLS]() )
+EnableTLS | 'false' as default value. IF true, the helm client will be add '--tls'. This Filed specified if Helm enalbed TLS ( IF you use ICP 2.1.0.3, Helm TLS will be enaled as default, you need to build specify deployslave for it, see [How to build deployslave for helm TLS](./DeploySlaveDesign.md) )
 helm_ca  | Work if EnableTLS is true, fill in content from ca.pem
 helm_cert |Work if EnableTLS is true, fill in content from cert.pem
 helm_key | Work if EnableTLS is true, fill in content from key.pem
