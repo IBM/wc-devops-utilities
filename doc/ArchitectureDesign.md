@@ -11,8 +11,8 @@ Utilities. See [End2End Usage Story](End2EndUsage.md)
 
 In the DevOps Utilities:
 
-* `Long Run Pod`<!--Tiffany: Need to explain the meaning--> are the core components, including DeployController, Vault, and Nexus.
-* `Temporary Run Pod`<!--Tiffany: Need to explain the meaning--> are the independent components such as SupportContainer and DeploySlave.
+* `Long Run Pod` includes the core components, including DeployController, Vault, and Nexus.
+* `Temporary Run Pod` includes the independent components, such as SupportContainer and DeploySlave.
 
 All these components are dockerlized, so you can easily leverage the Kubernetes platform to deploy the components without manual setup.
 
@@ -22,10 +22,7 @@ the pre-defined Jenkins job pipeline will start a  temporary Pod using the Deplo
 
 In DevOps Utilises, the concept "Docker Build In Docker" is also involved, which mean, when you start to build customized Docker image, the build process will be launched in a temporary Pod with the DeploySalve Docker Image.
 
-<!--Tiffany: I don't think we need to include this paragraph. It is too detailed.
-
-The backend logic be implemented with Python. For each Jenkins Job, finally, it call a "command style" python scripts. All python scripts be
-grouped as a python package which compose with several python module. You can find them under commerce-devops-utilities/utilises.-->
+The DevOps Utilities are implemented with Python. Each Jenkins job calls a Python script. All python scripts are grouped in a Python package, which is consisted of several Python modules. You can find the Python modules under `commerce-devops-utilities/utilises`.
 
 ## DeployController  ##
 It be build as Jenkins Master and most like a "hub" to orchestrate deployment Job

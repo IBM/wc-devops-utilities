@@ -34,7 +34,7 @@ helmChartsRepo  | The Helm Charts repository for storing Helm Charts to be trigg
 
 Job description: <br>
 
-Create third-party certificate for the specified environment on a specified tenant<!--Tiffany: Replace tenant?-->. After adding third-party certificate, you can use the "BundleCert" job to bundle
+Create third-party certificate for the specified environment on a specified tenant. After adding third-party certificate, you can use the "BundleCert" job to bundle
 specific certificate on the target component. If you deploy WebSphere Commerce V9 by setting the Configure Mode `Vault_CA` to `true`, the component container will fetch the bundled certificate
 and apply it.
 
@@ -62,7 +62,7 @@ This job is to build a customized Docker image with the specified base Docker im
 
 Dockerfile is stored as ConfigMap and named according to the following naming pattern `--dockerfile`. You can use the "ManageDockerfile" job to create Dockerfile for the specified component or environment.
 
-The backend logic is to detect if a target Dockerfile in ConfigMap is under the specified namespace with the UI input.<!--Tiffany: Meaning unclear-->
+The job detects whether a target Dockerfile in ConfigMap is under the specified NameSpace based on the user input.
 
 Job UI: <br>
 
@@ -103,7 +103,7 @@ Job UI parameters: <br>
 
 Parameter  |  Description
 ------------- | -------------
-Tenant | Tenant name. One tenant can contain multiple environments. In the Kubernetes context, the tenant environments can be separated <!--Tiffany: divided?--> by NameSpace.
+Tenant | Tenant name. One tenant can contain multiple environments. In the Kubernetes context, the tenant environments can be divided by NameSpace.
 EnvName  | Environment name for a specific tenant.
 Component | Specifies the target component to bundle third-party certificates.
 BundledCerts | Automatically fetches the certificates that are bundled with current components.
@@ -166,11 +166,12 @@ The following are some additional parameters that need to be set correctly:
 
 Job description: <br>
 
-This job is to create a ConfigMap object on Kubernetes. The ConfigMap object is most like file from model.The key is the filename. <!--Tiffany: These two sentencces are unclear?-->
+This job is to create a ConfigMap object on Kubernetes.
 
 The ConfigMap object name follows the following pattern under the target NameSpace:
 
 ``<Tenant><EnvName><EnvType>-<filename>``
+Inputting the needed information in the job UI generates a unique object name.
 
 You can also leverage this job to check the value from the existing ConfigMap by providing the correct key.
 
@@ -186,7 +187,7 @@ EnvName  |Target environment name.
 EnvType |Target environment type.
 NameSpace | Target NameSpace that the environment is to deploy.
 FileName | The key to store dates in the ConfigMap object. If you want to create a key/value pair, name the file with the `.properies` extension.
-ValueData | Specify <!--Tiffany: Info missing-->
+ValueData | Specify keys/values in the <key>=<value> format.
 
 ### ManageVaultConfig_Base ###
 
@@ -203,7 +204,7 @@ Parameter  |  Description
 ------------- | -------------
 Tenant | Tenant name. One tenant can have multiple enviornments. In Kubernetes, tenant can be separated with NameSpace.
 EnvName  |Target environment name.
-ConfigureOnVault | Automatically fetches the existing key/value on Vault based on Tenant / EnvName. IF there don't have any config will show empty <!--Tiffany: If Vault is not used, the value of this parameter is null(?)-->
+ConfigureOnVault | Automatically fetches the existing key/value on Vault based on Tenant / EnvName and displays the pairs in this field. If Vault is not configured, mandatory key paths are generated for you to input values.
 
 ### TriggerBuildIndex_Base ###
 
