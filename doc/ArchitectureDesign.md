@@ -61,7 +61,7 @@ HelmChartsRepo  | Helm Charts repository for updating Helm Charts
 <!--Tiffany: What is missing?-->| Handles Helm pre- and post- installation hook / Acts as InitContainer to control the startup sequence (e.g http://9.112.245.194:8879/charts)
 InCluster |Specifies whether this deploy controler is to be deployed inside or outside of the Kubernetes cluster. if InCluster is set to true, DeployController will automatically detects the Vault token and use the default Vault and Jenkins service. The default value is false.  
 
-### Starting DeployController with no configurtion ###
+### Starting DeployController with no configuration ###
 
 ```
 docker run -d -p 8080:8080 -p 50000:50000 deploycontroller:latest
