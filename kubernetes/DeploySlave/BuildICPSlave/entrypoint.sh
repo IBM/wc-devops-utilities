@@ -16,6 +16,4 @@ sed -i "s,url.*$,url: $repo_url,g" /root/.helm/repository/repositories.yaml
 
 echo "Repo_url has been updated to "$repo_url
 
-
 echo "The container is running normally"
-#tail -f /dev/null

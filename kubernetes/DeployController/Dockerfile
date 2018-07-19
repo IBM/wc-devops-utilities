@@ -111,7 +111,8 @@ COPY ./setup/jobs/BundleCert_Base.xml "$JENKINS_HOME"/jobs/BundleCert_Base/confi
 COPY ./setup/jobs/TriggerBuildIndex_Base.xml "$JENKINS_HOME"/jobs/TriggerBuildIndex_Base/config.xml
 COPY ./setup/jobs/TriggerIndexReplica_Base.xml "$JENKINS_HOME"/jobs/TriggerIndexReplica_Base/config.xml
 COPY ./setup/jobs/CreateTenant_Base.xml "$JENKINS_HOME"/jobs/CreateTenant_Base/config.xml
-
+COPY ./setup/jobs/Utilities_UpdateDB_Base.xml "$JENKINS_HOME"/jobs/Utilities_UpdateDB_Base/config.xml
+COPY ./setup/jobs/Utilities_VersionInfo_Base.xml "$JENKINS_HOME"/jobs/Utilities_VersionInfo_Base/config.xml
 
 # Create DeployWCSCloud_Base job build number
 RUN mkdir -p "$JENKINS_HOME"/jobs/DeployWCSCloud_Base/latest/
@@ -152,6 +153,14 @@ RUN mkdir -p "$JENKINS_HOME"/jobs/ManageVaultConfig_Base/builds/1/
 # Create CreateTenant_Base job build number
 RUN mkdir -p "$JENKINS_HOME"/jobs/CreateTenant_Base/latest/
 RUN mkdir -p "$JENKINS_HOME"/jobs/CreateTenant_Base/builds/1/
+
+# Create Utilities_UpdateDB_Base job build number
+RUN mkdir -p "$JENKINS_HOME"/jobs/Utilities_UpdateDB_Base/latest/
+RUN mkdir -p "$JENKINS_HOME"/jobs/Utilities_UpdateDB_Base/builds/1/
+
+# Create Utilities_VersionInfo job build number
+RUN mkdir -p "$JENKINS_HOME"/jobs/Utilities_VersionInfo/latest/
+RUN mkdir -p "$JENKINS_HOME"/jobs/Utilities_VersionInfo/builds/1/
 
 # Add Jenkins Plugin Reference
 COPY ./plugins.txt /usr/share/jenkins/ref

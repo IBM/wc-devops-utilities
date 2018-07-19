@@ -243,6 +243,8 @@
         <string>ManageVaultConfig_Base</string>
         <string>TriggerBuildIndex_Base</string>
         <string>TriggerIndexReplica_Base</string>
+        <string>Utilities_UpdateDB_Base</string>
+        <string>Utilities_VersionInfo_Base</string>
       </jobNames>
       <jobFilters/>
       <columns>
@@ -313,7 +315,7 @@
           <string>vault_token</string>
           <string>vault_token_value</string>
           <string>vault_url</string>
-          <string>http://vault-consul.default.svc:8200/v1</string>
+          <string>http://vault-consul.default.svc:8200</string>
         </tree-map>
       </envVars>
     </hudson.slaves.EnvironmentVariablesNodeProperty>

@@ -5,6 +5,8 @@ The DeployController component is built as a Jenkins Master, which includes pre-
 
 DeployController is acting like a "Hub" to integrate all tools that you need to deploy WebSphere Commerce V9. With DeployController, you can customize the jobs and backend scripts based on your requirements, as well as deploying your WebSphere Commerce environment through the user interface instead of the command-line interface.
 
+As default, all container will be triggered from DeployController should be under commerce project with latest tag in private Docker repository.
+
 <!--Admin also can use role based access control to create different view for different user.
 
 Jenkins Job is most like MVC framework.  Jenkins UI define the View layer. You can change the Jenkins Job UI through "Configuration" page.
@@ -16,9 +18,15 @@ Before you start the operational job, configure the global variables. These vari
 
 Parameter  |  Description
 ------------- | -------------
+<<<<<<< HEAD
 vault_url |  Vault URL (for example, http://9.112.245.194:30552/v1 ). If InCluster is set to `true`, vault_url is not mandatory.
 vault_token  | Vault Root Token for REST access. If InCluster is set to `true`, tvault_toke is not mandatory. For more information, see [Vault/Cousul based configuration management](https://www.ibm.com/support/knowledgecenter/SSZLC2_9.0.0/com.ibm.commerce.install.doc/refs/rigvaultmetadata.htm).
 bundleRepo |Repository destination for storing the customization packages. Nexus is the default bundle repository (for example,  http://9.110.182.156:8081/nexus/content/repositories/releases/commerce).
+=======
+vault_url |  Specify the Vault URL (for example, http://9.112.245.194:30552 ). If InCluster is set to `true`, vault_url is not mandatory.
+vault_token  | Specify the Vault Root Token for REST access. If InCluster is set to `true`, tvault_toke is not mandatory. For more information, see [Vault/Cousul based configuration management](https://www.ibm.com/support/knowledgecenter/SSZLC2_9.0.0/com.ibm.commerce.install.doc/refs/rigvaultmetadata.htm).
+bundleRepo | Specify the repository destination for storing the customization packages. Nexus is the default bundle repository (for example,  http://9.110.182.156:8081/nexus/content/repositories/releases/commerce).
+>>>>>>> master
 dockerRepoHost | Hostname for the Docker image repository (for example, DockerRepoHostname:RepoPort).
 dockerRepoUser   | User ID to access the Docker image repository when downloading the Docker image.
 dockerRepoPwd  | Password to access the Docker image repository when downloading the Docker image.
@@ -121,11 +129,21 @@ Job UI: <br>
 
 Job UI parameters: <br>
 
+<<<<<<< HEAD
 Parameter  |  Description
 ------------- | -------------
 Tenant | Tenant Name.  One tenant can have multiple enviornments. In Kubernetes, tenant can be separated with NameSpace.
 DedicatedRootCA  | Specifies whether to create dedicated RootCA backend with the name of the tenant.
 CreatedDedicatedView | Specifies whether to create a dedicated Jenkins view for the target tenant.
+=======
+Parameter with "*", means this is must requirement field
+
+Parameter  |  Usage
+------------- | -------------
+Tenant (*) | Tenant Name ( One Tenant could have multiple enviornment. In Kubernetes, Tenant can be isolated with NameSpace )
+DedicatedRootCA  | Specify if need to create dedicated RootCA backend which named as the Tenant name
+CreatedDedicatedView | Specify if need to create a dedicated Jenkins View for target Tenant
+>>>>>>> master
 
 ### DeployWCSCloud_Base ###
 
@@ -138,6 +156,7 @@ Job UI: <br>
 
 Job UI parameters: <br>
 
+<<<<<<< HEAD
 Parameter  |  Description
 ------------- | -------------
 Tenant | Tenant name. One tenant can have multiple environments. In Kubernetes, tenant can be separated with NameSpace.
@@ -146,6 +165,26 @@ EnvType | Target environment type.
 NameSpace | Target NameSpace that the environment is to deploy.
 DeployAction | Specifies the actions needed for the deployment. Supported actions include install, update, and delete.
 HelmChart_Values | Specifies the Helm Charts values. Default values are provided based on input of some fields. Check and make sure all fields have values.
+=======
+Parameter with "*", means this is must requirement field
+
+Parameter  |  Usage
+------------- | -------------
+Tenant (*)| Tenant Name ( One Tenant could have multiple enviornment. In Kubernetes, Tenant can be isolated with NameSpace )
+EnvName (*)|  | Specify target environment name
+EnvType (*)|| Specify target environment type
+NameSpace | Specify target NameSpace this environment will be deployed
+DeployAction (*)|| Specify action need to do. Support install / update / delete action
+HelmChart_Values (*)| | Specify the Helm Charts Values. Job will provide default Values based on input from other field. But user must make sure some other values.
+HelmChart (*)|| Specify the helm chart name will be used (e.g stable/HelmChartName  the HelmChart must exist remote helm repository
+ForceCreate | Specify if need to force create a new environment. IF select 'true', will delete exist release then do the deploy
+ReuseVaules | Specify if need to reuse values when do upgrade
+DeleteAllAssociatedObject | No good test yet, not suggest to use it
+EnableTLS | 'false' as default value. IF true, the helm client will be add '--tls'. This Filed specified if Helm enalbed TLS ( IF you use ICP 2.1.0.3, Helm TLS will be enaled as default, you need to build specify deployslave for it, see [How to build deployslave for helm TLS](./DeploySlaveDesign.md) )
+helm_ca  | Work if EnableTLS is true, fill in content from ca.pem
+helm_cert |Work if EnableTLS is true, fill in content from cert.pem
+helm_key | Work if EnableTLS is true, fill in content from key.pem
+>>>>>>> master
 
 Before you trigger this job, make sure all values of the HelmChart_Values parameter are correct.
 
@@ -161,6 +200,7 @@ The following are some additional parameters that need to be set correctly:
 7. SupportC Image Tag
 8. ExternalDomian
 9. ConfigureMode ( Vault is the default config mode )
+
 
 ### ManageConfigMap_Base ###
 
@@ -247,6 +287,55 @@ is to be deployed.
 SpiUser | SPI user name.
 SpiPwd  | SPI user password.
 
+<<<<<<< HEAD
 ## Backend scripts ##
 
 You can find the backend scripts at `/commerce-devops-utilities/utilities in DeployController`.
+=======
+### Utilities_UpdateDB_Base ###
+Job Description:  <br>
+
+This job will launch a utilities docker image with specified tag and it will based on the input parameter to make utilities to do the configuration when startup. Then it will launch updatedb.sh to do the database update.
+
+This is a sample job for your reference. You can based on it to create more job for your daily job requirement
+
+Job UI: <br>
+
+<img src="./images/Utilities_UpdateDBUI.png" width = "400" height = "250" alt="Overview" align=center /><br>
+
+Job UI Parameters: <br>
+
+Parameter  |  Usage
+------------- | -------------
+Tenant (*)| Tenant Name ( One Tenant could have multiple enviornment. In Kubernetes, Tenant can be isolated with NameSpace )
+EnvName (*) | Specify target environment name
+EnvType (*) | Specify target environment type
+UtilitiesDockerTag (*) | Specify target Utilities Docker Image Tag ( from commerce project in private Docker Repository as default )
+CmdParameters  | Specify command parameter for update db
+
+### Utilities_VersionInfo_Base ###
+Job Description:  <br>
+
+This is the job use to run the versionInfo.sh inside of Utilities docker to check current version.
+
+This is the sample for your reference about how to launch scripts inside of container.
+
+Job UI: <br>
+
+<img src="./images/Utilities_VersionInfoUI.png" width = "400" height = "250" alt="Overview" align=center /><br>
+
+Job UI Parameters: <br>
+
+Parameter  |  Usage
+------------- | -------------
+Tenant (*)| Tenant Name ( One Tenant could have multiple enviornment. In Kubernetes, Tenant can be isolated with NameSpace )
+EnvName (*) | Specify target environment name
+EnvType (*) | Specify target NameSpace this environment will be deployed
+UtilitiesDockerTag (*) | Specify spi user name
+FullConfig  | 'true' as default value, Specify if utilties need to do full configuration ( full configuration will use predefined configuration mode to set enviornment inside of cotnainer )
+
+## Backend Scripts ##
+
+Backend scripts located under path /commerce-devops-utilities/utilities in DeployController
+
+>>>>>>> master

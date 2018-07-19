@@ -6,11 +6,16 @@ COPY ./commerce-devops-utilities /commerce-devops-utilities
 
 COPY ./entrypoint.sh /
 
-#COPY ./.helm /root/.helm
+RUN mkdir -p /home/jenkins/.helm
 
 COPY ./helm /usr/bin
+
+COPY ./certs/ca.pem /home/jenkins/.helm
+
+COPY ./certs/cert.pem /home/jenkins/.helm
+
+COPY ./certs/key.pem /home/jenkins/.helm
 
 RUN  chmod 777 /entrypoint.sh /usr/bin/helm /commerce-devops-utilities && \
      ln -s /usr/bin/python3.6 /usr/bin/python
 
-#CMD /entrypoint.sh

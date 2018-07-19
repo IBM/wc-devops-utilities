@@ -81,7 +81,12 @@ def execHelmWithStateCode(cmd,*args):
 
 # Helm list
 def helmList(parser_args):
-    _output = execHelmWithOutput("list",parser_args.releasename)
+
+    #Considering if helm enabled tls, we must add additional tls parameter for helm client command
+    if parser_args.tls == "true":
+        _output = execHelmWithOutput("list",parser_args.releasename,"--tls")
+    else:
+        _output = execHelmWithOutput("list", parser_args.releasename)
     if len(_output) == 0:
         print("Not Found Existed Release %s" % parser_args.releasename)
     else:
@@ -108,7 +113,10 @@ def timeAccount(start_time, expect_during_time, interval_time):
 # Helm status
 def HelmStatus(parser_args):
     #check deployment status
-    _output=execHelmWithOutput("status",parser_args.releasename)
+    if parser_args.tls == "true":
+        _output=execHelmWithOutput("status",parser_args.releasename,"--tls")
+    else:
+        _output = execHelmWithOutput("status", parser_args.releasename)
     #print(_output)
     _parsedOutPut=parseHelmOutPut(DeploymentFlag, _output)
 
@@ -130,7 +138,11 @@ def helmStatus(parser_args,deploycollects,starttime):
         exit(0)
 
     deploycollects.DisplayRecode()
-    _output = execHelmWithOutput("status", parser_args.releasename)
+
+    if parser_args.tls == "true":
+        _output = execHelmWithOutput("status", parser_args.releasename,"--tls")
+    else:
+        _output = execHelmWithOutput("status", parser_args.releasename)
     _parsedOutPut = parseHelmOutPut(DeploymentFlag, _output)
     for deployment_record in _parsedOutPut:
         _deployment=deploycollects.GetDeployment(deployment_record[0])
@@ -159,7 +171,14 @@ def parseHelmOutPut(objectFlag,content):
 # Helm install
 def HelmInstall(parser_args):
     helmList(parser_args)
-    stateCode=execHelmWithStateCode('install', '--name', parser_args.releasename, parser_args.helmchart, '--values', parser_args.valuefile, '--namespace', parser_args.namespace)
+
+    #Considering is enabled the tls for helm client
+    if parser_args.tls == "true":
+        enableTLS="--tls"
+    else:
+        enableTLS=""
+
+    stateCode=execHelmWithStateCode('install', '--name', parser_args.releasename, parser_args.helmchart, '--values', parser_args.valuefile, '--namespace', parser_args.namespace, enableTLS)
     if stateCode == 0:
         HelmStatus(parser_args)
     else:
@@ -169,10 +188,16 @@ def HelmInstall(parser_args):
 
 # Helm update
 def HelmUpgrade(parser_args):
-    if parser_args.reusevalues=="true":
-       stateCode = execHelmWithStateCode('upgrade', parser_args.releasename, parser_args.helmchart, '--values',parser_args.valuefile,'--reuse-values')
+    # Considering is enabled the tls for helm client
+    if parser_args.tls == "true":
+        enableTLS = "--tls"
     else:
-        stateCode = execHelmWithStateCode('upgrade', parser_args.releasename, parser_args.helmchart, '-f',parser_args.valuefile)
+        enableTLS = ""
+
+    if parser_args.reusevalues=="true":
+       stateCode = execHelmWithStateCode('upgrade', parser_args.releasename, parser_args.helmchart, '--values',parser_args.valuefile,'--reuse-values', enableTLS)
+    else:
+        stateCode = execHelmWithStateCode('upgrade', parser_args.releasename, parser_args.helmchart, '-f',parser_args.valuefile, enableTLS)
 
     if stateCode == 0:
         HelmStatus(parser_args)
@@ -182,7 +207,13 @@ def HelmUpgrade(parser_args):
 
 # helm delete
 def HelmDelete(parser_args):
-    stateCode = execHelmWithStateCode("delete", "--purge", parser_args.releasename)
+    # Considering is enabled the tls for helm client
+    if parser_args.tls == "true":
+        enableTLS = "--tls"
+    else:
+        enableTLS = ""
+
+    stateCode = execHelmWithStateCode("delete", "--purge", parser_args.releasename,enableTLS)
     if stateCode == 0:
         print("Delete Release %s Success" % parser_args.releasename)
         exit(0)
@@ -192,7 +223,13 @@ def HelmDelete(parser_args):
 
 # This method used for internal
 def helmDelete(parser_args,Exit=True):
-    stateCode = execHelmWithStateCode("delete", "--purge", parser_args.releasename)
+    # Considering is enabled the tls for helm client
+    if parser_args.tls == "true":
+        enableTLS = "--tls"
+    else:
+        enableTLS = ""
+
+    stateCode = execHelmWithStateCode("delete", "--purge", parser_args.releasename,enableTLS)
     if stateCode == 0:
         print("Delete Release %s Success" % parser_args.releasename)
         if Exit:
@@ -217,6 +254,7 @@ HelmInstallParser.add_argument('-namespace', type=str, default='default', help="
 HelmInstallParser.add_argument('-timeout', type=str, default='600', help="specify time out value for helm command execute")
 HelmInstallParser.add_argument('-interval', type=str, default='10', help="specify interval time for check status")
 HelmInstallParser.add_argument('-forcecreate', type=str, default='false', help="specify force install if there have release exist, should delete it first")
+HelmInstallParser.add_argument('-tls', type=str, default='false', help="specify if helm client enabled tls")
 HelmInstallParser.set_defaults(func=HelmInstall)
 
 # HelmStatusParser = Parser.add_parser('helmstatus', help='helm status')
@@ -229,10 +267,12 @@ HelmUpgradeParser.add_argument('-valuefile', type=str, default='', help="specify
 HelmUpgradeParser.add_argument('-reusevalues', type=str, default='true', help="specify if reuse latest release values")
 HelmUpgradeParser.add_argument('-timeout', type=str, default='600', help="specify time out value for helm command execute")
 HelmUpgradeParser.add_argument('-interval', type=str, default='10', help="specify interval time for check status")
+HelmUpgradeParser.add_argument('-tls', type=str, default='false', help="specify if helm client enabled tls")
 HelmUpgradeParser.set_defaults(func=HelmUpgrade)
 
 HelmDeleteParser = Subparsers.add_parser('helmdelete', help='helm upgrade')
 HelmDeleteParser.add_argument('-releasename', type=str, default='demo', help="specify release name, suggest with this <tenant><env>")
+HelmDeleteParser.add_argument('-tls', type=str, default='false', help="specify if helm client enabled tls")
 HelmDeleteParser.set_defaults(func=HelmDelete)
 
 

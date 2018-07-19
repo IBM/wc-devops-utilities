@@ -103,7 +103,7 @@ Common:
   SessionAffinity:
         Enable: false
         LoadBalanceAddress:
-  VaultURL: ${vault_url}
+  VaultURL: ${vault_url}/v1
   ExternalDomian: ibm.com
   CommerceVersion:
   OverridePreconfig: 
@@ -241,6 +241,94 @@ html=
             </a>
           </choices>
         </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>EnableTLS</name>
+          <description>If helm enabled TLS for request, please select &quot;true&quot; and fill in below filed [ helm_ca | helm_cert | helm_key ] 
+with certification for TLS</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>false</string>
+              <string>true</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>helm_ca</name>
+          <description>Please fill in the helm_ca with the content from ca.pem which used to enable TLS for Helm. This field just work when you select &apos;EnableTLS&apos; to &apos;true&apos;</description>
+          <defaultValue>-----BEGIN CERTIFICATE-----
+MIIDUDCCAjigAwIBAgIJAP8EtW0FZnIjMA0GCSqGSIb3DQEBCwUAMB8xHTAbBgNV
+BAMMFDEyNy4wLjAuMUAxNTMwNjA5NDkxMB4XDTE4MDcwMzA5MTgxMloXDTI4MDYz
+MDA5MTgxMlowHzEdMBsGA1UEAwwUMTI3LjAuMC4xQDE1MzA2MDk0OTEwggEiMA0G
+CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCuQXoE6pGHcwsbsonwoQtiO7J6NdOg
+NIx90Q4cX1Dn0BYB7xG/+UdCW0Q0j8xqbJTtTsMAOcigzUGFt9Xp3uFcrLBy4bbO
+KvQmpzobgI4+8LbwQ9KUetdAg3rrcfsRFTMQOH/I+FCV7mEB4+PdDfcYArYfCieD
+HVkWvaYOQ6vCmZY8CvDgE8An94XklZAo0/c7EH/C2ydMO5LqEmQu+1ws83AHELdo
+kj1H0+UZ7xgdn84VqL9fFKYFFLelovvbDqNIOMyPF3mNKkC7dTPe8z0NGWPS+yp1
+5Wf+mdz+yGecoVE7cCIujGTyGsHi3Hr22nCXdMLVpexVcd66VCoTIr3bAgMBAAGj
+gY4wgYswHQYDVR0OBBYEFAsxLv8Bd3W8qFrSkGi03Fpj5aFNME8GA1UdIwRIMEaA
+FAsxLv8Bd3W8qFrSkGi03Fpj5aFNoSOkITAfMR0wGwYDVQQDDBQxMjcuMC4wLjFA
+MTUzMDYwOTQ5MYIJAP8EtW0FZnIjMAwGA1UdEwQFMAMBAf8wCwYDVR0PBAQDAgEG
+MA0GCSqGSIb3DQEBCwUAA4IBAQAiR2kwvlwwysJV2wm1wz8rWshZyUPrUFdu3apb
+7b9cQNsW1TNleZOuv1IuTc7CwqY7rcRVnhCDJ63rqY6hAFjCK3APGmhkfz+Mwebd
+38FgIhm7ytZKUJq+Yi6NnDkEUnilXP4+T3DDhGn4+PnbrGFFtYJ5O8sm933WVOCq
+xDRU86KKykSrdcS/8og/X7VIAO5B4vmk74rHhFhGfl8MZMBoVgKXNoOTBpAyd0Dh
+jFyBOF1/Md7bwvfqNdN1HrNneqKaSTN1ZpY9ef4CBe2sNRy48z2n4qPi0NQyKJ3d
+XK6uAFGvTrEpCnfA/13fUM7ZZF9PCleVnDkq8VoLtqW0/M80
+-----END CERTIFICATE-----</defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>helm_cert</name>
+          <description>Please fill in the helm_cert with the content from ca.pem which used to enable TLS for Helm. This field just work when you select &apos;EnableTLS&apos; to &apos;true&apos;</description>
+          <defaultValue>-----BEGIN CERTIFICATE-----
+MIICqzCCAZMCCQCTKh7TpcNMwjANBgkqhkiG9w0BAQsFADAfMR0wGwYDVQQDDBQx
+MjcuMC4wLjFAMTUzMDYwOTQ5MTAeFw0xODA3MTEwMzI5MDZaFw0xODEwMDkwMzI5
+MDZaMBAxDjAMBgNVBAMMBWFkbWluMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIB
+CgKCAQEAsoZA8cwONrdSQAn+lSMLUntIS6c5zbty/cvd2+Ait/+jkr8YPlwqrkGJ
+sLzuRBi9Z8OdYoF8t2rrGJ/3QAXFVrUakfx/pxw0Zfmzm8xPDUzKEg6FPszK+KO1
+IK9kVXEbOyuUdYHaXqJTK99KRKGDSPsSgrsIERSQcK8DCvy/Oza/Nw0w20v8u4oN
+khC9rEuOKpK0P6AqjCJNJ+dgBY2wAto8eEx1Wmyul2Rh3qtQ8L02TzGdXT4udfqY
+2V7hZPh1+/3QStbXO1atiOOT8gM/Blln0peWby8nbw/Fp/oyg0tNqA7mc8utA3pt
+TkxKvv+vR8KyVwxB1RZtD1N6BIuI+wIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQBc
+r5pItrbE5TDqDj9AAsNxpQrG3s2hnV3QzUDD6L4kfJcMprfLxmiznFb7/l4F0UOz
+823rhe8UUeU6mvpxk0k0nyuv9FgR/GBUTE4K/DIqC3NhQ36zEFg84JSvzZ332K35
+k2Io9zrZD3BuelS63jUdRQwhobLS7Wgvpvn2lNvjMR4ZqOcJ/zJIAGmTM2QaizUB
+1BF3wLwN3fVGWW14edHJAB6ykRwEGfvTeKvq2uCAD6wZWMP4TSLGkMAJljdND5CE
+THXJGWNGbXv8Y7a+3O3ePbxljQy78rbVvFH5rNMyKDXydOzbZdjH83m7XFAENXSc
+I7sbYVfng8d3EqTIy+tU
+-----END CERTIFICATE-----</defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>helm_key</name>
+          <description>Please fill in the helm_key with the content from ca.pem which used to enable TLS for Helm. This field just work when you select &apos;EnableTLS&apos; to &apos;true&apos;</description>
+          <defaultValue>-----BEGIN PRIVATE KEY-----
+MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCyhkDxzA42t1JA
+Cf6VIwtSe0hLpznNu3L9y93b4CK3/6OSvxg+XCquQYmwvO5EGL1nw51igXy3ausY
+n/dABcVWtRqR/H+nHDRl+bObzE8NTMoSDoU+zMr4o7Ugr2RVcRs7K5R1gdpeolMr
+30pEoYNI+xKCuwgRFJBwrwMK/L87Nr83DTDbS/y7ig2SEL2sS44qkrQ/oCqMIk0n
+52AFjbAC2jx4THVabK6XZGHeq1DwvTZPMZ1dPi51+pjZXuFk+HX7/dBK1tc7Vq2I
+45PyAz8GWWfSl5ZvLydvD8Wn+jKDS02oDuZzy60Dem1OTEq+/69HwrJXDEHVFm0P
+U3oEi4j7AgMBAAECggEANTgiijKLljImOeMA2tK8oFUSI0NxzuvvhstMkyyJDRMP
+X0LKZmSxcIsnEeHwoapCZHmDJId3d3JPLWMaoSJXRtbsWdLM9zNIR5IdwfcxJcTb
+hHCBtkv0whSDfX/ryDDUrln6guE4CPgZFT4WdMk1Sv9V8FTzPaxEtuLlZFQeafcT
+N1hvc4Gd/FYKEB7Z/RKvdQPBup7lRvkiFnwjk4BEafkRe+4J8Jix1ZUs+PI3WsuA
+nPMoNz5hEB7qNwU0RIbslaVBISorjws55vehuz8ZhyAQ3GNRiSVfSYdl5c7Qlwfy
+f8RuMBs/Hh4nCgVwTWGLsCbxX3MNh+urZ7wPHGUscQKBgQDoc66+82qzoTrb1duC
+ZhI6BfCrIGUdGFQkbZJ/hxNRlCSO7+GMlGtu/2FU7sDeXmYetJsk1u188NOJAlVe
+nHIYGkeNhQ/c91Q2S7lYv9qf0ZJD7l0AxHxpRgudG0l7st15Y+TyS6zE2q74LV+8
+/ewZeG1l2j+yTxsutdJC1dgm+QKBgQDEnAmJtx8ge6dch1LvdZjHkwn2K2v0n41P
+UnwOHIuxTtYGJpt/iD2SEAZ58TlCnP6+fsW7fZf8Fa7IKmHMI6tREn9wfBEoxEE+
+nem9k2aaidZGVZIGNI9HjNC/ls9RfPDKRavz3IWYRs+b9vKhIuvQzhs3x3F3ad9D
+fnM5JFhokwKBgFyfi+fmkoPVIODsDDWfem/IYieuFtxLD2wchR1vs1D0WMTj7NnZ
+Yh2ugRgYsp1ovARMLu20/pikVYXoeh/i8suL3SsU9Ec1/kZMUiR8/h5koYWT+1cM
+9A32rTYC43r4wKtYFKg/Yy5lfQbC/b0O6P8VL3JATtU8FDa+mHOtRh3xAoGADjwh
+8KeiiE6LooZludKw2hpKSVmBenem2oxlUPw+HPtRQaa/8W7izlV8so2FkM4fH5m8
+JUQFognL2tA+vnICsF7/fRxufZ4f/zGdv80RS7UZH4SIiwx5JzwJzSVVI1hBctOy
+jHh1772IwIkTrhkCK98QV2yISZYPxSo9m3CHOiMCgYEAmCdu9MMNZaxYVT4zOEIh
+6j8xuCWwwkJFWoNeAi5qt5gNbeWWOMBri6hFqHTlvBaP6QPKw4UVZ5AUOhPfnKB1
+LrQT6lr0X+Cj7ctsHcM5oYWJre7WRJ6wpcxZR5m6isJWOkxzklnP7AsaPzfHXC68
+NkhJY3CydR+IUsFfhmLjTMA=
+-----END PRIVATE KEY-----</defaultValue>
+        </hudson.model.TextParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
     <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
@@ -280,7 +368,13 @@ podTemplate(label: label,  containers: [
         stage(&apos;Update Helm Chart Index&apos;) {
                 script {
                    sh &quot;helm init --stable-repo-url ${helmChartsRepo}&quot;
-
+                   
+                   if(env.EnableTLS == &apos;true&apos;){
+                      sh &quot;echo &apos;${helm_ca}&apos; &gt; /home/jenkins/.helm/ca.pem&quot;
+                      sh &quot;echo &apos;${helm_cert}&apos; &gt; /home/jenkins/.helm/cert.pem&quot;
+                      sh &quot;echo &apos;${helm_key}&apos; &gt; /home/jenkins/.helm/key.pem&quot;
+                   } 
+                   
                    if(env.DeployAction != &apos;delete&apos;){
                       sh &quot;helm repo update&quot;
                    }else{
@@ -313,11 +407,11 @@ podTemplate(label: label,  containers: [
         stage(&apos;Deploy Commerce With HelmChart&apos;) {
                script {
                    if (env.DeployAction == &apos;install&apos;) {
-                      sh &quot;python3.6 /commerce-devops-utilities/utilities/helm/helmcli.py helminstall -releasename ${Tenant}${EnvName}${EnvType} -helmchart ${HelmChart} -valuefile /tmp/${Tenant}${EnvName}${EnvType}/values.yaml -forcecreate ${ForceCreate} -namespace ${NameSpace}&quot;
+                      sh &quot;python3.6 /commerce-devops-utilities/utilities/helm/helmcli.py helminstall -releasename ${Tenant}${EnvName}${EnvType} -helmchart ${HelmChart} -valuefile /tmp/${Tenant}${EnvName}${EnvType}/values.yaml -forcecreate ${ForceCreate} -namespace ${NameSpace} -tls ${EnableTLS}&quot;
                    }else if (env.DeployAction == &apos;update&apos;){
-                      sh &quot;python3.6 /commerce-devops-utilities/utilities/helm/helmcli.py helmupgrade -releasename ${Tenant}${EnvName}${EnvType} -helmchart ${HelmChart} -valuefile /tmp/${Tenant}${EnvName}${EnvType}/values.yaml&quot;
+                      sh &quot;python3.6 /commerce-devops-utilities/utilities/helm/helmcli.py helmupgrade -releasename ${Tenant}${EnvName}${EnvType} -helmchart ${HelmChart} -valuefile /tmp/${Tenant}${EnvName}${EnvType}/values.yaml -tls ${EnableTLS}&quot;
                    }else if (env.DeployAction == &apos;delete&apos;){
-                      sh &quot;python3.6 /commerce-devops-utilities/utilities/helm/helmcli.py helmdelete -releasename ${Tenant}${EnvName}${EnvType}&quot;
+                      sh &quot;python3.6 /commerce-devops-utilities/utilities/helm/helmcli.py helmdelete -releasename ${Tenant}${EnvName}${EnvType} -tls ${EnableTLS}&quot;
                       if(env.Action == &apos;DeleteAllAssociatedObject&apos;){
                           sh &quot;python3.6 /commerce-devops-utilities/utilities/kube/kubcli.py deleteconfmap -tenant ${Tenant} -env ${EnvName} -envtype ${EnvType} -name helmchart-values -namespace ${NameSpace}&quot;
                           sh &quot;python3.6 /commerce-devops-utilities/utilities/kube/kubcli.py deleteconfmap -releasename -env ${EnvName} -envtype ${EnvType} -name &apos;.*-dockerfile&apos; -namespace ${NameSpace}&quot;

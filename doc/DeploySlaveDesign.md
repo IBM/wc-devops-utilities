@@ -25,3 +25,22 @@ requirement. For the second and the third requirements, they are easy to impleme
 to the "docker in docker" image , copy the pre-defined scripts to it , install necessary runtime library. 
 
 The pre-defined scripts are wrote by python, which can be used to communicate with kubenetes master server and supoort deployment flow.
+
+## Build DeploySlave For Helm TLS ##
+
+### Background ###
+
+Helm server support to enable TLS. ( Since `ICP 2.1.0.3`, Helm TLS has been enabled as default ). It require helm client command must have '--tls' in parameters.
+
+and put the certification on your helm local folder.  In DevOps Utilities, helm client be embedded into DeploySlave. As default it not have the certification files. So if your
+
+
+### Objective ###
+
+This doc will guide how to rebuild DeploySlave for using DevOps Utilities in ICP 2.1.0.3
+
+### Steps ###
+
+1. Logon ICP Master node and copy helm binary file under /user/bin and copy helm file to commerce-devops-utilities/kubernetes/DeploySlave/BuildICPSlave ( ICP customized Helm, so you must use ICP helm client )
+2. Get certification files on ICP Master node under path /root/.helm ( ca.pem / cer.pem / key.pem ) and copy those files to commerce-devops-utilities/kubernetes/DeploySlave/BuildICPSlave/certs
+3. Run BuildDocker.sh under path commerce-devops-utilities/kubernetes/DeploySlave/BuildICPSlave
