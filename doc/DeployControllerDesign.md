@@ -18,20 +18,17 @@ Before you start the operational job, configure the global variables. These vari
 
 Parameter  |  Description
 ------------- | -------------
-<<<<<<< HEAD
 vault_url |  Vault URL (for example, http://9.112.245.194:30552/v1 ). If InCluster is set to `true`, vault_url is not mandatory.
 vault_token  | Vault Root Token for REST access. If InCluster is set to `true`, tvault_toke is not mandatory. For more information, see [Vault/Cousul based configuration management](https://www.ibm.com/support/knowledgecenter/SSZLC2_9.0.0/com.ibm.commerce.install.doc/refs/rigvaultmetadata.htm).
 bundleRepo |Repository destination for storing the customization packages. Nexus is the default bundle repository (for example,  http://9.110.182.156:8081/nexus/content/repositories/releases/commerce).
-=======
-vault_url |  Specify the Vault URL (for example, http://9.112.245.194:30552 ). If InCluster is set to `true`, vault_url is not mandatory.
-vault_token  | Specify the Vault Root Token for REST access. If InCluster is set to `true`, tvault_toke is not mandatory. For more information, see [Vault/Cousul based configuration management](https://www.ibm.com/support/knowledgecenter/SSZLC2_9.0.0/com.ibm.commerce.install.doc/refs/rigvaultmetadata.htm).
-bundleRepo | Specify the repository destination for storing the customization packages. Nexus is the default bundle repository (for example,  http://9.110.182.156:8081/nexus/content/repositories/releases/commerce).
->>>>>>> master
+vault_url |  Vault URL (for example, http://9.112.245.194:30552 ). If InCluster is set to `true`, vault_url is not mandatory.
+vault_token  | Vault Root Token for REST access. If InCluster is set to `true`, tvault_toke is not mandatory. For more information, see [Vault/Cousul based configuration management](https://www.ibm.com/support/knowledgecenter/SSZLC2_9.0.0/com.ibm.commerce.install.doc/refs/rigvaultmetadata.htm).
+bundleRepo | Repository destination for storing the customization packages. Nexus is the default bundle repository (for example,  http://9.110.182.156:8081/nexus/content/repositories/releases/commerce).
 dockerRepoHost | Hostname for the Docker image repository (for example, DockerRepoHostname:RepoPort).
 dockerRepoUser   | User ID to access the Docker image repository when downloading the Docker image.
 dockerRepoPwd  | Password to access the Docker image repository when downloading the Docker image.
 helmChartsRepo  | The Helm Charts repository for storing Helm Charts to be triggered by the Jenkins job.
-| Handles Helm pre- and post- installation hook / Serves as InitContainer to control startup sequence (e.g http://9.112.245.194:8879/charts)
+<!--What is the parm here?-->| Handles Helm pre- and post- installation hook / Serves as InitContainer to control startup sequence (e.g http://9.112.245.194:8879/charts)
 
 <!--Global can be configured when you do deploy by pass related value to Docker Container, or you can configure them by manually in "Configuration System" page of Jenkins <br>
 <img src="./images/DeployController-GlobalConfig1.png" width = "500" height = "350" alt="Overview" align=center /><br>-->
@@ -128,22 +125,13 @@ Job UI: <br>
 <img src="./images/CreateTenantUI.png" width = "400" height = "250" alt="Overview" align=center /><br>
 
 Job UI parameters: <br>
+Parameters with "*" are mandatory:
 
-<<<<<<< HEAD
 Parameter  |  Description
 ------------- | -------------
-Tenant | Tenant Name.  One tenant can have multiple enviornments. In Kubernetes, tenant can be separated with NameSpace.
-DedicatedRootCA  | Specifies whether to create dedicated RootCA backend with the name of the tenant.
+Tenant (*) | Tenant name. One tenant can have multiple environments. In Kubernetes, tenant can be separated by NameSpace.
+DedicatedRootCA  | Specifies whether to create a dedicated RootCA backend with a name as the tenant
 CreatedDedicatedView | Specifies whether to create a dedicated Jenkins view for the target tenant.
-=======
-Parameter with "*", means this is must requirement field
-
-Parameter  |  Usage
-------------- | -------------
-Tenant (*) | Tenant Name ( One Tenant could have multiple enviornment. In Kubernetes, Tenant can be isolated with NameSpace )
-DedicatedRootCA  | Specify if need to create dedicated RootCA backend which named as the Tenant name
-CreatedDedicatedView | Specify if need to create a dedicated Jenkins View for target Tenant
->>>>>>> master
 
 ### DeployWCSCloud_Base ###
 
@@ -155,36 +143,23 @@ Job UI: <br>
 <img src="./images/DeployWCSCloudUI.png" width = "400" height = "250" alt="Overview" align=center /><br>
 
 Job UI parameters: <br>
+Parameters with "*" are mandatory:
 
-<<<<<<< HEAD
 Parameter  |  Description
 ------------- | -------------
-Tenant | Tenant name. One tenant can have multiple environments. In Kubernetes, tenant can be separated with NameSpace.
-EnvName  | Target environment name.
-EnvType | Target environment type.
-NameSpace | Target NameSpace that the environment is to deploy.
-DeployAction | Specifies the actions needed for the deployment. Supported actions include install, update, and delete.
-HelmChart_Values | Specifies the Helm Charts values. Default values are provided based on input of some fields. Check and make sure all fields have values.
-=======
-Parameter with "*", means this is must requirement field
-
-Parameter  |  Usage
-------------- | -------------
-Tenant (*)| Tenant Name ( One Tenant could have multiple enviornment. In Kubernetes, Tenant can be isolated with NameSpace )
-EnvName (*)|  | Specify target environment name
-EnvType (*)|| Specify target environment type
-NameSpace | Specify target NameSpace this environment will be deployed
-DeployAction (*)|| Specify action need to do. Support install / update / delete action
-HelmChart_Values (*)| | Specify the Helm Charts Values. Job will provide default Values based on input from other field. But user must make sure some other values.
-HelmChart (*)|| Specify the helm chart name will be used (e.g stable/HelmChartName  the HelmChart must exist remote helm repository
-ForceCreate | Specify if need to force create a new environment. IF select 'true', will delete exist release then do the deploy
-ReuseVaules | Specify if need to reuse values when do upgrade
-DeleteAllAssociatedObject | No good test yet, not suggest to use it
-EnableTLS | 'false' as default value. IF true, the helm client will be add '--tls'. This Filed specified if Helm enalbed TLS ( IF you use ICP 2.1.0.3, Helm TLS will be enaled as default, you need to build specify deployslave for it, see [How to build deployslave for helm TLS](./DeploySlaveDesign.md) )
-helm_ca  | Work if EnableTLS is true, fill in content from ca.pem
-helm_cert |Work if EnableTLS is true, fill in content from cert.pem
-helm_key | Work if EnableTLS is true, fill in content from key.pem
->>>>>>> master
+Tenant (*)| Tenant name. One tenant can have multiple environments. In Kubernetes, tenant can be separated by NameSpace.
+EnvName (*) |Target environment name.
+EnvType (*) |Target environment type.
+NameSpace |Target NameSpace that the environment is to deploy.
+DeployAction (*)|Specifies deployment actions. Supported actions include install, update, and delete.
+HelmChart_Values (*)| Helm Charts values. Default Values are provided based on user input from other fields.
+HelmChart (*)|Specifies the Helm Chart name to be used (e.g. stable/HelmChartName  the HelmChart must exist in the remote Helm repository
+ForceCreate |Specifies whether to force create a new environment. If you set the parameter to 'true', the existing release is deleted before the deployment
+ReuseVaules | Specifies whether to reuse values when do upgrade.
+DeleteAllAssociatedObject | Do not use.
+EnableTLS | Specifies whether to enable TLS. 'false' is the default value, which means TLS is not enabled. **Note**: If you use ICP 2.1.0.3, Helm TLS will be enabled by default, and you need to build specified DeploySlave for it. For more information, see [How to build deployslave for helm TLS](./DeploySlaveDesign.md).
+helm_ca  | If EnableTLS is set to true, this parameIf EnableTLS is set to true, this parameter is set through cert.pem.
+helm_key | If EnableTLS is set to true, this parameter is set through key.pem.
 
 Before you trigger this job, make sure all values of the HelmChart_Values parameter are correct.
 
@@ -287,55 +262,52 @@ is to be deployed.
 SpiUser | SPI user name.
 SpiPwd  | SPI user password.
 
-<<<<<<< HEAD
 ## Backend scripts ##
 
 You can find the backend scripts at `/commerce-devops-utilities/utilities in DeployController`.
-=======
+
 ### Utilities_UpdateDB_Base ###
-Job Description:  <br>
+Job description:  <br>
 
-This job will launch a utilities docker image with specified tag and it will based on the input parameter to make utilities to do the configuration when startup. Then it will launch updatedb.sh to do the database update.
+This job launches a utilities docker image with specified tags, configures databases based on input parameters during startup, and then launches `updatedb.sh` to update the database.
 
-This is a sample job for your reference. You can based on it to create more job for your daily job requirement
+This is a sample job for your reference. You can create more jobs based on your business requirements.
 
 Job UI: <br>
 
 <img src="./images/Utilities_UpdateDBUI.png" width = "400" height = "250" alt="Overview" align=center /><br>
 
-Job UI Parameters: <br>
+Job UI parameters: <br>
 
-Parameter  |  Usage
+Parameter  |  Description
 ------------- | -------------
-Tenant (*)| Tenant Name ( One Tenant could have multiple enviornment. In Kubernetes, Tenant can be isolated with NameSpace )
-EnvName (*) | Specify target environment name
-EnvType (*) | Specify target environment type
-UtilitiesDockerTag (*) | Specify target Utilities Docker Image Tag ( from commerce project in private Docker Repository as default )
-CmdParameters  | Specify command parameter for update db
+Tenant (*)| Tenant name. One tenant can have multiple environments. In Kubernetes, tenant can be separated by NameSpace.
+EnvName (*) |Target environment name.
+EnvType (*) | Target environment type.
+UtilitiesDockerTag (*) | Target Utilities Docker image tag. By default, the tag is input from the WebSphere Commerce project in the private Docker repository.
+CmdParameters  | Command parameter for updating the database.
 
 ### Utilities_VersionInfo_Base ###
-Job Description:  <br>
+Job description:  <br>
 
-This is the job use to run the versionInfo.sh inside of Utilities docker to check current version.
+This job is used to run `versionInfo.sh` in the Utilities Docker to check the current version information.
 
-This is the sample for your reference about how to launch scripts inside of container.
+This example illustrates how to launch scripts in the Docker container.
 
 Job UI: <br>
 
 <img src="./images/Utilities_VersionInfoUI.png" width = "400" height = "250" alt="Overview" align=center /><br>
 
-Job UI Parameters: <br>
+Job UI parameters: <br>
 
-Parameter  |  Usage
+Parameter  |  Description
 ------------- | -------------
-Tenant (*)| Tenant Name ( One Tenant could have multiple enviornment. In Kubernetes, Tenant can be isolated with NameSpace )
-EnvName (*) | Specify target environment name
-EnvType (*) | Specify target NameSpace this environment will be deployed
-UtilitiesDockerTag (*) | Specify spi user name
-FullConfig  | 'true' as default value, Specify if utilties need to do full configuration ( full configuration will use predefined configuration mode to set enviornment inside of cotnainer )
+Tenant (*)| Tenant name. One tenant can have multiple environments. In Kubernetes, tenant can be separated by NameSpace.
+EnvName (*) | Target environment name.
+EnvType (*) | Target NameSpace that the environment is to deploy.
+UtilitiesDockerTag (*) | SPI user name.
+FullConfig  | Specifies whether utilities need to do full configuration, which leverages predefined configuration mode to set the environment in the container. The default value is true.
 
 ## Backend Scripts ##
 
 Backend scripts located under path /commerce-devops-utilities/utilities in DeployController
-
->>>>>>> master

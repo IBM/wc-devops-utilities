@@ -47,6 +47,22 @@ InCluster | Specifies whether the DeployController is deployed inside or outside
 
 ### Starting DeployController without configuration ###
 You can start DeployController with the default settings:
+
+Parameter  | Description
+------------- | -------------
+VaultUrl |  Vault URL ( e.g http://9.112.245.194:30552 ). If InCluster is set to true, this value is not mandatory.
+VaultToken  | Vault root token for the REST API access. If InCluster is set to true, this value is not mandatory.
+BundleRepo | Customize package repository. Nexus is the default bundle repository ( e.g  http://9.110.182.156:8081/nexus/content/repositories/releases/commerce )
+DockerRepo |Docker image repository (e.g DockerRepoHostname:RepoPort )
+KubernetesUrl | Kubernetes URL for remote call from Jenkins. If InCluster is set to true, this value is not mandatory.
+DockerRepoUser   | User name for logging into the Docker image repository when downloading the Docker image.
+DockerRepoPwd  | User Password for logging into the Docker image repository when downloading the Docker image.
+HelmChartsRepo  | Helm Charts repository for updating Helm Charts
+<!--Tiffany: What is missing?-->| Handles Helm pre- and post- installation hook / Acts as InitContainer to control the startup sequence (e.g http://9.112.245.194:8879/charts)
+InCluster |Specifies whether this deploy controler is to be deployed inside or outside of the Kubernetes cluster. if InCluster is set to true, DeployController will automatically detects the Vault token and use the default Vault and Jenkins service. The default value is false.  
+
+### Start DeployController Without Configurtion ###
+
 ```
 docker run -d -p 8080:8080 -p 50000:50000 deploycontroller:latest
 ```
