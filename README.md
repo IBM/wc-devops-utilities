@@ -1,12 +1,12 @@
-# Deploying WebSphere Commerce V9 with the DevOps Utilities #
+# Deploying WebSphere Commerce V9 with the deployment utilities #
 
-WebSphere commerce DevOps Utilities are provided as a reference tool chain to support deploying and operating WebSphere Commerce V9 in a Kubernetes environment.
+WebSphere commerce deployment utilities are provided as a reference tool chain to support deploying and operating WebSphere Commerce V9 in a Kubernetes environment.
 
 For more information about WebSphere Commerce V9, see [WebSphere Commerce Version 9 knowledge Center](https://www.ibm.com/support/knowledgecenter/SSZLC2_9.0.0/landing/wc_welcome.htm).
 
-By using WebSphere Commerce DevOps Utilities, you can also deploy WebSphere Commerce V9+ in IBM Cloud Private (ICP). For more information on ICP, see [IBM Cloud Private](https://www.ibm.com/cloud/private).
+By using WebSphere Commerce deployment utilities, you can also deploy WebSphere Commerce V9+ in IBM Cloud Private (ICP). For more information on ICP, see [IBM Cloud Private](https://www.ibm.com/cloud/private).
 
-WebSphere Commerce DevOps Utilities are built and deployed as Docker images, including the following:
+WebSphere Commerce deployment utilities are built and deployed as Docker images, including the following:
 * DeployController
 * DeploySlave
 * SupportContainer
@@ -17,17 +17,17 @@ DeployController | Jenkins/ Pre-defined Jenkins job/ DevOps backend scripts |  A
 DeploySlave  | Dockerd / Helm client / DevOps backend scripts | Can be triggered by DeployController to build customized Docker image including your customization package and can then be deployed in the Kubernetes environment  with Helm
 SupportContainer | DevOps backend scripts | Handles Helm pre- and post-deployment hook/ Works as commander to control the startup sequence
 
-Vault and Nexus Docker images, by default, are seamlessly integrated with the DevOps Utilities.
+Vault and Nexus Docker images, by default, are seamlessly integrated with the deployment utilities.
 
-In the WebSphere Commerce DevOps utilities:
+In the WebSphere Commerce deployment utilities:
 
  * [Vault](https://www.vaultproject.io/) works as the Certification Agent to automatically issue certification as well as the remote configuration center to store environment related configurations. These configurations can be retrieved during Docker startup and set environment-specific configurations into the Docker container. For more information about Vault, see [Managing certificates with Vault](https://www.ibm.com/support/knowledgecenter/SSZLC2_9.0.0/com.ibm.commerce.install.doc/refs/rigcertificates_vault.htm) and [Environment data structure in Consul/Vault](https://www.ibm.com/support/knowledgecenter/SSZLC2_9.0.0/com.ibm.commerce.install.doc/refs/rigvaultmetadata.htm).
 
  * [Nexus](https://www.sonatype.com/nexus-repository-sonatype) works as the store to manage your customization packages. The customization packages are retrieved from Nexus and burned into the custom docker image when the custom Docker image is built.
 
-You can deploy the DevOps Utilities by using Helm Chart. For more information about Helm Chart, see [Commerce DevOps Utilities Helm Charts](https://github.com/IBM/wc-helmchart)
+<!--You can deploy the deployment utilities by using Helm Chart. For more information about Helm Chart, see [Commerce deployment utilities Helm Charts](https://github.com/IBM/wc-helmchart)-->
 
-The following diagram shows the components of the WebSphere Commerce using DevOps Utilities.
+The following diagram shows the components of the WebSphere Commerce using deployment utilities.
   <img src="https://github.com/IBM/wc-devops-utilities/raw/master/doc/images/Overview.png" width = "700" height = "450" alt="Overview" align=center /><br>
 
 <!--## Design ##
@@ -38,9 +38,9 @@ The following diagram shows the components of the WebSphere Commerce using DevOp
 * [DeploySlave Design](doc/DeploySlaveDesign.md) <br>
 * [SupportContainer Design](doc/SupportContainerDesign.md)-->
 
-## Preparing Docker images for DevOps Utilities ##
+## Preparing Docker images for deployment utilities ##
 
-Before you deploy WebSphere Commerce V9, build all required Docker images for WebSphere Commerce DevOps Utilities.
+Before you deploy WebSphere Commerce V9, build all required Docker images for WebSphere Commerce deployment utilities.
 
 Before you run build Docker images, ensure that your machine has Docker (DockerCE or EE  17.06) installed and that your machine is connected to the Internet.
 
@@ -68,7 +68,7 @@ Before you run build Docker images, ensure that your machine has Docker (DockerC
 
 ## Deploying DevOps Utilites ##
 
-To quickly deploy DevOps Utilities, you need to use Helm Chart. For more information about Helm Chart, see [Commerce DevOps Utilities Helm Charts](https://github.com/IBM/wc-helmchart/tree/master/WCSDevOps).
+<!--To quickly deploy deployment utilities, you need to use Helm Chart. For more information about Helm Chart, see [Commerce DevOps Utilities Helm Charts](https://github.com/IBM/wc-helmchart/tree/master/WCSDevOps).-->
 
 Ensure to deploy WebSphere Commerce DevOps Utilities under the `default` Kubernetes namespace.
 

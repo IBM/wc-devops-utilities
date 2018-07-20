@@ -29,9 +29,9 @@ The pre-defined scripts are created with Python for the communication with the K
 
 The Helm server supports TLS. Starting from `ICP 2.1.0.3`, Helm TLS is enabled by default.
 
-To support TLS, it is required that the Helm client command has the '--tls' parameter enabled and certificates are in your local Helm folder. In the DevOps Utilities, the Helm client is embedded into DeploySlave. By default, DeploySlave does not have the certificate files. Thus if your current environment has TLS enabled, you have to rebuild DeploySlave.
+To support TLS, it is required that the Helm client command has the '--tls' parameter enabled and certificates are in your local Helm folder. In the deployment utilities, the Helm client is embedded into DeploySlave. By default, DeploySlave does not have the certificate files. Thus if your current environment has TLS enabled, you have to rebuild DeploySlave.
 
-To rebuild DeploySlave to use DevOps Utilities in the ICP 2.1.0.3 environment:
+To rebuild DeploySlave to use deployment utilities in the ICP 2.1.0.3 environment:
 
 ### Steps ###
 
