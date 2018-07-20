@@ -1,6 +1,6 @@
 # Architecture Design #
 
-This topic illustrates the architecture design of the WebSphere Commerce deployment utilities. After reading this topic，you will be able to understand how the deployment utility works and the basic flow of managing multiple WebSphere Commerce V9 environments during varies development phases, including development, QA, Pre-Production, and Production.
+This topic illustrates the architecture design of the WebSphere Commerce deployment utilities. After reading this topic，you will be able to understand how the deployment utilities work and the basic flow of managing multiple WebSphere Commerce V9 environments during varies development phases, including development, QA, Pre-Production, and Production.
 
 <!--For better understand it, there also have a End2End Usage which be draft as a story with several
 Role which is more close a real scenario that a team or a company will pass through with DevOps
@@ -8,14 +8,14 @@ Utilities. See [End2End Usage Story](End2EndUsage.md)
 
  <img src="https://github.com/IBM/wc-devops-utilities/raw/master/doc/images/Overview.png" width = "700" height = "450" alt="Overview" align=center /><br>-->
 
-WebSphere Commerce deployment utility includes the following types of components:
+WebSphere Commerce deployment utilities include the following types of components:
 
 * DeployController, Vault, and Nexus - They are residing on the long run pad to serve continuous business requirement for environment setup, update, and operation.
 * SupportContainer and DeploySlave - They are sitting in the temporary run pod, and are deployed on-demand and removed after the job is completed.
 
 All these components are dockerized, so you can easily leverage the Kubernetes platform to deploy the components without manual setup.
 
-WebSphere Commerce deployment utility leverages the task-scheduling capability of Jenkins and the resource-scheduling capability of Kubernetes.
+WebSphere Commerce deployment utilities leverage the task-scheduling capability of Jenkins and the resource-scheduling capability of Kubernetes.
 Thus, when you trigger some long-run or asynchronous job through Jenkins, such as installing Helm or building Docker images,
 the pre-defined Jenkins job pipeline will start a  temporary pod using the DeploySlave Docker container. When the job is complete, the temporary Pod is also released.
 
