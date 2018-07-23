@@ -262,10 +262,6 @@ is to be deployed.
 SpiUser | SPI user name.
 SpiPwd  | SPI user password.
 
-## Backend scripts ##
-
-You can find the backend scripts at `/commerce-devops-utilities/utilities in DeployController`.
-
 ### Utilities_UpdateDB_Base ###
 Job description:  <br>
 
