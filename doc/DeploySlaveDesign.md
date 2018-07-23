@@ -1,47 +1,42 @@
-# Deploy Slave Design #
+# Deploy Slave design #
 
-## OverView ##
-Deploy Slave be build as Jenkins slave. It includes doccker daemon, helm and pre-defined utiliies
+## Overview ##
+Deploy Slave is built as a Jenkins slave. It includes doccker daemon, Helm and pre-defined utilities.
 
-Deploy slave is not like the deploy control, which is created by demand. Deploy Slave is a job executor, when a job is triggered
-in jenkins master ui, one temporary slave pod will be created. Once the job is finished, the temporary slave pod will be 
-deleted. This is very flexible. No job, no slave node which can help enhance resouce usage. 
+Unlike the Deploy Controller, which is created on demand, a Deploy Slave pod is created when a job is triggered in the Jenkins master ui. When the job is done, the temporary slave pod will be
+deleted.
 
 ## Requirement ##
 
-In this project, the slave must can do the following things.
+In this project, a Deploy Slave can perform the following tasks:
 
-* Build docker image
+* Build the Docker image
 
-* Get helm chart from chart repository and do helm deployment
+* Get Helm Chart from the chart repository and deploy Helm
 
-* Execute pre-defined task
+* Execute pre-defined tasks
 
-## Implement ##
+## Implementation ##
 
-Base on these requirements,  the deploy salve chooses "docker in docker" image as the base image.  This base image include
-a simple daemon, which can do docker related actions in a docker container. This image can totally meet the first and most import
-requirement. For the second and the third requirements, they are easy to implement. Add the helm binary file and configuration file
-to the "docker in docker" image , copy the pre-defined scripts to it , install necessary runtime library. 
+Base on the requirements, the "docker in docker" image is the base image of the Deploy Salve. A "docker in docker" image includes a daemon to perform docker-related tasks in a Docker container. You can add the Helm binary file and configuration file
+to the "docker in docker" image, copy the pre-defined scripts to the image, and install necessary runtime library to perform other tasks.
 
-The pre-defined scripts are wrote by python, which can be used to communicate with kubenetes master server and supoort deployment flow.
+The pre-defined scripts are created with Python for the communication with the Kubenetes master server and deployment flow support.
 
-## Build DeploySlave For Helm TLS ##
+## Building DeploySlave for Helm TLS ##
 
 ### Background ###
 
-Helm server support to enable TLS. ( Since `ICP 2.1.0.3`, Helm TLS has been enabled as default ). It require helm client command must have '--tls' in parameters.
+The Helm server supports TLS. Starting from `ICP 2.1.0.3`, Helm TLS is enabled by default.
 
-and put the certification on your helm local folder.  In DevOps Utilities, helm client be embedded into DeploySlave. As default it not have the certification files. So if your
+To support TLS, it is required that the Helm client command has the '--tls' parameter enabled and certificates are in your local Helm folder. In the deployment utilities, the Helm client is embedded into DeploySlave. By default, DeploySlave does not have the certificate files. Thus if your current environment has TLS enabled, you have to rebuild DeploySlave.
 
-current environment has TLS enabled, you have to rebuild the DeploySlave
-
-### Objective ###
-
-This doc will guide how to rebuild DeploySlave for using DevOps Utilities in ICP 2.1.0.3
+To rebuild DeploySlave to use deployment utilities in the ICP 2.1.0.3 environment:
 
 ### Steps ###
 
-1. Logon ICP Master node and copy helm binary file under /user/bin and copy helm file to commerce-devops-utilities/kubernetes/DeploySlave/BuildICPSlave ( ICP customized Helm, so you must use ICP helm client )
-2. Get certification files on ICP Master node under path /root/.helm ( ca.pem / cer.pem / key.pem ) and copy those files to commerce-devops-utilities/kubernetes/DeploySlave/BuildICPSlave/certs
-3. Run BuildDocker.sh under path commerce-devops-utilities/kubernetes/DeploySlave/BuildICPSlave
+1. Log into the ICP Master node and copy the Helm binary file from `/user/bin` and copy the Helm file to `commerce-devops-utilities/kubernetes/DeploySlave/BuildICPSlave`.
+
+   **Note**: Because ICP customizes Helm, make sure to use the ICP Helm client.
+2. Copy the certificate files on ICP Master node from `/root/.helm` ( `ca.pem / cer.pem / key.pem` ) to `commerce-devops-utilities/kubernetes/DeploySlave/BuildICPSlave/certs`.
+3. Run `BuildDocker.sh` in `commerce-devops-utilities/kubernetes/DeploySlave/BuildICPSlave`.
