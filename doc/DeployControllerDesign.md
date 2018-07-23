@@ -18,7 +18,7 @@ Before you start the operational job, configure the global variables. These vari
 
 Parameter  |  Description
 ------------- | -------------
-vault_url |  Vault URL (for example, http://9.112.245.194:30552/v1 ). If InCluster is set to `true`, vault_url is not mandatory.
+vault_url |  Vault URL (for example, http://9.112.245.194:30552 ). If InCluster is set to `true`, vault_url is not mandatory.
 vault_token  | Vault Root Token for REST access. If InCluster is set to `true`, tvault_toke is not mandatory. For more information, see [Vault/Cousul based configuration management](https://www.ibm.com/support/knowledgecenter/SSZLC2_9.0.0/com.ibm.commerce.install.doc/refs/rigvaultmetadata.htm).
 bundleRepo |Repository destination for storing the customization packages. Nexus is the default bundle repository (for example,  http://9.110.182.156:8081/nexus/content/repositories/releases/commerce).
 vault_url |  Vault URL (for example, http://9.112.245.194:30552 ). If InCluster is set to `true`, vault_url is not mandatory.
