@@ -27,8 +27,7 @@ bundleRepo | Repository destination for storing the customization packages. Nexu
 dockerRepoHost | Hostname for the Docker image repository (for example, DockerRepoHostname:RepoPort).
 dockerRepoUser   | User ID to access the Docker image repository when downloading the Docker image.
 dockerRepoPwd  | Password to access the Docker image repository when downloading the Docker image.
-helmChartsRepo  | The Helm Charts repository for storing Helm Charts to be triggered by the Jenkins job.
-<!--What is the parm here?-->| Handles Helm pre- and post- installation hook / Serves as InitContainer to control startup sequence (e.g http://9.112.245.194:8879/charts)
+helmChartsRepo  | The Helm Charts repository for storing Helm Charts to be triggered by the Jenkins job.(e.g http://9.112.245.194:8879/charts)
 
 <!--Global can be configured when you do deploy by pass related value to Docker Container, or you can configure them by manually in "Configuration System" page of Jenkins <br>
 <img src="./images/DeployController-GlobalConfig1.png" width = "500" height = "350" alt="Overview" align=center /><br>-->
