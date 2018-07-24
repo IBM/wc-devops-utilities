@@ -6,13 +6,13 @@ ELK logging solution is a populer, open source and active community logging solu
 Hint, all the description below base on the sample configuration file(Entrypoint.sh, filebeat.yml, dockerfile etc).
 
 The overall design as below chart, for each Commerce container there will be a 'side car' filebeat container help to collect the log in real time, by leveraging the Pod shared volume ability filebeat can access Commerce log in the shared volumn directly, then beat the log to the ElasticSearch system(json format), after that you can view the log in Kibana GUI<br/>
-<img src="https://github.com/master/wc-devops-utilities/raw/draftdoc/doc/images/WC_K8S_ELK.png" width = "800" height = "450" align=center />
+<img src="https://github.com/IBM/wc-devops-utilities/raw/draftdoc/doc/images/WC_K8S_ELK.png" width = "800" height = "450" align=center />
 
 After Kubenetes launched all the container, then you can check the log in the Kinaba by open http://<Kibana_Host>:5601.<br/>
-  <img src="https://github.com/master/wc-devops-utilities/raw/draftdoc/doc/images/Kibana.png" width = "800" height = "450" align=center /><br/>
+  <img src="https://github.com/IBM/wc-devops-utilities/raw/draftdoc/doc/images/Kibana.png" width = "800" height = "450" align=center /><br/>
 
   For each line of the Commerce log there will be a corresponding entry in the Kibana, you can find it in the message field.<br/>
-<img src="https://github.com/master/wc-devops-utilities/raw/draftdoc/doc/images/KibanaMessageField.png" width = "600" height = "335" align=center /><br/>
+<img src="https://github.com/IBM/wc-devops-utilities/raw/draftdoc/doc/images/KibanaMessageField.png" width = "600" height = "335" align=center /><br/>
   <what we customize>
 
 ## Why we need to build customized filebeat docker image and how ##
@@ -24,7 +24,7 @@ Pull the filebeat docker image from the official repository(better to have a loc
 <pre>
 docker build -f &lt;sample_dockerfile&gt; -t &lt;repository&gt;:&lt;tag&gt; .
 </pre>
-<img src="https://github.com/master/wc-devops-utilities/raw/draftdoc/doc/images/Build_Filebeat_Image.png" width = "600" height = "135" align=center /><br/>
+<img src="https://github.com/IBM/wc-devops-utilities/raw/draftdoc/doc/images/Build_Filebeat_Image.png" width = "600" height = "135" align=center /><br/>
 
   ### How to customize the filebeat.yml ###
   
@@ -40,7 +40,7 @@ docker build -f &lt;sample_dockerfile&gt; -t &lt;repository&gt;:&lt;tag&gt; .
     fields:
       containerType: search
   </pre>
-  <img src="https://github.com/master/wc-devops-utilities/raw/draftdoc/doc/images/ContainerType.png" width = "300" height = "200" align=center /><br/>
+  <img src="https://github.com/IBM/wc-devops-utilities/raw/draftdoc/doc/images/ContainerType.png" width = "300" height = "200" align=center /><br/>
   
   More information about the filebeat.yml configuration please refer to:<br/>
   https://www.elastic.co/guide/en/beats/filebeat/current/configuring-howto-filebeat.html
@@ -70,7 +70,7 @@ Setting up the ElasticSearch + Kibana
  ### How to launch filebeat container alone with WC container ###
  
  Below chart is the snapshot of the sample deployment Jenkins job<br/><br/>
- <img src="https://github.com/master/wc-devops-utilities/raw/draftdoc/doc/images/Enable_Filebat&ELK.png" width = "450" height = "400" align=center /><br/>
+ <img src="https://github.com/IBM/wc-devops-utilities/raw/draftdoc/doc/images/Enable_Filebat&ELK.png" width = "450" height = "400" align=center /><br/>
 
 <B>FileBeat.Enable</B>, change this flag to 'true' to enable filebeat container alone with commerce container.
 <B>FileBeat.ELKServer</B>, change this to the your ElasticSearch server(or the the Master node of your ElasticSearch cluster)
@@ -78,7 +78,7 @@ Setting up the ElasticSearch + Kibana
 
   ### What is the OOB behavior of the sample ###
   
-  <img src="https://github.com/master/wc-devops-utilities/raw/draftdoc/doc/images/Enable_Logging_logic.png" width = "500" height = "250" align=center /><br/>
+  <img src="https://github.com/IBM/wc-devops-utilities/raw/draftdoc/doc/images/Enable_Logging_logic.png" width = "500" height = "250" align=center /><br/>
   
   Using the flag 'FileBeat.Enable' in the Jenkins HelmChart_values field to contral enable the filebeat container alone with commerce container or not.<br/>
 
