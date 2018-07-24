@@ -102,4 +102,4 @@ You can specify the customized `filebeat.yml` file by creating Kubernetes config
   </pre>
 3. Update the configmap in `values.yaml`. Set the value 'Values.Crsapp.FileBeatConfigMap' to 'filebeat-config-crs-app'.
 
-The configmap will mount to the `/etc/filebeat/` folder of the Filebeat container. The container will start with the configuration file ``/etc/filebeat/filebeat-cus.yml`.
+The configmap will mount to the `/etc/filebeat/` folder of the Filebeat container. The container will start with the configuration file `/etc/filebeat/filebeat-cus.yml`.
