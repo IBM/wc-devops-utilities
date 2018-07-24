@@ -1,14 +1,13 @@
-# Deploy Slave design #
+# DeploySlave design #
 
 ## Overview ##
-Deploy Slave is built as a Jenkins slave. It includes doccker daemon, Helm and pre-defined utilities.
+DeploySlave is built as a Jenkins slave. It includes Docker daemon, Helm, and pre-defined utilities.
 
-Unlike the Deploy Controller, which is created on demand, a Deploy Slave pod is created when a job is triggered in the Jenkins master ui. When the job is done, the temporary slave pod will be
-deleted.
+Unlike the DeployController, which is created on demand, a DeploySlave pod is created when a job is triggered in the Jenkins master UI. When the job is done, the temporary slave pod will be deleted.
 
 ## Requirement ##
 
-In this project, a Deploy Slave can perform the following tasks:
+In this project, a DeploySlave can perform the following tasks:
 
 * Build the Docker image
 
@@ -21,7 +20,7 @@ In this project, a Deploy Slave can perform the following tasks:
 Base on the requirements, the "docker in docker" image is the base image of the Deploy Salve. A "docker in docker" image includes a daemon to perform docker-related tasks in a Docker container. You can add the Helm binary file and configuration file
 to the "docker in docker" image, copy the pre-defined scripts to the image, and install necessary runtime library to perform other tasks.
 
-The pre-defined scripts are created with Python for the communication with the Kubenetes master server and deployment flow support.
+The pre-defined scripts are created with Python for the communication with the Kubernetes master server and deployment flow support.
 
 ## Building DeploySlave for Helm TLS ##
 
