@@ -13,13 +13,13 @@ For more information about the ELK stack, see [the Elastic website](https://www.
 **Note**: This sample solution leverages the following configuration files provided in the project:
 * `Entrypoint.sh`
 * `filebeat.yml`
-* `dockerfile` <!--Tiffany: Where can I find these files?-->
+* `dockerfile` <!--Tiffany: Where can I find these files? Yong, Yue is trying this file, will upload to a individual folder named like filebeat-->
 
-The following diagram shows the architecture of the sample solution. Each WebSphere Commerce Docker container works with a 'side car' <!--Tiffany: What is a side car?--> Filebeat container to collect logs in real time. By leveraging the shared volume capability of pod, Filebeat can access the log files in the shared volume of WebSphere Commerce directly, and then transfer the logs (in JSON format) to the ElasticSearch system. After that you can view the logs in the Kibana UI. <br/>
+The following diagram shows the architecture of the sample solution. Each WebSphere Commerce Docker container works with a 'sidecar' <!--Tiffany: What is a side car? Yong, sidecar is kubernetes word, means the filebeat container here--> Filebeat container to collect logs in real time. By leveraging the shared volume capability of pod, Filebeat can access the log files in the shared volume of WebSphere Commerce directly, and then transfer the logs (in JSON format) to the ElasticSearch system. After that you can view the logs in the Kibana UI. <br/>
 <img src="https://github.com/IBM/wc-devops-utilities/raw/draftdoc/doc/images/WC_K8S_ELK.png" width = "800" height = "450" align=center />
 
-After Kubernetes launches all the container, you can check the logs in the Kinaba UI through `http://<Kibana_Host>:5601`, as shown below <!--Tiffany: The screenshot is too vague to view.-->.<br/>
-  <img src="https://github.com/IBM/wc-devops-utilities/raw/draftdoc/doc/images/Kibana.png" width = "800" height = "450" align=center /><br/>
+After Kubernetes launches all the container, you can check the logs in the Kinaba UI through `http://<Kibana_Host>:5601`, as shown below <!--Tiffany: The screenshot is too vague to view. Yong, upload a new picture-->.<br/>
+  <img src="https://github.com/IBM/wc-devops-utilities/raw/draftdoc/doc/images/Kibana1.png" width = "800" height = "450" align=center /><br/>
 
   The message field in the Kibana UI includes the log message, as shown below.<br/>
 <img src="https://github.com/IBM/wc-devops-utilities/raw/draftdoc/doc/images/KibanaMessageField.png" width = "600" height = "335" align=center /><br/>
@@ -36,7 +36,7 @@ docker build -f &lt;sample_dockerfile&gt; -t &lt;repository&gt;:&lt;tag&gt; .
 </pre>
 <img src="https://github.com/IBM/wc-devops-utilities/raw/draftdoc/doc/images/Build_Filebeat_Image.png" width = "600" height = "135" align=center /><br/>
 
-  ### Customizing `filebeat.yml` ### <!--Tiffany: Content in this section is problematic. Please review and fix the problem.-->
+  ### Customizing `filebeat.yml` ### <!--Tiffany: Content in this section is problematic. Please review and fix the problem. Yong,???-->
 
   To get rid of the exception stack split into multiple messages in the ElasticSearch, add the following to the `filebeat.yml` file:
   <pre>
@@ -66,7 +66,7 @@ docker build -f &lt;sample_dockerfile&gt; -t &lt;repository&gt;:&lt;tag&gt; .
   https://docs.docker.com/engine/reference/builder/#usage
 
 ## Deployment the logging solution ##
-<!--Tiffany: Need a sentence or two to introduce the purpose of deployment.-->
+<!--Tiffany: Need a sentence or two to introduce the purpose of deployment. Yong,???-->
 ### Prerequisite ###
 Before you deploy the ELK stack, you need to set up ElasticSearch and Kibana.
 *  To install the ElasticSearch (or ElasticSearch cluster), follow the official installation guide Based on your business requirement, consider using the ElasticSearch cluster if the logging throughput is huge:<br/>
