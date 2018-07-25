@@ -1,0 +1,165 @@
+{{- if eq .Values.Common.EnvironmentType "live" }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName}}{{ .Values.Common.EnvironmentType }}{{.Values.SearchappRepeater.Name}}
+  namespace: {{ .Values.Common.NameSpace }}
+spec:
+  replicas: {{ .Values.SearchappRepeater.Replica }}
+  template:
+    metadata:
+      labels:
+        component: {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName}}{{ .Values.Common.EnvironmentType }}{{.Values.SearchappRepeater.Name}}
+        group: {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName}}{{ .Values.Common.EnvironmentType }}
+    spec:
+      initContainers:
+      - name: search-dependence-check
+        image: "{{ .Values.Common.ImageRepo }}{{ .Values.SupportC.Image }}:{{ .Values.SupportC.Tag }}"
+        imagePullPolicy: IfNotPresent
+        args: ['depcheck', '-component','search','-tenant',{{ .Values.Common.Tenant }},'-env',{{ .Values.Common.EnvironmentName}},'-envtype',{{ .Values.Common.EnvironmentType }},'-namespace',{{ .Values.Common.NameSpace }},'-interval_time','20','-expect_during_time','600','-timeout','5','-spiuser_pwd_encrypte',{{ .Values.Common.SPIUserPWDBase64 }}]
+      volumes:
+        - name: logs-sharing
+          emptyDir: {}
+      {{- if .Values.Common.PersistenVolumeClaim.AutoCreate }}
+        - name: {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName}}-search-repeater-index-volume
+          persistentVolumeClaim:
+            claimName: {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName}}-search-repeater-volume 
+      {{- end }}
+      {{- if .Values.Common.BindingConfigMap }}
+        - name: config-volume
+          configMap:
+            name: {{ .Values.Common.BindingConfigMap }} 
+      {{- end }}
+      {{- if and .Values.FileBeat.Enable .Values.SearchappRepeater.FileBeatConfigMap }}
+        - name: filebeat-config-search-app-repeater
+          configMap:
+            name: {{ .Values.SearchappRepeater.FileBeatConfigMap }}
+      {{- end }}
+      containers:
+      - name: search-app-repeater
+        image: "{{ .Values.Common.ImageRepo }}{{.Values.SearchappRepeater.Image}}:{{ .Values.SearchappRepeater.Tag }}"
+        resources:
+          requests:
+            cpu: 0.5m
+            memory: 2048Mi
+          limits:
+            cpu: 2
+            memory: 4096Mi
+        env:
+        - name: "LICENSE"
+          value: "accept"
+        {{- if .Values.Common.CommerceVersion }}
+        {{- if (or (eq .Values.Common.CommerceVersion "9.0.0.1") (eq .Values.Common.CommerceVersion "9.0.0.0")) }}
+          {{- if .Values.Common.OverridePreconfig }}
+        - name: "OVERRIDE_PRECONFIG"
+          value: {{ .Values.Common.OverridePreconfig | quote }}
+          {{- end }}
+        {{- end }}
+        {{- else }}
+        - name: "CONFIGURE_MODE"
+          value: {{ .Values.Common.ConfigureMode | quote }}  
+        {{- end }}
+        - name: "ENVIRONMENT"
+          value: {{ .Values.Common.EnvironmentName | quote }}
+        - name: "TENANT"
+          value: {{.Values.Common.Tenant | quote}}
+        - name: "ENVTYPE"
+          value: {{ .Values.Common.EnvironmentType | quote }}
+        - name: "DOMAIN_NAME"
+          value: "{{ .Values.Common.NameSpace }}.svc.cluster.local"
+        - name: "DBTYPE"
+          value: {{ .Values.Common.DBType | quote }}
+        - name: "VAULT_CA"
+          value: {{ .Values.Common.VaultCA.Enable | quote }}
+        - name: "WORKAREA"
+          value: "/search"
+        - name: "SOLR_MASTER"
+          value: "true"
+        - name: "SOLR_SLAVE"
+          value: "true"
+        - name: "SPIUSER_NAME"
+          value: {{ .Values.Common.SPIUserName | quote }}
+        - name: "SPIUSER_PWD"
+          value: {{ .Values.Common.SPIUserPWDAES | quote }}
+        - name: "SOLR_MASTER_SERVER_URL"
+          value: "{{ .Values.Common.Tenant }}{{.Values.Common.EnvironmentName}}authsearch-app-master.{{ .Values.Common.NameSpace }}.svc.cluster.local:3738"
+        {{- if (or (eq .Values.Common.ConfigureMode "Vault") .Values.Common.VaultCA.Enable) }}
+        - name: "VAULT_URL"
+          value: {{ .Values.Common.VaultURL | quote }}
+        - name: "VAULT_TOKEN"
+          value: {{ .Values.Common.VaultToken | quote }}
+        {{- end }}
+{{- if .Values.SearchappRepeater.EnvParameters }}
+     {{- range $key, $value := .Values.SearchappRepeater.EnvParameters }}
+        - name: {{ $key | quote}}
+          value: {{ $value | quote }}
+     {{- end }} 
+{{- end }}        
+        ports:
+        - containerPort: 3737
+          name: port3737
+        - containerPort: 3738
+          name: port3738
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /search/admin/resources/health/status?type=container
+            port: 3737
+            httpHeaders:
+            - name: Authorization
+              value: Basic {{ .Values.Common.SPIUserPWDBase64 }}
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        livenessProbe:
+          tcpSocket:
+            port: 3737
+          initialDelaySeconds: 600
+          timeoutSeconds: 300
+        volumeMounts:
+          - name: logs-sharing
+            mountPath: /opt/WebSphere/Liberty/usr/servers/default/logs/container
+      {{- if .Values.Common.PersistenVolumeClaim.AutoCreate }}
+          - name:  {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName }}-search-repeater-index-volume
+            mountPath: /search
+      {{- end }}
+      {{- if .Values.Common.BindingConfigMap }}
+          - name: config-volume
+            mountPath: /SETUP/ext-config   
+      {{- end }}   
+{{- if .Values.SearchappRepeater.NodeSelector }}
+        nodeSelector:
+{{ toYaml .Values.SearchappRepeater.NodeSelector | indent 8 }}
+{{- end }}
+{{- if .Values.FileBeat.Enable }}
+      - name: filebeat
+        image: "{{ .Values.Common.ImageRepo }}{{ .Values.FileBeat.Image }}:{{ .Values.FileBeat.Tag }}"
+        args: ["-indexName", "{{ .Values.Common.Tenant }}-{{ .Values.Common.EnvironmentName}}-{{ .Values.Common.EnvironmentType }}", "-targetELK", "{{ .Values.FileBeat.ELKServer }}", "-componentType", "search-app-repeater"]
+        volumeMounts:
+        - name: logs-sharing
+          mountPath: /log
+{{- if .Values.SearchappRepeater.FileBeatConfigMap }}
+        - name: filebeat-config-search-app-repeater
+          mountPath: /etc/filebeat
+{{- end }}
+{{- end }}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName }}{{ .Values.Common.EnvironmentType }}{{.Values.SearchappRepeater.Name}}
+  labels:
+    component: {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName }}{{ .Values.Common.EnvironmentType }}{{.Values.SearchappRepeater.Name}}
+    group: {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName }}{{ .Values.Common.EnvironmentType }}
+  namespace: {{ .Values.Common.NameSpace }}
+spec:
+  type: NodePort
+  ports:
+  - port: 3737
+    name: port3737
+  - port: 3738
+    name: port3738
+  selector:
+    component: {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName}}{{ .Values.Common.EnvironmentType }}{{.Values.SearchappRepeater.Name}}
+{{- end }}

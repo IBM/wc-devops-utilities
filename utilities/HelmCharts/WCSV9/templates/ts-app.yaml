@@ -1,0 +1,149 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName}}{{ .Values.Common.EnvironmentType }}{{.Values.Tsapp.Name}}
+  namespace: {{ .Values.Common.NameSpace }}
+spec:
+  replicas: {{ .Values.Tsapp.Replica }}
+  template:
+    metadata:
+      labels:
+        component: {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName}}{{ .Values.Common.EnvironmentType }}{{.Values.Tsapp.Name}}
+        group: {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName}}{{ .Values.Common.EnvironmentType }}
+    spec:
+      {{- if .Values.Tsdb.Enable }}
+      initContainers:
+      - name: transaction-dependence-check
+        image: "{{ .Values.Common.ImageRepo }}{{ .Values.SupportC.Image }}:{{ .Values.SupportC.Tag }}"
+        imagePullPolicy: IfNotPresent
+        args: ['depcheck', '-component','transaction','-tenant',{{ .Values.Common.Tenant }},'-env',{{ .Values.Common.EnvironmentName}},'-envtype',{{ .Values.Common.EnvironmentType }},'-namespace',{{ .Values.Common.NameSpace }},'-interval_time','20','-expect_during_time','600','-timeout','5','-spiuser_pwd_encrypte',{{ .Values.Common.SPIUserPWDBase64 }}]
+      {{- end }}
+      volumes:
+        - name: logs-sharing
+          emptyDir: {}
+      {{- if .Values.Common.BindingConfigMap }}
+        - name: config-volume
+          configMap:
+            name: {{ .Values.Common.BindingConfigMap }} 
+      {{- end }}
+      {{- if and .Values.FileBeat.Enable .Values.Tsapp.FileBeatConfigMap }}
+        - name: filebeat-config-ts-app
+          configMap:
+            name: {{ .Values.Tsapp.FileBeatConfigMap }}
+      {{- end }}
+      containers:
+      - name: ts-app
+        image: "{{ .Values.Common.ImageRepo }}{{ .Values.Tsapp.Image }}:{{ .Values.Tsapp.Tag }}"
+        resources:
+          requests:
+            cpu: 0.5m
+            memory: 2048Mi
+          limits:
+            cpu: 2
+            memory: 4096Mi
+        env:
+        - name: "LICENSE"
+          value: "accept"
+        {{- if .Values.Common.CommerceVersion }}
+        {{- if (or (eq .Values.Common.CommerceVersion "9.0.0.1") (eq .Values.Common.CommerceVersion "9.0.0.0")) }}
+          {{- if .Values.Common.OverridePreconfig }}
+        - name: "OVERRIDE_PRECONFIG"
+          value: {{ .Values.Common.OverridePreconfig | quote }}
+          {{- end }}
+        {{- end}}
+        {{- else }}
+        - name: "CONFIGURE_MODE"
+          value: {{ .Values.Common.ConfigureMode | quote }}  
+        {{- end }}
+        - name: "ENVIRONMENT"
+          value: {{ .Values.Common.EnvironmentName | quote }}
+        - name: "TENANT"
+          value: {{.Values.Common.Tenant | quote }}
+        - name: "ENVTYPE"
+          value: {{ .Values.Common.EnvironmentType | quote }}
+        - name: "DOMAIN_NAME"
+          value: "{{ .Values.Common.NameSpace }}.svc.cluster.local"
+        - name: "DBTYPE"
+          value: {{ .Values.Common.DBType | quote }}
+        - name: "VAULT_CA"
+          value: {{ .Values.Common.VaultCA.Enable | quote }}
+        - name: "MERCHANTKEY_ENCRYPT"
+          value: {{ .Values.Tsapp.Merchantkey | quote }}
+        - name: "SPIUSER_NAME"
+          value: {{ .Values.Common.SPIUserName | quote}}
+        - name: "SPIUSER_PWD"
+          value: {{ .Values.Common.SPIUserPWDAES | quote}}
+        - name: "STOREWEB_HOST"
+          value: "store.{{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName}}{{ .Values.Common.EnvironmentType }}.{{ .Values.Common.ExternalDomian }}"
+        {{- if (or (eq .Values.Common.ConfigureMode "Vault") .Values.Common.VaultCA.Enable) }}
+        - name: "VAULT_URL"
+          value: {{ .Values.Common.VaultURL | quote }}
+        - name: "VAULT_TOKEN"
+          value: {{.Values.Common.VaultToken | quote }}
+        {{- end }}       
+{{- if .Values.Tsapp.EnvParameters }}
+     {{- range $key, $value := .Values.Tsapp.EnvParameters }}
+        - name: {{ $key | quote }}
+          value: {{ $value | quote }}
+     {{- end }} 
+{{- end }} 
+        ports: 
+        - containerPort: 5080
+          name: db5080
+          protocol: TCP
+        - containerPort: 5443
+          name: db5443
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /webapp/wcs/stores/servlet/swagger/index.jsp
+            port: 5080
+          initialDelaySeconds: 300
+          periodSeconds: 5
+        livenessProbe:
+          tcpSocket:
+            port: 5443
+          initialDelaySeconds: 600
+          timeoutSeconds: 300
+        volumeMounts:
+          - name: logs-sharing
+            mountPath: /opt/WebSphere/AppServer/profiles/default/logs/container
+        {{- if .Values.Common.BindingConfigMap }}
+          - name: config-volume
+            mountPath: /SETUP/ext-config   
+        {{- end }}
+{{- if .Values.Tsapp.NodeSelector }}
+        nodeSelector:
+{{ toYaml .Values.Tsapp.NodeSelector | indent 8 }}
+{{- end }}
+{{- if .Values.FileBeat.Enable }}
+      - name: filebeat
+        image: "{{ .Values.Common.ImageRepo }}{{ .Values.FileBeat.Image }}:{{ .Values.FileBeat.Tag }}"
+        args: ["-indexName", "{{ .Values.Common.Tenant }}-{{ .Values.Common.EnvironmentName}}-{{ .Values.Common.EnvironmentType }}", "-targetELK", "{{ .Values.FileBeat.ELKServer }}", "-componentType", "ts-app"]
+        volumeMounts:
+        - name: logs-sharing
+          mountPath: /log
+{{- if .Values.Tsapp.FileBeatConfigMap }}
+        - name: filebeat-config-ts-app
+          mountPath: /etc/filebeat
+{{- end }}
+{{- end }}
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName}}{{ .Values.Common.EnvironmentType }}{{.Values.Tsapp.Name}}
+  labels:
+    component: {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName}}{{ .Values.Common.EnvironmentType }}{{.Values.Tsapp.Name}}
+    group: {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName}}{{ .Values.Common.EnvironmentType }}
+  namespace: {{ .Values.Common.NameSpace }}
+spec:
+  type: NodePort
+  ports:
+  - port: 5080
+    name: port5080
+  - port: 5443
+    name: port5443
+  selector:
+    component: {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName}}{{ .Values.Common.EnvironmentType }}{{.Values.Tsapp.Name}}

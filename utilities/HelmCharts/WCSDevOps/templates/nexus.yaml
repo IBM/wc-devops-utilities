@@ -1,0 +1,62 @@
+{{- if .Values.Nexus.Enable }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: nexus
+  namespace: {{ .Values.Common.NameSpace }}
+spec:
+  replicas: {{ .Values.Nexus.Replicas }}
+  template:
+    metadata:
+      labels:
+        component: nexus
+        group: wcsdevops
+    spec:
+      {{- if .Values.Nexus.NodeSelector }}
+      nodeSelector:
+        {{- range $key, $value := .Values.Nexus.NodeSelector }}
+          {{ $key }}：{{ $value }}
+        {{- end }}
+      {{- end }}
+      containers:
+      - name: nexus
+        image: "{{ .Values.Nexus.Image }}:{{ .Values.Nexus.Tag }}"
+        resources:
+          requests:
+            cpu: 0.5m
+            memory: 2048Mi
+          limits:
+            cpu: 2
+            memory: 4096Mi
+        env:
+{{- if .Values.Nexus.EnvParameters }}
+     {{- range $key, $value := .Values.Nexus.EnvParameters }}
+        {{- if $value }}
+        - name: {{ $key | quote}}
+          value: {{ $value | quote}}
+        {{- end }}
+     {{- end }}
+{{- end }}
+        ports:
+        - containerPort: 8081
+          name: nexus8081
+          protocol: TCP
+         
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nexus
+  namespace: {{ .Values.Common.NameSpace }}
+spec:
+{{- if .Values.Nexus.NodePort }}
+  type: NodePort
+{{- end }}
+  ports:
+  - port: 8081
+    name: port8081
+    targetPort: 8081
+  selector:
+    component: nexus
+{{- end }}

@@ -1,0 +1,28 @@
+{{- if or .Values.Common.IngressSecrete.AutoCreate  .Values.Common.PersistenVolumeClaim.AutoCreate }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: wcs-post-delete-{{ .Values.Common.Tenant | lower}}{{ .Values.Common.EnvironmentName | lower}}{{ .Values.Common.EnvironmentType }}-{{ randAlphaNum 10 | lower }}
+  namespace: {{ .Values.Common.NameSpace }}
+  annotations:
+    "helm.sh/hook": post-delete
+    "helm.sh/hook-delete-policy": "hook-succeeded"
+    "helm.sh/hook-delete-policy": "before-hook-creation"
+spec:
+  backoffLimit: 5
+  activeDeadlineSeconds: 100
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      {{- if .Values.Common.IngressSecrete.AutoCreate }}
+        - name: wcs-post-delete-secret-{{ .Values.Common.Tenant | lower}}{{ .Values.Common.EnvironmentName | lower}}{{ .Values.Common.EnvironmentType }}-{{ randAlphaNum 10 | lower }}
+          image: {{ .Values.Common.ImageRepo }}{{ .Values.SupportC.Image }}:{{ .Values.SupportC.Tag }}
+          args: ['deletesecret', '-tenant',{{ .Values.Common.Tenant }},'-env',{{ .Values.Common.EnvironmentName}},'-envtype',{{ .Values.Common.EnvironmentType }},'-namespace',{{ .Values.Common.NameSpace }}]
+      {{- end -}}
+      {{- if .Values.Common.PersistenVolumeClaim.clearPVC }}
+        - name: wcs-post-delete-pvc-{{ .Values.Common.Tenant | lower}}{{ .Values.Common.EnvironmentName | lower}}{{ .Values.Common.EnvironmentType }}-{{ randAlphaNum 10 | lower }}
+          image: {{ .Values.Common.ImageRepo }}{{ .Values.SupportC.Image }}:{{ .Values.SupportC.Tag }}
+          args: ['deletepvc', '-tenant',{{ .Values.Common.Tenant | quote }},'-env',{{ .Values.Common.EnvironmentName | quote }},'-envtype',{{ .Values.Common.EnvironmentType }},'-namespace',{{ .Values.Common.NameSpace | quote }},'-component','search']
+      {{ end -}}
+{{ end -}}

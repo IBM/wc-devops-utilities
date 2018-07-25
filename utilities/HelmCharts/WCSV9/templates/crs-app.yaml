@@ -1,0 +1,151 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name:  {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName}}{{ .Values.Common.EnvironmentType }}{{.Values.Crsapp.Name}}
+  namespace: {{ .Values.Common.NameSpace }}
+spec:
+  replicas: {{.Values.Crsapp.Replica}}
+  template:
+    metadata:
+      labels:
+        component:  {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName}}{{ .Values.Common.EnvironmentType }}{{.Values.Crsapp.Name}}
+        group: {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName}}{{ .Values.Common.EnvironmentType }}
+    spec:
+{{- if and .Values.Common.SessionAffinity.Enable  .Values.Common.SessionAffinity.LoadBalanceAddress }}
+      hostAliases:
+      - ip: {{ .Values.Common.SessionAffinity.LoadBalanceAddress | quote }}
+        hostnames:
+        - "{{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName}}{{ .Values.Common.EnvironmentType }}ts-app.{{ .Values.Common.NameSpace }}.svc.cluster.local"
+{{- end }}
+      initContainers:
+      - name: store-dependence-check
+        image: "{{ .Values.Common.ImageRepo }}{{ .Values.SupportC.Image }}:{{ .Values.SupportC.Tag }}"
+        imagePullPolicy: IfNotPresent
+        args: ['depcheck', '-component','store','-tenant',{{ .Values.Common.Tenant }},'-env',{{ .Values.Common.EnvironmentName}},'-envtype',{{ .Values.Common.EnvironmentType }},'-namespace',{{ .Values.Common.NameSpace }},'-interval_time','20','-expect_during_time','600','-timeout','5','-spiuser_pwd_encrypte',{{ .Values.Common.SPIUserPWDBase64 }}]
+      volumes:
+        - name: logs-sharing
+          emptyDir: {}
+      {{- if .Values.Common.BindingConfigMap }}
+        - name: config-volume
+          configMap:
+            name: {{ .Values.Common.BindingConfigMap }} 
+      {{- end }}
+      {{- if and .Values.FileBeat.Enable .Values.Crsapp.FileBeatConfigMap }}
+        - name: filebeat-config-crs-app
+          configMap:
+            name: {{ .Values.Crsapp.FileBeatConfigMap }}
+      {{- end }}
+      containers:
+      - name: crs-app
+        image: "{{ .Values.Common.ImageRepo }}{{ .Values.Crsapp.Image }}:{{ .Values.Crsapp.Tag }}"
+        resources:
+          requests:
+            cpu: 0.5m
+            memory: 2048Mi
+          limits:
+            cpu: 2
+            memory: 4096Mi
+        env:
+        - name: "LICENSE"
+          value: "accept"
+        {{- if .Values.Common.CommerceVersion }}
+        {{- if (or (eq .Values.Common.CommerceVersion "9.0.0.1") (eq .Values.Common.CommerceVersion "9.0.0.0")) }}
+          {{- if .Values.Common.OverridePreconfig }}
+        - name: "OVERRIDE_PRECONFIG"
+          value: {{ .Values.Common.OverridePreconfig | quote }}
+          {{- end }}
+        {{- end }}
+        {{- else }}
+        - name: "CONFIGURE_MODE"
+          value: {{ .Values.Common.ConfigureMode | quote }}  
+        {{- end }}
+        - name: "ENVIRONMENT"
+          value: {{ .Values.Common.EnvironmentName | quote }}
+        - name: "TENANT"
+          value: {{.Values.Common.Tenant | quote }}
+        - name: "ENVTYPE"
+          value: {{ .Values.Common.EnvironmentType | quote }}
+        - name: "DOMAIN_NAME"
+          value: "{{ .Values.Common.NameSpace }}.svc.cluster.local"
+        - name: "VAULT_CA"
+          value: {{ .Values.Common.VaultCA.Enable | quote }}
+{{- if and .Values.Common.SessionAffinity.Enable  .Values.Common.SessionAffinity.LoadBalanceAddress}}
+        - name: "TX_PORT"
+          value: "443"
+{{- end }}
+        - name: "SSLPort"
+          value: "443"
+        - name: "NONSSLPort"
+          value: "80"
+        - name: "SPIUSER_NAME"
+          value: {{ .Values.Common.SPIUserName | quote }}
+        - name: "SPIUSER_PWD"
+          value: {{ .Values.Common.SPIUserPWDAES | quote }}
+        {{- if (or (eq .Values.Common.ConfigureMode "Vault") .Values.Common.VaultCA.Enable) }}
+        - name: "VAULT_URL"
+          value: {{ .Values.Common.VaultURL | quote }}
+        - name: "VAULT_TOKEN"
+          value: {{.Values.Common.VaultToken | quote }}
+        {{- end }}       
+{{- if .Values.Crsapp.EnvParameters }}
+     {{- range $key, $value := .Values.Crsapp.EnvParameters }}
+        - name: {{ $key | quote}}
+          value: {{ $value | quote}}
+     {{- end }} 
+{{- end }} 
+        ports:
+        - containerPort: 8443
+          name: port8443
+        - containerPort: 8080
+          name: port8080
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+        volumeMounts:
+          - name: logs-sharing
+            mountPath: /opt/WebSphere/Liberty/usr/servers/default/logs/container
+        {{- if .Values.Common.BindingConfigMap }}
+          - name: config-volume
+            mountPath: /SETUP/ext-config   
+        {{- end }}
+{{- if .Values.Crsapp.NodeSelector }}
+        nodeSelector:
+{{ toYaml .Values.Crsapp.NodeSelector | indent 8 }}
+{{- end }}
+{{- if .Values.FileBeat.Enable }}
+      - name: filebeat
+        image: "{{ .Values.Common.ImageRepo }}{{ .Values.FileBeat.Image }}:{{ .Values.FileBeat.Tag }}"
+        args: ["-indexName", "{{ .Values.Common.Tenant }}-{{ .Values.Common.EnvironmentName}}-{{ .Values.Common.EnvironmentType }}", "-targetELK", "{{ .Values.FileBeat.ELKServer }}","-componentType", "crs-app"]
+        volumeMounts:
+        - name: logs-sharing
+          mountPath: /log
+{{- if .Values.Crsapp.FileBeatConfigMap }}
+        - name: filebeat-config-crs-app
+          mountPath: /etc/filebeat
+{{- end }}
+{{- end }}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name:  {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName}}{{ .Values.Common.EnvironmentType }}{{.Values.Crsapp.Name}}
+  labels:
+    component: {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName}}{{ .Values.Common.EnvironmentType }}{{.Values.Crsapp.Name}}
+    group: {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName}}{{ .Values.Common.EnvironmentType }}
+  namespace: {{ .Values.Common.NameSpace }} 
+spec:
+  type: NodePort
+  ports:
+  - port: 8443
+    name: port8443
+  - port: 8080
+    name: port8080
+  selector:
+    component: {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName}}{{ .Values.Common.EnvironmentType }}{{.Values.Crsapp.Name}}

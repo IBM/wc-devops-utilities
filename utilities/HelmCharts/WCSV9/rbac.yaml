@@ -1,0 +1,27 @@
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: commerce-deploy-support-<namespace>
+rules:
+- apiGroups: [""] # "" indicates the core API group
+  resources: ["secrets"]
+  verbs: ["get", "watch", "list","create","delete","patch","update"]
+- apiGroups: [""] # "" indicates the core API group
+  resources: ["persistentvolumeclaims"]
+  verbs: ["get", "watch", "list","create","delete","patch","update"]
+  
+---
+
+# This role binding allows "jane" to read pods in the "default" namespace.
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: commerce-deploy-support-<namespace>
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: <namespace>
+roleRef:
+  kind: ClusterRole
+  name: commerce-deploy-support-<namespace>
+  apiGroup: rbac.authorization.k8s.io

@@ -1,0 +1,16 @@
+---
+ServiceURL:
+     transaction: https://{service_name}:5443/webapp/wcs/stores/servlet/swagger/index.jsp
+     search: https://{service_name}:3738/search/admin/resources/health/status?type=container
+Others:
+     database: checklog@'.*DB2START\s{1}processing\s{1}was\s{1}successful.*'
+ServiceDepMap:
+     search:
+        - transaction
+     store:
+        - transaction
+        - search
+     transaction-web:
+        - transaction
+     transaction:
+        - database

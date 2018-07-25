@@ -1,0 +1,84 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName }}{{ .Values.Common.EnvironmentType }}-ingress
+  namespace: {{ .Values.Common.NameSpace }}
+  annotations:
+    nginx.ingress.kubernetes.io/secure-backends: "true"
+  labels:
+    group: {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName}}{{ .Values.Common.EnvironmentType }}
+spec:
+  tls:
+  - hosts:
+    - cmc.{{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName }}{{ .Values.Common.EnvironmentType }}.{{ .Values.Common.ExternalDomian }}
+    - accelerator.{{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName }}{{ .Values.Common.EnvironmentType }}.{{ .Values.Common.ExternalDomian }}
+    - admin.{{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName }}{{ .Values.Common.EnvironmentType }}.{{ .Values.Common.ExternalDomian }}
+    - org.{{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName }}{{ .Values.Common.EnvironmentType }}.{{ .Values.Common.ExternalDomian }}
+    - store.{{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName }}{{ .Values.Common.EnvironmentType }}.{{ .Values.Common.ExternalDomian }}
+    {{- if eq .Values.Common.EnvironmentType "auth" }}
+    - search.{{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName }}{{ .Values.Common.EnvironmentType }}.{{ .Values.Common.ExternalDomian }}
+    {{- end }}
+    {{- if eq .Values.Common.EnvironmentType "live" }}
+    - searchrepeater.{{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName }}{{ .Values.Common.EnvironmentType }}.ibm.com
+    {{- end }}
+    - tsapp.{{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName }}{{ .Values.Common.EnvironmentType }}.{{ .Values.Common.ExternalDomian }}
+    secretName: {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName }}{{ .Values.Common.EnvironmentType }}-certificate
+  rules:
+  - host: cmc.{{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName }}{{ .Values.Common.EnvironmentType }}.{{ .Values.Common.ExternalDomian }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName }}{{ .Values.Common.EnvironmentType }}ts-web
+          servicePort: 8000
+  - host: accelerator.{{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName }}{{ .Values.Common.EnvironmentType }}.{{ .Values.Common.ExternalDomian }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName }}{{ .Values.Common.EnvironmentType }}ts-web
+          servicePort: 8001
+  - host: admin.{{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName }}{{ .Values.Common.EnvironmentType }}.{{ .Values.Common.ExternalDomian }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName }}{{ .Values.Common.EnvironmentType }}ts-web
+          servicePort: 8002
+  - host: org.{{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName }}{{ .Values.Common.EnvironmentType }}.{{ .Values.Common.ExternalDomian }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName }}{{ .Values.Common.EnvironmentType }}ts-web
+          servicePort: 8004
+  - host: store.{{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName }}{{ .Values.Common.EnvironmentType }}.{{ .Values.Common.ExternalDomian }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName }}{{ .Values.Common.EnvironmentType }}crs-app
+          servicePort: 8443
+  - host: search.{{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName }}{{ .Values.Common.EnvironmentType }}.{{ .Values.Common.ExternalDomian }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName }}{{ .Values.Common.EnvironmentType }}search-app-master
+          servicePort: 3738
+  - host: tsapp.{{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName }}{{ .Values.Common.EnvironmentType }}.{{ .Values.Common.ExternalDomian }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName }}{{ .Values.Common.EnvironmentType }}ts-app
+          servicePort: 5443
+  {{- if eq .Values.Common.EnvironmentType "live" }}
+  - host: searchrepeater.{{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName }}{{ .Values.Common.EnvironmentType }}.ibm.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName }}{{ .Values.Common.EnvironmentType }}search-app-repeater
+          servicePort: 3738
+  {{- end }}

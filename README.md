@@ -91,8 +91,11 @@ The following table shows the folders included in the project.
 Folder |   Description
 ------------- | -------------
 doc | Includes documents created in Markdown
-kubernetes*  | Includes the scripts for building Docker images
-utilities |  Includes DevOps backend scripts
+utilities/DeployController | Includes the scripts for building DeployController Docker Image
+utilities/DeploySlave | Includes the scripts for building DeploySlave Docker Image
+utilities/DeploySupport | Includes the scripts for building SupportContainer Docker Image
+scripts |  Includes DevOps backend scripts
+
 
 **Note**: The `kubernetes/DeployController` folder contains the following files for customization:
 * `plugins.txt`: Includes New or updated plugin version

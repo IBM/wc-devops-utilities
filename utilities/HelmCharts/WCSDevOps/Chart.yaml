@@ -1,0 +1,4 @@
+apiVersion: v1
+description: Commerce WCSDevOps Helm Chart for Kubernetes
+name: WCSDevOps
+version: 0.1.0

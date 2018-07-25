@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.13">
+  <actions/>
+  <description>This job will launch a utilities docker image with specified tag and it will based on the input parameter to make utilities to do the configuration when startup. Then it will launch dbclean.sh to clean the data in specified table on Commerce database.&#xd;
+&#xd;
+This is a sample job for your reference. You can based on it to create more job for your daily job requirement&#xd;
+&#xd;
+Here is the raw command you can exec directly inside of Commerce utilities Docker:&#xd;
+&#xd;
+Usage:&#xd;
+dbclean.[sh | bat] -object &lt;object name&gt; -type &lt;object type&gt; -instancexml &lt;instance name&gt; [ -db &lt;database name&gt; -dbuser &lt;user ID&gt; -dbpasswd &lt;password&gt; -dbtype &lt;database type&gt; -check_object_only [yes | no] -commit &lt;commit count&gt; -max &lt;max count&gt; -loglevel &lt;log level&gt; -days &lt;number of days&gt; -name &lt;identification number&gt; -jdbcDriver &lt;full class name&gt; -jdbcUrlPrefix &lt;JDBC URL prefix&gt; -dbschema &lt;schema name&gt; -offlinemode [yes | no] -dbauser &lt;dbauser&gt; -dbapasswd &lt;dbapasswd&gt; -prunelevel &lt;prunelevel&gt; -validatedel &lt;[yes | no]&gt; -threadcount &lt;threadcount&gt; -paramfile &lt;parameter-file&gt; -sqlparam% &lt;value&gt; -sqlmode &lt;[0 | 1 | 2 | default | direct | fullselect]&gt; ]</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>Tenant</name>
+          <description></description>
+          <defaultValue>demo</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>EnvName</name>
+          <description></description>
+          <defaultValue>qa</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>EnvType</name>
+          <description></description>
+          <defaultValue>auth</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>UtilitiesDockerTag</name>
+          <description>Tag for Utilities Docker. The default docker repository is ${dockerRepoHost}/commerce/ts-utils</description>
+          <defaultValue></defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>ObjectName</name>
+          <description>The target table name you want to do dbclean.  Clean cache is default </description>
+          <defaultValue>cacheivl</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>Type</name>
+          <description>The type illustrate the action will do on the object, as default the obsolete is the default type</description>
+          <defaultValue>obsolete</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>DBName</name>
+          <description>the name of database instance, as default the database name is mall</description>
+          <defaultValue>mall</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>DBUser</name>
+          <description>The database user ( instance user ), as default, we use wcs. Please change it to match your environment.</description>
+          <defaultValue>wcs</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.PasswordParameterDefinition>
+          <name>DBPwd</name>
+          <description>The database user ( instance user ) password. as default it is empty, please fill in the correct password</description>
+          <defaultValue>{AQAAABAAAAAQJ6agOZBbf+44RS5CqJ9TparzCWqsJ3ZsqOx7fToz0Wg=}</defaultValue>
+        </hudson.model.PasswordParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>Day</name>
+          <description>Define the how many days the data should be clean.</description>
+          <defaultValue>1</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>DBType</name>
+          <description>Define target database type, db2 is as default</description>
+          <defaultValue>db2</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>OptionParameters</name>
+          <description>Here you can input the option parameter for dbclean.sh </description>
+          <defaultValue></defaultValue>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+      <triggers/>
+    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.36.1">
+    <script>def label = &quot;run-utility_job-${UUID.randomUUID().toString()}&quot;
+podTemplate(label: label,  containers: [
+     containerTemplate(
+            name: &apos;utility&apos;,
+            image: &quot;${dockerRepoHost}/commerce/ts-utils:${UtilitiesDockerTag}&quot;,
+            ttyEnabled: true,
+            privileged: true,
+            command: &apos;cat&apos;,
+            alwaysPullImage: true,
+            envVars: [
+                containerEnvVar(key: &apos;VAULT_TOKEN&apos;, value: &quot;${vault_token}&quot;),
+                containerEnvVar(key: &apos;VAULT_URL&apos;, value: &quot;${vault_url}/v1&quot;),
+                containerEnvVar(key: &apos;TENANT&apos;, value: &quot;${Tenant}&quot;),
+                containerEnvVar(key: &apos;ENVIRONMENT&apos;, value: &quot;${EnvName}&quot;),
+                containerEnvVar(key: &apos;ENVTYPE&apos;, value: &quot;${EnvType}&quot;),
+                containerEnvVar(key: &apos;STOREWEB_HOST&apos;, value: &quot;Null&quot;),
+                containerEnvVar(key: &apos;CONFIGURE_MODE&apos;, value: &apos;Vault&apos;),
+                containerEnvVar(key: &apos;LICENSE&apos;, value: &apos;accept&apos;),
+                containerEnvVar(key: &apos;QUICKRUN&apos;, value: &apos;true&apos;)
+            ]
+        ),
+    containerTemplate(
+            name: &apos;jnlp&apos;,
+            image: &quot;${dockerRepoHost}/commerce/jnlp-slave:alpine&quot;,
+            args: &apos;${computer.jnlpmac} ${computer.name}&apos;,
+            command: &apos;&apos;
+
+        )
+  ]
+  ) 
+{
+    node (label) {
+        container(&apos;utility&apos;) {
+            stage(&apos;Build WC V9 Customization Docker Image&apos;) {
+                sh(&quot;/SETUP/bin/entrypoint.sh&quot;)
+                sh(&quot;echo dbclean.sh -dbtype ${DBType} -object ${Object} -type ${Type}  -instancexml &apos;/opt/WebSphere/CommerceServer90/instances/demo/xml/demo.xml&apos; -db ${DBName} -dbuser ${DBUser} -dbpasswd ${DBPwd} -days ${Day} ${OptionParameters}&quot;)
+                sh(&quot;/opt/WebSphere/CommerceServer90/bin/dbclean.sh -dbtype ${DBType} -object ${ObjectName} -type ${Type}  -instancexml &apos;/opt/WebSphere/CommerceServer90/instances/demo/xml/demo.xml&apos; -db ${DBName} -dbuser ${DBUser} -dbpasswd ${DBPwd} -days ${Day} ${OptionParameters}&quot;)
+            }
+        }
+    }
+}</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>

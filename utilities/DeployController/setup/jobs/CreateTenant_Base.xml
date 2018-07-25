@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.13">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.1.8">
+      <jobProperties/>
+      <triggers/>
+      <parameters/>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>Tenant</name>
+          <description>Target Tenant Name</description>
+          <defaultValue>demo</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>DedicatedRootCA</name>
+          <description>IF true, will create dedicated RootCA which name as the tenant, you can intput the root ca name to let dedicated root ca auto issue certification</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>false</string>
+              <string>true</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>CreateDedicatedView</name>
+          <description>IF true, will create dedicated view </description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>false</string>
+              <string>true</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.36.1">
+    <script>pipeline {
+    agent none
+    stages {
+        stage(&apos;Create Tenant On Vault&apos;) {
+            agent { label &apos;master&apos; }
+            steps {
+                sh &quot;python3.6 /commerce-devops-utilities/scripts/vault/initVault.py ${params.Tenant} ${vault_url} ${vault_token}&quot;
+            }
+        }
+        stage(&apos;Create Jenkins View For Tenant&apos;) {
+            agent { label &apos;master&apos; }
+            steps {
+              script {
+                  if(env.CreateDedicatedView == &apos;true&apos;){
+                    sh &quot;python3.6 /commerce-devops-utilities/scripts/jenkins/jenkins_user_control.py ${params.Tenant} admin admin ${jenkins_server}&quot;
+                  }else{
+                    sh &quot;echo ignroe create jenkins view&quot;
+                 }
+               }
+            }
+        }
+    }
+}</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>

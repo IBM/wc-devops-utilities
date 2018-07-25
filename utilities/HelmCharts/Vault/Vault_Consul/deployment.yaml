@@ -1,0 +1,54 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: vault.consul
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: vault.consul
+  template:
+    metadata:
+      labels:
+        component: vault.consul
+    spec:
+      containers:
+        - name: consul
+          image: consul:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+          - containerPort: 8500
+            name: port8500
+        - name: vault
+          image: vault:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+          - containerPort: 8200
+            name: port8200
+          volumeMounts:
+          - name: config-volume
+            mountPath: /vault/config/config.json
+            subPath: config.json
+      volumes:
+      - name: config-volume
+        configMap:
+          name: vault
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: vault-consul
+  labels:
+    component: vault.consul
+spec:
+  type: NodePort
+  ports:
+  - port: 8200
+    name: port8200
+    nodePort: 30552
+  - port: 8500
+    name: port8500
+  selector:
+    component: vault.consul

@@ -1,0 +1,48 @@
+{{- if .Values.Tsdb.Enable }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName}}{{ .Values.Common.EnvironmentType }}db
+  namespace: {{ .Values.Common.NameSpace }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        component: {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName}}{{ .Values.Common.EnvironmentType }}db
+    spec:
+      containers:
+      - name: {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName}}{{ .Values.Common.EnvironmentType }}db
+        image: {{ .Values.Common.ImageRepo }}{{ .Values.Tsdb.Image }}:{{ .Values.Tsdb.Tag }}
+        resources:
+          requests:
+            cpu: 0.5m
+            memory: 2048Mi
+          limits:
+            cpu: 2
+            memory: 4096Mi
+        env:
+        - name: "LICENSE"
+          value: "accept"
+        securityContext:
+          privileged: true
+        ports:
+        - containerPort: 50000
+          name: db
+          protocol: TCP
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName}}{{ .Values.Common.EnvironmentType }}db
+  namespace: {{ .Values.Common.NameSpace }}
+spec:
+  type: NodePort
+  ports:
+  - port: 50000
+    name: dbport
+    targetPort: 50000
+  selector:
+    component: {{ .Values.Common.Tenant }}{{ .Values.Common.EnvironmentName}}{{ .Values.Common.EnvironmentType }}db
+{{ end -}}

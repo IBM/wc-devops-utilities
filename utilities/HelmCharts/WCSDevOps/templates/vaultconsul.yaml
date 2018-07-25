@@ -1,0 +1,91 @@
+{{- if .Values.VaultConsul.Enable  }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vault
+  namespace: {{ .Values.Common.NameSpace }}
+data:
+  config: |
+    storage "consul" {
+             address = "127.0.0.1:8500"
+             path = "vault"
+    }
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: vault.consul
+  namespace: {{ .Values.Common.NameSpace }}
+spec:
+  replicas: {{ .Values.VaultConsul.Replicas }}
+  template:
+    metadata:
+      labels:
+        component: vault.consul
+        group: wcsdevops
+    spec:
+      {{- if .Values.VaultConsul.NodeSelector }}
+      nodeSelector:
+        {{- range $key, $value := .Values.VaultConsul.NodeSelector }}
+          {{ $key }}：{{ $value }}
+        {{- end }}
+      {{- end }}
+      containers:
+        - name: consul
+          image: "{{ .Values.VaultConsul.ConsulImage }}:{{ .Values.VaultConsul.ConsulTag }}"
+          imagePullPolicy: IfNotPresent
+          ports:
+          - containerPort: 8500
+            name: port8500
+          env:
+{{- if .Values.VaultConsul.EnvParameters.Consul }}
+     {{- range $key, $value := .Values.VaultConsul.EnvParameters.Consul }}
+        {{- if $value }}
+        - name: {{ $key | quote}}
+          value: {{ $value | quote}}
+        {{- end }}
+     {{- end }}
+{{- end }}
+        - name: vault
+          image: "{{ .Values.VaultConsul.VaultImage }}:{{ .Values.VaultConsul.VaultTag }}"
+          imagePullPolicy: IfNotPresent
+          env:
+{{- if .Values.VaultConsul.EnvParameters.Vault }}
+     {{- range $key, $value := .Values.VaultConsul.EnvParameters.Vault }}
+        {{- if $value }}
+        - name: {{ $key | quote}}
+          value: {{ $value | quote}}
+        {{- end }}
+     {{- end }}
+{{- end }}
+          ports:
+          - containerPort: 8200
+            name: port8200
+          volumeMounts:
+          - name: config-volume
+            mountPath: /vault
+      volumes:
+      - name: config-volume
+        configMap:
+          name: vault
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: vault-consul
+  namespace: {{ .Values.Common.NameSpace }}
+  labels:
+    component: vault.consul
+spec:
+  type: NodePort
+  ports:
+  - port: 8200
+    name: port8200
+    nodePort: 30552
+  - port: 8500
+    name: port8500
+  selector:
+    component: vault.consul
+{{- end }}

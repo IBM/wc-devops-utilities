@@ -1,0 +1,39 @@
+Common:
+  NameSpace: default
+
+VaultConsul:
+  Replicas: 1
+  VaultImage: vault
+  VaultTag: latest
+  ConsulImage: consul
+  ConsulTag: latest
+  Enable: true
+  NodeSelector:
+  EnvParameters:
+      Vault:
+      Consul:
+
+Jenkins:
+  Replicas: 1
+  Image: deploycontroller
+  Tag: latest
+  EnvParameters:
+    InCluster: true
+    VaultUrl:
+    VaultToken:
+    KubernetesUrl:
+    BundleRepo: http://9.110.182.156:8081/nexus/content/repositories/releases/commerce
+    DockerRepo: bxv8v141.cn.ibm.com
+    DockerRepoPwd: Harbor12345
+    DockerRepoUser: admin
+    HelmChartsRepo: http://9.112.245.194:8879/charts
+  NodeSelector:
+
+Nexus:
+  Replicas: 1
+  Image: sonatype/nexus
+  Tag: latest
+  NodePort: true
+  Enable: false
+  NodeSelector:
+  EnvParameters:
