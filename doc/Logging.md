@@ -2,11 +2,10 @@
 ## ELK logging solution for WebSphere Commerce deployment utilities ##
 
  This topic demonstrates how to use ELK (Elastic) stack, a popular open-source logging platform, as a sample logging solution for WebSphere Commerce deployment utilities. In your production environment, you can also leverage other commercial logging solutions to meet your business needs.
-<!--Tiffany: Added the following paragraph. Please verify.-->
  In this sample ELK solution, the following components are included:
  * **ElasticSearch**: Is an open-source, distributed, RESTful, JSON-based search engine.
- * **Kibana**:  Allows you to visualize your Elasticsearch data and navigate the ELK Stack
- * **Filebeat**: Offers a lightweight way to forward and centralize logs and files
+ * **Kibana**:  Allows you to visualize your Elasticsearch data and navigate the ELK Stack.
+ * **Filebeat**: Offers a lightweight way to forward and centralize logs and files.
 
 For more information about the ELK stack, see [the Elastic website](https://www.elastic.co/elk-stack).
 
@@ -15,10 +14,10 @@ For more information about the ELK stack, see [the Elastic website](https://www.
 * `filebeat.yml`
 * `dockerfile` <!--Tiffany: Where can I find these files? Yong, Yue is trying this file, will upload to a individual folder named like filebeat-->
 
-The following diagram shows the architecture of the sample solution. Each WebSphere Commerce Docker container works with a 'sidecar' <!--Tiffany: What is a side car? Yong, sidecar is kubernetes word, means the filebeat container here--> Filebeat container to collect logs in real time. By leveraging the shared volume capability of pod, Filebeat can access the log files in the shared volume of WebSphere Commerce directly, and then transfer the logs (in JSON format) to the ElasticSearch system. After that you can view the logs in the Kibana UI. <br/>
+The following diagram shows the architecture of the sample solution. Each WebSphere Commerce Docker container works with a 'sidecar' Filebeat container to collect logs in real time. By leveraging the shared volume capability of pod, Filebeat can access the log files in the shared volume of WebSphere Commerce directly, and then transfer the logs (in JSON format) to the ElasticSearch system. After that you can view the logs in the Kibana UI. <br/>
 <img src="https://github.com/IBM/wc-devops-utilities/raw/draftdoc/doc/images/WC_K8S_ELK.png" width = "800" height = "450" align=center />
 
-After Kubernetes launches all the container, you can check the logs in the Kinaba UI through `http://<Kibana_Host>:5601`, as shown below <!--Tiffany: The screenshot is too vague to view. Yong, upload a new picture-->.<br/>
+After Kubernetes launches all the container, you can check the logs in the Kinaba UI through `http://<Kibana_Host>:5601`, as shown below.<br/>
   <img src="https://github.com/IBM/wc-devops-utilities/raw/draftdoc/doc/images/Kibana1.png" width = "800" height = "450" align=center /><br/>
 
   The message field in the Kibana UI includes the log message, as shown below.<br/>
@@ -36,7 +35,7 @@ docker build -f &lt;sample_dockerfile&gt; -t &lt;repository&gt;:&lt;tag&gt; .
 </pre>
 <img src="https://github.com/IBM/wc-devops-utilities/raw/draftdoc/doc/images/Build_Filebeat_Image.png" width = "600" height = "135" align=center /><br/>
 
-  ### Customizing `filebeat.yml` ### <!--Tiffany: Content in this section is problematic. Please review and fix the problem. Yong,???-->
+  ### Customizing `filebeat.yml` ###
 
   To get rid of the exception stack split into multiple messages in the ElasticSearch, add the following to the `filebeat.yml` file:
   <pre>
@@ -65,24 +64,28 @@ docker build -f &lt;sample_dockerfile&gt; -t &lt;repository&gt;:&lt;tag&gt; .
   For detailed instructions, see the Docker official guide:<br/>
   https://docs.docker.com/engine/reference/builder/#usage
 
-## Deployment the logging solution ##
-<!--Tiffany: Need a sentence or two to introduce the purpose of deployment. Yong,???-->
+## Enabling the logging solution during WebSphere Commerce deployment##
+To enable the logging solution when you deploy WebSphere Commerce V9, follow these steps.
 ### Prerequisite ###
-Before you deploy the ELK stack, you need to set up ElasticSearch and Kibana.
+Before you enable the logging solution, you need to set up ElasticSearch and Kibana.
 *  To install the ElasticSearch (or ElasticSearch cluster), follow the official installation guide Based on your business requirement, consider using the ElasticSearch cluster if the logging throughput is huge:<br/>
   https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html<br/>
   https://www.elastic.co/guide/en/elasticsearch/reference/current/install-elasticsearch.html
 * To install Kibana, follow the official installation guide:<br/>
   https://www.elastic.co/guide/en/kibana/current/install.html
 
- ### Launching Filebeat container alone with the WebSphere Commerce container ###
+ ### Procedure ###
+
+ To enable the logging solution, launch Filebeat container alone with the WebSphere Commerce container.
+ <!--Tiffany: Need a link to the deployment job doc-->
+
+ You need to change the following flags in the parameters of the sample deployment Jenkins job:
+ * <B>FileBeat.Enable</B>: Change this flag to 'true' to enable Filebeat container alone with the WebSphere Commerce container.
+ * <B>FileBeat.ELKServer</B>: Change this flag to your ElasticSearch server (or the the Master node of your ElasticSearch cluster).
+
 
  The following screen shot shows a sample deployment job.<br/><br/>
  <img src="https://github.com/IBM/wc-devops-utilities/raw/draftdoc/doc/images/Enable_Filebat&ELK.png" width = "450" height = "400" align=center /><br/>
-
-The job includes the following parameters:
-<B>FileBeat.Enable</B>: Change this flag to 'true' to enable Filebeat container alone with the WebSphere Commerce container.
-<B>FileBeat.ELKServer</B>: Change this flag to your ElasticSearch server (or the the Master node of your ElasticSearch cluster).
 
 
   ### Reference: The out-of-the-box behavior of the sample logging solution ###
