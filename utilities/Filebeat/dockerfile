@@ -1,4 +1,4 @@
-FROM sample.cn.ibm.com/commerce/filebeat:6.3.0
+FROM filebeat:6.3.0
 COPY Entrypoint.sh /etc/
 COPY filebeat_search_store.yml /etc/
 COPY filebeat_ts_app.yml /etc/
