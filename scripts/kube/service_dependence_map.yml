@@ -8,7 +8,6 @@ ServiceDepMap:
      search:
         - transaction
      store:
-        - transaction
         - search
      transaction-web:
         - transaction
