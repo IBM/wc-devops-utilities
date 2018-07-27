@@ -53,7 +53,7 @@ Before you run build Docker images, ensure that your machine has Docker (DockerC
     **Note**: you can specify the Docker image tag in the following pattern:
         ./BuildDocker.sh deploycontroller:<newtag>
 
-    The `kubernetes/DeployController` folder contains the following files for customization:
+    The `utilities/DeployController` folder contains the following files for customization:
       * `plugins.txt`: Includes New or updated plugin version
       * `setup/jobs`: Includes pre-defined Jenkins job.
       * `users/admin/config.xml`: Includes the default admin user information
