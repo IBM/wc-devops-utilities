@@ -10,12 +10,14 @@ WebSphere Commerce DevOps Utilities are built and deployed as Docker images, inc
 * DeployController
 * DeploySlave
 * SupportContainer
+* Jenkins Slave Plugin Container
 
 Docker image |  Embedded assets  | Role and description
 ------------- | -------------| -------------
 DeployController | Jenkins/ Pre-defined Jenkins job/ DevOps backend scripts |  A Jenkins-based tool to work as the controller to trigger related jobs and fulfill tasks such as environment deployment and Docker image build
 DeploySlave  | Dockerd / Helm client / DevOps backend scripts | Can be triggered by DeployController to build customized Docker image including your customization package and can then be deployed in the Kubernetes environment  with Helm
 SupportContainer | DevOps backend scripts | Handles Helm pre- and post-deployment hook/ Works as commander to control the startup sequence
+Jenkins Slave Plugin Container | Jenkins Agent | A Jenkins slave using JNLP to establish connection ( You can download it from [jenkinsci/jnlp-slave](https://hub.docker.com/r/jenkinsci/jnlp-slave/)
 
 Vault and Nexus Docker images, by default, are seamlessly integrated with the DevOps Utilities.
 
@@ -27,8 +29,8 @@ In the WebSphere Commerce DevOps utilities:
 
 You can deploy the DevOps Utilities by using Helm Chart. For more information about Helm Chart, see [Commerce DevOps Utilities Helm Charts](https://github.com/IBM/wc-helmchart)
 
-The following diagram shows the components of the WebSphere Commerce using DevOps Utilities.
-  <img src="https://github.com/IBM/wc-devops-utilities/raw/master/doc/images/Overview.png" width = "700" height = "450" alt="Overview" align=center /><br>
+The following diagram shows the components of the WebSphere Commerce using DevOps Utilities.<br>
+  <img src="./doc/images/Overview.png" width = "700" height = "450" alt="Overview" align=center /><br>
 
 <!--## Design ##
 
@@ -50,6 +52,13 @@ Before you run build Docker images, ensure that your machine has Docker (DockerC
 
     **Note**: you can specify the Docker image tag in the following pattern:
         ./BuildDocker.sh deploycontroller:<newtag>
+
+    The `kubernetes/DeployController` folder contains the following files for customization:
+      * `plugins.txt`: Includes New or updated plugin version
+      * `setup/jobs`: Includes pre-defined Jenkins job.
+      * `users/admin/config.xml`: Includes the default admin user information
+      * `config.xml`:Includes global variables for Jenkins
+      * `jenkins.sh`: Includes Jenkins startup logic
 
 2. Go to the `commerce-devops-utilities/kubernetes/DeploySlave` directory, and run the following command to build the DeploySlave Docker image:
 
@@ -76,10 +85,14 @@ Ensure to deploy WebSphere Commerce DevOps Utilities under the `default` Kuberne
 
 After the deployment is completed, you can access the DeployController user interface by logging into `http://IngressIPAddress:31899` with the default user name and password (`admin/admin`), and check the following pre-defined jobs:
 
-<img src="https://github.com/IBM/wc-devops-utilities/raw/master/doc/images/DeployControllerJobList.png" width = "700" height = "450" alt="Overview" align=center /><br>
+<img src="./doc/images/DeployControllerJobList.png" width = "400" height = "550" alt="Overview" align=center /><br>
 
-**Tip**:
- For each job in DeployController, make sure to open the `config` page and click `Save`, so that the Parameter plugin can be loaded.
+**Tip**: <br>
+1. For each job in DeployController, make sure to open the `config` page and click `Save`, so that the Parameter plugin can be loaded.
+
+2. Before you launch Jenkins Job, please make sure you have upload related Docker Image to private Docker Repository
+   As default, Jenkins Job will download Docker Image under "commerce" library with latest tag from private Docker repository which you set in DeployController.
+
 
 ## Using WebSphere Commerce Utilities ##
 
@@ -94,15 +107,9 @@ doc | Includes documents created in Markdown
 utilities/DeployController | Includes the scripts for building DeployController Docker Image
 utilities/DeploySlave | Includes the scripts for building DeploySlave Docker Image
 utilities/DeploySupport | Includes the scripts for building SupportContainer Docker Image
+utilities/Filebeat | Includes scripts to build Filebeat Docker Image for Commerce V9. See [Logging Solution](doc/LoggingSolution.md)
 scripts |  Includes DevOps backend scripts
 
-
-**Note**: The `kubernetes/DeployController` folder contains the following files for customization:
-* `plugins.txt`: Includes New or updated plugin version
-* `setup/jobs`: Includes pre-defined Jenkins job
-* `users/admin/config.xml`: Includes the default admin user information
-* `config.xml`:Includes global variables for Jenkins
-* `jenkins.sh`: Includes Jenkins startup logic
 
 ## Contributing to the project ##
 
