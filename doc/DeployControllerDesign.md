@@ -137,7 +137,16 @@ CreatedDedicatedView | Specifies whether to create a dedicated Jenkins view for 
 
 Job description: <br>
 
-Based on user input, this job is to deploy, update, or delete the WebSphere Commerce V9 environment with Helm by launching a temporary Pod with DeploySlave.
+Based on user input, this job is to install, update, or delete the WebSphere Commerce V9 environment with Helm by launching a temporary Pod with DeploySlave.
+
+This job supports the following user actions:
+
++ **Install**: This action will deploy a new WebSphere Commerce V9 environment by running the `helm install` command. If the new environment is of the same Tenant, EnvName, and EnvType, the previous environment is removed before installing the new environment.
++ **Update**: Performing this action updates existing WebSphere Commerce V9 environment by running the `helm update` command. This action can be applied in the following scenarios:
+  + **Scale in**: Scaling in the replicas of pods with HelmChart_Values and then perform the update action.
+  + **Scale out**: Scaling out the replicas of pods with HelmChart_Values and then perform the update action.
+  + **Update the existing pods**: Refreshing the tag of the image with HelmChart_Values and then perform the update action.
++ **Delete**: Running the `Helm delete` command to delete the WebSphere Commerce V9 environment according to Tenant, EnvName, and EnvType.
 
 Job UI: <br>
 <img src="./images/DeployWCSCloudUI.png" width = "400" height = "250" alt="Overview" align=center /><br>
