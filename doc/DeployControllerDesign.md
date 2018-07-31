@@ -271,6 +271,63 @@ is to be deployed.
 SpiUser | SPI user name.
 SpiPwd  | SPI user password.
 
+### Utilities_DBClean_Base ###
+Job description:  <br>
+
+This job will launch a utilities docker image with specified tag and it will based on the input parameter to make utilities to do the configuration when startup. Then it will launch dbclean.sh to clean the data in specified table on Commerce database.
+
+This is a sample job for your reference. You can based on it to create more job for your daily job requirement
+
+
+Job UI: <br>
+
+<img src="./images/Utilities_DBCleanUI.png" width = "400" height = "250" alt="Overview" align=center /><br>
+
+Job UI parameters: <br>
+
+Parameter  |  Description
+------------- | -------------
+Tenant (*)| Tenant name. One tenant can have multiple environments. In Kubernetes, tenant can be separated by NameSpace.
+EnvName (*) |Target environment name.
+EnvType (*) | Target environment type.
+UtilitiesDockerTag (*) | Target Utilities Docker image tag. By default, the tag is input from the WebSphere Commerce project in the private Docker repository.
+ObjectName (*) | Specify target table name you want to do dbclean. cacheivl is the default table name for cache
+Type (*) | Specify what action you want to do on object you specified. obsolete is the default action for delete object
+DBName (*) | Specify target database name. mall is the default database name
+DBUser (*) | Specify database user name ( instance user ). wcs is the default database user
+DBPwd (*) | Specify database user password ( instance user password).
+Day (*) | Specify how long time of data need to be clean. one day is the default value.
+DBType (*) | Specify database type, DB2 is the default database type
+OptionParameters | Empty as default, you can add option parameters of DBClean in this field
+
+
+### Utilities_StagingProp_Base ###
+Job description:  <br>
+
+This job will launch a utilities docker image with specified tag and it will based on the input parameter to make utilities to do the configuration when startup. Then it will launch stagingprop.sh
+
+Job UI: <br>
+
+<img src="./images/Utilities_StagingPropUI.png" width = "300" height = "450" alt="Overview" align=center /><br>
+
+Job UI parameters: <br>
+
+Parameter  |  Description
+------------- | -------------
+Tenant (*)| Tenant name. One tenant can have multiple environments. In Kubernetes, tenant can be separated by NameSpace.
+EnvName (*) |Target environment name.
+EnvType (*) | Target environment type.
+UtilitiesDockerTag (*) | Target Utilities Docker image tag. By default, the tag is input from the WebSphere Commerce project in the private Docker repository.
+DBType (*) | Specify database type, DB2 is the default database type
+Scope (*) | Specify the scope of staging prop, "__all__" as default value.
+SourceDB (*) | Specify the source database (e.g: IP:Port/DBName)
+SourceDB_User (*) | Specify the source database user ( instance user )
+SourceDBUser_Pwd (*) | Specify the source database user password ( instance user password )
+DestDB (*) | Specify the destination database (e.g: IP:Port/DBName)
+DestDB_User (*) | Specify the destination database user (instance user )
+DestDB_User (*) | Specify the destination database user password
+OptionParameters | Empty as default, fill in option parameter of StagingProp
+
 ### Utilities_UpdateDB_Base ###
 Job description:  <br>
 
