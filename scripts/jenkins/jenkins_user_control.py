@@ -49,6 +49,7 @@ ManageVaultConfigName = "ManageVaultConfig_" + args.tenant_id
 UtilsDBCleanName = "Utilities_DBClean_" + args.tenant_id
 UtilsVersionInfoName = "Utilities_VersionInfo_" + args.tenant_id
 UtilsUpdateDBName = "Utilities_UpdateDB_" + args.tenant_id
+UtilsStagingPropName = "Utilities_StagingProp_" + args.tenant_id
 
 server.copy_job('ManageConfigMap_Base', ManageConfigMapName)
 server.copy_job('DeployWCSCloud_Base', DeployWCSCloudName)
@@ -60,6 +61,7 @@ server.copy_job('ManageVaultConfig_Base', ManageVaultConfigName)
 server.copy_job('AddCert_Base', AddCertName)
 server.copy_job('BundleCert_Base', BundleCertName)
 server.copy_job('Utilities_DBClean_Base', UtilsUpdateDBName)
+server.copy_job('Utilities_StagingProp__Base', UtilsStagingPropName)
 server.copy_job('Utilities_UpdateDB_Base', UtilsUpdateDBName)
 server.copy_job('Utilities_VersionInfo_Base', UtilsVersionInfoName)
 
@@ -75,6 +77,7 @@ templateVars = {
     "BundleCert": BundleCertName,
     "ManageVaultConfig": ManageVaultConfigName,
     "UtilsDBClean": UtilsDBCleanName,
+    "UtilsStagingProp": UtilsStagingPropName,
     "UtilsUpdateDB": UtilsUpdateDBName,
     "UtilsVersinInfo": UtilsVersionInfoName,
     "name" : args.tenant_id

@@ -16,6 +16,7 @@
     <string>{{TriggerIndex}}</string>
     <string>{{TriggerIndexRep}}</string>
     <string>{{UtilsDBClean}}</string>
+    <string>{{UtilsStagingProp}}</string>
     <string>{{UtilsUpdateDB}}</string>
     <string>{{UtilsVersinInfo}}</string>
   </jobNames>
