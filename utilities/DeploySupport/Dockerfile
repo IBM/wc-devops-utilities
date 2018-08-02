@@ -1,7 +1,7 @@
 #Need a base python docker
 #Install kubernetes python client
 #Install the python scripts develped for ( check dependence / create and check secure / create and check PVC )
-FROM bxv8v141.cn.ibm.com/library/python:3.6-alpine3.6
+FROM python:3.6-alpine3.6
 
 COPY ./kube-python /kube-python
 RUN  apk add --update openssl && \
