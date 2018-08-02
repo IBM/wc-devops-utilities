@@ -183,6 +183,11 @@ InitC:
 SupportC:
   Image: supportcontainer
   Tag: 1.9.6
+FileBeat:
+  Enable: false
+  Image: filebeat
+  Tag: latest
+  ELKServer: ELKServer.cn.ibm.com
         &quot;&quot;&quot;
 }
 
