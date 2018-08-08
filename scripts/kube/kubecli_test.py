@@ -4,6 +4,7 @@ import kube_secret
 import kube_servicecheck
 import kube_pvc
 import kube_configmap
+import kube_pod
 import os
 
 #Current file path
@@ -19,8 +20,8 @@ if __name__ == "__main__":
     # for quick testing input prameter can use this:
     # args = parser.parse_args(["-configtype","OutCluster","createsecret","-tenant","demo4", "-env","ky", "-envtype","auth","-replace","true","-namespace","demo4"])
     # args = parser.parse_args(["-configtype", "OutCluster", "deletesecret", "-tenant", "demo4", "-env", "ky", "-envtype", "auth","-namespace", "demo4"])
-    #args = parser.parse_args(["-configtype", "OutCluster", "depcheck", "-tenant", "demo", "-env", "qa", "-envtype", "auth","-namespace","default","-component","transaction","-interval_time","5","-expect_during_time","180"])
-
+    # args = parser.parse_args(["-configtype", "OutCluster", "depcheck", "-tenant", "demo", "-env", "qa", "-envtype", "auth","-namespace","default","-component","transaction","-interval_time","5","-expect_during_time","180"])
+    # args = parser.parse_args(["-configtype", "OutCluster", "listpods_by_label", "-namespace_name", "default","-field_selector","status.phase=Running"])
     # args = parser.parse_args(["-configtype", "OutCluster", "createpvc", "-tenant", "demo", "-env", "dev", "-envtype", "live","-component","search","-storage_class","glusterfs"])
 
     configMapData = '''FROM test:latest

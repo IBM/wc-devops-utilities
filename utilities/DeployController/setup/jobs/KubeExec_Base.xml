@@ -1,0 +1,127 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.13">
+  <actions/>
+  <description>This job can help to check pod list under specified namespace and trigger specified command on selected pods in list&#xd;
+&#xd;
+You can input the LabelSelector and FieldSelector to filter the pods&#xd;
+&#xd;
+</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <org.biouno.unochoice.CascadeChoiceParameter plugin="uno-choice@1.5.3">
+          <name>NameSpace</name>
+          <description></description>
+          <randomName>choice-parameter-1558750761057129</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <secureScript plugin="script-security@1.29.1">
+              <script>def process = [&quot;python&quot;,&quot;/commerce-devops-utilities/scripts/kube/kube_namespace.py&quot;,&quot;namespace&quot;,&quot;-mode&quot;,&quot;inCluster&quot;].execute()
+
+def result = process.in.text.replace(&apos;\n&apos;,&apos;&apos;)
+return result.tokenize(&apos;,&apos;)
+</script>
+              <sandbox>false</sandbox>
+            </secureScript>
+            <secureFallbackScript plugin="script-security@1.29.1">
+              <script></script>
+              <sandbox>false</sandbox>
+            </secureFallbackScript>
+          </script>
+          <projectName>KubeExec_Base</projectName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters></referencedParameters>
+          <choiceType>PT_SINGLE_SELECT</choiceType>
+          <filterable>false</filterable>
+        </org.biouno.unochoice.CascadeChoiceParameter>
+        <hudson.model.StringParameterDefinition>
+          <name>LabelSelector</name>
+          <description>Input the label selector for pod, or leave it as empty. Empty means will not do filter on return list
+
+Sample:
+
+group=demoqalive,component=demoqalivecrs-app</description>
+          <defaultValue></defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>FieldSelector</name>
+          <description>Input FieldSelector to filter pod in list or leave it as empty. Empty means will not do filter on return list
+
+Sample for list pod which is in running status:
+
+status.phase=Running</description>
+          <defaultValue></defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <org.biouno.unochoice.CascadeChoiceParameter plugin="uno-choice@1.5.3">
+          <name>Pods</name>
+          <description>Pods list, based on the input NameSpace / LabelSelector / FieldSelector</description>
+          <randomName>choice-parameter-1558750768234003</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <secureScript plugin="script-security@1.29.1">
+              <script>def process = [&quot;python&quot;,&quot;/commerce-devops-utilities/scripts/kube/kubcli.py&quot;,&quot;listpods_by_label&quot;,&quot;-namespace_name&quot;,NameSpace,&quot;-label_selector&quot;,LabelSelector,&quot;-field_selector&quot;,FieldSelector].execute()
+
+def result = process.in.text.replace(&apos;\n&apos;,&apos;&apos;)
+return result.tokenize(&apos;,&apos;)</script>
+              <sandbox>false</sandbox>
+            </secureScript>
+            <secureFallbackScript plugin="script-security@1.29.1">
+              <script></script>
+              <sandbox>false</sandbox>
+            </secureFallbackScript>
+          </script>
+          <projectName>KubeExec_Base</projectName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters>NameSpace,LabelSelector,FieldSelector</referencedParameters>
+          <choiceType>PT_CHECKBOX</choiceType>
+          <filterable>false</filterable>
+        </org.biouno.unochoice.CascadeChoiceParameter>
+        <hudson.model.TextParameterDefinition>
+          <name>Command</name>
+          <description>Input the command you want to exec on target pod. 
+
+Sample command for check version of Pod
+ /SETUP/bin/viewlabels. </description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+      <triggers/>
+    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.36.1">
+    <script>def label = &quot;RUN_Kube_Exec_job-${UUID.randomUUID().toString()}&quot;
+podTemplate(label: label,  containers: [
+     containerTemplate(
+            name: &apos;eventagent&apos;,
+            image: &quot;${dockerRepoHost}/commerce/eventagent:latest&quot;,
+            ttyEnabled: true,
+            privileged: true,
+            command: &apos;cat&apos;,
+            alwaysPullImage: true,
+        ),
+    containerTemplate(
+            name: &apos;jnlp&apos;,
+            image: &quot;${dockerRepoHost}/commerce/jnlp-slave:alpine&quot;,
+            args: &apos;${computer.jnlpmac} ${computer.name}&apos;,
+            command: &apos;&apos;
+
+        )
+  ]
+  ) 
+{
+    node (label) {
+        container(&apos;eventagent&apos;) {
+            stage(&apos;run kubectl exec command&apos;) {
+                sh(&quot;/EventAgent --mode inCluster --Pods $Pods --namespace $NameSpace --command &apos;$Command&apos;&quot;)
+            }
+        }
+    }
+}</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>

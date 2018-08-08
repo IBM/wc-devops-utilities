@@ -238,12 +238,14 @@
         <string>BundleCert_Base</string>
         <string>CreateTenant_Base</string>
         <string>DeployWCSCloud_Base</string>
+        <string>KubeExec_Base</string>
         <string>ManageConfigMap_Base</string>
         <string>ManageDockerfile_Base</string>
         <string>ManageVaultConfig_Base</string>
         <string>TriggerBuildIndex_Base</string>
         <string>TriggerIndexReplica_Base</string>
         <string>Utilities_DBClean_Base</string>
+        <string>Utilities_StagingProp_Base</string>
         <string>Utilities_UpdateDB_Base</string>
         <string>Utilities_VersionInfo_Base</string>
       </jobNames>

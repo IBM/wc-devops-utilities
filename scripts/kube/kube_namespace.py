@@ -21,3 +21,7 @@ SubParsers = Parser.add_subparsers(help='Sub Commands')
 NS_Parser = SubParsers.add_parser('namespace', help='this command used to list all namespaces')
 NS_Parser.add_argument('-mode',type=str,default='outCluster',help='choose inCluster or outCluster')
 NS_Parser.set_defaults(func=NS_list)
+
+if __name__=="__main__":
+  args = Parser.parse_args()
+  args.func(args)

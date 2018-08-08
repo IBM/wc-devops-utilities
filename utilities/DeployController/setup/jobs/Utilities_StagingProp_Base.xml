@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.13">
+  <actions/>
+  <description>This job will launch a utilities docker image with specified tag and it will based on the input parameter to make utilities to do the configuration when startup. Then it will launch stagingprop.sh &#xd;
+&#xd;
+This is a sample job for your reference. You can based on it to create more job for your daily job requirement&#xd;
+&#xd;
+Usage:&#xd;
+&#xd;
+./stagingprop.sh -dbtype &lt;dbtype&gt; [-sourcedb_schema &lt;sourcedb_schema&gt;] [-destdb_schema &lt;destdb_schema&gt;] -scope &lt;scope&gt; [-dbtable &lt;tablename&gt;] -sourcedb &lt;sourcedb&gt; -sourcedb_user &lt;sourcedb_user&gt; -sourcedb_passwd &lt;sourcedb_passwd&gt; -destdb &lt;destdb&gt; -destdb_user &lt;destdb_user&gt; -destdb_passwd &lt;destdb_passwd&gt;</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>Tenant</name>
+          <description></description>
+          <defaultValue>demo</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>EnvName</name>
+          <description></description>
+          <defaultValue>qa</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>EnvType</name>
+          <description></description>
+          <defaultValue>auth</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>UtilitiesDockerTag</name>
+          <description>Tag for Utilities Docker. The default docker repository is ${dockerRepoHost}/commerce/ts-utils</description>
+          <defaultValue></defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>DBType</name>
+          <description>Specify the database type, use db2 as default</description>
+          <defaultValue>DB2</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>Scope</name>
+          <description>Specify the scope </description>
+          <defaultValue>_all_</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>SourceDB</name>
+          <description>Specify source database</description>
+          <defaultValue></defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>SourceDB_User</name>
+          <description>Specify the </description>
+          <defaultValue>wcs</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.PasswordParameterDefinition>
+          <name>SourceDBUser_Pwd</name>
+          <description>Specify source database user paswword, use wcs1 as default value</description>
+          <defaultValue>{AQAAABAAAAAQKqRcZ4E7Wd5wYMefqYEs5QPfZZwlvImqfWE88vSZbjQ=}</defaultValue>
+        </hudson.model.PasswordParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>DestDB</name>
+          <description>Specify the destination database </description>
+          <defaultValue></defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>DestDB_User</name>
+          <description>Specify the destDB user, use wcs as default</description>
+          <defaultValue>wcs</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.PasswordParameterDefinition>
+          <name>DestDBUser_Pwd</name>
+          <description>Specify destination database user password, use wcs1 as default value.</description>
+          <defaultValue>{AQAAABAAAAAQJ3Kd2a0l1ujeTIdW0ypGY+AfAVnkxqFeTH/BJzTJL64=}</defaultValue>
+        </hudson.model.PasswordParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>OptionParameters</name>
+          <description>Specify the option parameters for stagingprop </description>
+          <defaultValue></defaultValue>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+      <triggers/>
+    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.36.1">
+    <script>def label = &quot;run-utility_job-${UUID.randomUUID().toString()}&quot;
+podTemplate(label: label,  containers: [
+     containerTemplate(
+            name: &apos;utility&apos;,
+            image: &quot;${dockerRepoHost}/commerce/ts-utils:${UtilitiesDockerTag}&quot;,
+            ttyEnabled: true,
+            privileged: true,
+            command: &apos;cat&apos;,
+            alwaysPullImage: true,
+            envVars: [
+                containerEnvVar(key: &apos;VAULT_TOKEN&apos;, value: &quot;${vault_token}&quot;),
+                containerEnvVar(key: &apos;VAULT_URL&apos;, value: &quot;${vault_url}/v1&quot;),
+                containerEnvVar(key: &apos;TENANT&apos;, value: &quot;${Tenant}&quot;),
+                containerEnvVar(key: &apos;ENVIRONMENT&apos;, value: &quot;${EnvName}&quot;),
+                containerEnvVar(key: &apos;ENVTYPE&apos;, value: &quot;${EnvType}&quot;),
+                containerEnvVar(key: &apos;STOREWEB_HOST&apos;, value: &quot;Null&quot;),
+                containerEnvVar(key: &apos;CONFIGURE_MODE&apos;, value: &apos;Vault&apos;),
+                containerEnvVar(key: &apos;LICENSE&apos;, value: &apos;accept&apos;),
+                containerEnvVar(key: &apos;QUICKRUN&apos;, value: &apos;true&apos;)
+            ]
+        ),
+    containerTemplate(
+            name: &apos;jnlp&apos;,
+            image: &quot;${dockerRepoHost}/commerce/jnlp-slave:alpine&quot;,
+            args: &apos;${computer.jnlpmac} ${computer.name}&apos;,
+            command: &apos;&apos;
+
+        )
+  ]
+  ) 
+{
+    node (label) {
+        container(&apos;utility&apos;) {
+            stage(&apos;Build WC V9 Customization Docker Image&apos;) {
+                sh(&quot;/SETUP/bin/entrypoint.sh&quot;)
+                sh(&quot;/opt/WebSphere/CommerceServer90/bin/stagingprop.sh -dbtype ${DBType} -scope ${Scope} -sourcedb ${SourceDB} -sourcedb_user ${SourceDB_User} -sourcedb_passwd ${SourceDBUser_Pwd} -destdb ${DestDB} -destdb_user ${DestDB_User} -destdb_passwd ${DestDBUser_Pwd} ${OptionParameters}&quot;)
+            }
+        }
+    }
+}</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>

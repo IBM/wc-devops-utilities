@@ -33,27 +33,34 @@ def listPods(Client,NameSpace,PodNamePattern):
     return candaditePods
 
 def ListPods_by_Label(parser_args):
-    if (parser_args.mode == "inCluster") :
-        config.load_incluster_config()
-    elif (parser_args.mode == "outCluster"):
-        config.load_kube_config()
-    else:
-        print("error mode configuration")
-        sys.exit(1)
-    v1 = client.CoreV1Api()
+
+    _CoreV1Api = globalvars.get_value('KubCoreV1Api')
+    if not _CoreV1Api:
+        factory.Factory_InitKubeClient(parser_args.configtype, parser_args.configfile)
+        _CoreV1Api = globalvars.get_value('KubCoreV1Api')
 
     candaditePods=[]
-    pod_list = v1.list_namespaced_pod(namespace=parser_args.namespace_name, label_selector=parser_args.label_selector)
-    for i in pod_list.items:
-        candaditePods.append(i.metadata.name)
+
+    #sample for label and field_selector: label_selector="group=demoqalive,component=demoqalivecrs-app"  field_selector="status.phase=Running"
+    pod_list = _CoreV1Api.list_namespaced_pod(namespace=parser_args.namespace_name, label_selector=parser_args.label_selector,field_selector=parser_args.field_selector)
+
+    for item in pod_list.items:
+        if item.status.container_statuses[0].state.running != 'None':
+           candaditePods.append(item.metadata.name)
+           #print(item.status.container_statuses[0].state.running)
+           print(item.metadata.name + "," )
 
 
 Parser = argparse.ArgumentParser(add_help=True)
 SubParsers = Parser.add_subparsers(help='Sub Commands')
 
+# Init subparser for dependence check related command
+_secureSubParser=globalvars.get_value('SubCMDParser')
+Pod_Parser=_secureSubParser.add_parser('listpods_by_label', help='this command used to list the pod')
 
-Pod_Parser = SubParsers.add_parser('listpods_by_label', help='this command used to list the pod')
-Pod_Parser.add_argument('-mode',type=str,default='outCluster',help='choose inCluster or outCluster')
 Pod_Parser.add_argument('-namespace_name',type=str,default='default',help='the namespace name')
 Pod_Parser.add_argument('-label_selector',type=str,default='',help='lable selector')
+Pod_Parser.add_argument('-field_selector',type=str,default='',help='A selector to restrict the list of returned objects by their fields, List everything  as default')
 Pod_Parser.set_defaults(func=ListPods_by_Label)
+globalvars.set_value('SubCMDParser',_secureSubParser)
+
