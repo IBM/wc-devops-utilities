@@ -53,7 +53,7 @@ Before you run build Docker images, ensure that your machine has Docker (DockerC
     **Note**: you can specify the Docker image tag in the following pattern:
         ./BuildDocker.sh deploycontroller:<newtag>
 
-    The `utilities/DeployController` folder contains the following files for customization:
+    The `kubernetes/DeployController` folder contains the following files for customization:
       * `plugins.txt`: Includes New or updated plugin version
       * `setup/jobs`: Includes pre-defined Jenkins job.
       * `users/admin/config.xml`: Includes the default admin user information
@@ -108,6 +108,7 @@ utilities/DeployController | Includes the scripts for building DeployController 
 utilities/DeploySlave | Includes the scripts for building DeploySlave Docker Image
 utilities/DeploySupport | Includes the scripts for building SupportContainer Docker Image
 utilities/Filebeat | Includes scripts to build Filebeat Docker Image for Commerce V9. See [Logging Solution](doc/LoggingSolution.md)
+utilities/EventAgent | Includes source code (golang) and scripts to build EventAgent Docker Image for Commerce V9. This Docker Image support pre-defined job "KubeExec_Base" which can exec command (e.g run engine command to set trace spec) on specified Pod
 scripts |  Includes DevOps backend scripts
 
 
@@ -124,3 +125,6 @@ You can also create issues directly to propose enhancements. We will evaluate an
 * Slack Channel
 
 * [Contact list](CONTACT.md)
+
+##  Others ##
+* [History](CHANGETRACK.md)
