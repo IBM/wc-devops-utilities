@@ -5,7 +5,7 @@ The DeployController component is built as a Jenkins Master, which includes pre-
 
 DeployController is acting like a "Hub" to integrate all tools that you need to deploy WebSphere Commerce V9. With DeployController, you can customize the jobs and backend scripts based on your requirements, as well as deploying your WebSphere Commerce environment through the user interface instead of the command-line interface.
 
-As default, all container will be triggered from DeployController should be under commerce project with latest tag in private Docker repository.
+As default, all containers will be triggered from DeployController should be under commerce project with latest tag in private Docker repository.
 
 <!--Admin also can use role based access control to create different view for different user.
 
@@ -39,7 +39,7 @@ helmChartsRepo  | The Helm Charts repository for storing Helm Charts to be trigg
 
 Job description: <br>
 
-Create third-party certificate for the specified environment on a specified tenant. After adding third-party certificate, you can use the "BundleCert" job to bundle
+Create a third-party certificate for the specified environment on a specified tenant. After adding a third-party certificate, you can use the "BundleCert" job to bundle
 specific certificate on the target component. If you deploy WebSphere Commerce V9 by setting the Configure Mode `Vault_CA` to `true`, the component container will fetch the bundled certificate
 and apply it.
 
@@ -59,13 +59,37 @@ IssuingCA   | Content of the trusted certificate. It is mandatory. <br> e.g ----
 KeyStorePass  | Specifies the keystore password. If no value is specified, the default value "ibmkey" will be assigned.
 DestinationHost | Specifies the destination of the certificate. For example, testhost. It is optional.
 
+### ManageDockerfile_Base ###
+
+Job description: <br>
+
+This job creates a Dockerfile for the specified component or environment based on user input (Tenant/NameSpace/EnvName/EnvType).
+
+The Dockerfile is stored as ConfigMap and is named according to the following naming pattern: `--dockerfile`.
+
+
+Job UI: <br>
+
+<img src="./images/ManageDockerfileUI.png" width = "400" height = "250" alt="Overview" align=center /><br>
+
+Job UI parameters: <br>
+
+Parameter  |  Description
+------------- | -------------
+Tenant | Tenant name. One tenant can contain multiple environments. In Kubernetes, tenant can be separated by NameSpace.
+NameSpace | Specifies the target NameSpace that the tenant belongs to.
+EnvName  | Environment name.
+Component | The component to create Dockerfile for. The component can be search-app, crs-app, ts-app, or xc-app.
+Dockerfile | The content of the Dockerfile.
+
+
 ### BuildDockerImage_Base ###
 
 Job description: <br>
 
-This job is to build a customized Docker image with the specified base Docker image, and to build a customization package for a specified environment based on user input (Tenant/NameSpace/EnvName/EnvType) in order to find the target Dockerfile.
+This job builds a customized Docker image with the specified base Docker image, and builds a customization package for a specified environment based on user input (Tenant/NameSpace/EnvName/EnvType) to find the target Dockerfile.
 
-Dockerfile is stored as ConfigMap and named according to the following naming pattern `--dockerfile`. You can use the "ManageDockerfile" job to create Dockerfile for the specified component or environment.
+The Dockerfile is stored as ConfigMap and is named according to the following naming pattern: `--dockerfile`. You can use the ManageDockerfile job to create a Dockerfile for the specified component or environment.
 
 The job detects whether a target Dockerfile in ConfigMap is under the specified NameSpace based on the user input.
 
@@ -84,7 +108,7 @@ ForcePush | Specifies whether force push for the Docker image is needed.
 ForcePull | Content of the private key for the certificate. If the certificate is for two-way authentication, this value is mandatory. <br> e.g -----BEGIN RSA PRIVATE KEY-----\nMIIEpQIBAAKCAQEAtuWgQ5P9KjpgplOyejAEj5pDgSmQ6mZkbqY6gnIIKlw1I4Vu\nlaigmeiir37NcAHtLA9HrpqafKoQqt3RPIFqMq2qb728JUNqdkmgp1QRnXdRVqrv\nGxT3o6XLMmxpkniwL+f3A/qFzuBgDJVltKLn1e0O3conPiiGtqaZ70+1lccKkKvi\nLoin13T+27gFFws6dT74znCxT8c/ikXGMja1TDEddd+qkXlo4At104Fo7Uhx95JW\norSljSTaCQkEeOjX+8SJHkARSrKeGEvkBESpXD23oUY9MlxGQnldioLAI5Eu8fRo\n3PKQUhuFnuoxTr0pO7R60AEe8E0sVU/cE3UtswIDAQABAoIBAB3kQ6An1K2NIvSs\nIzRTGru5k6TNfVDB8VIgOtnM90atEUY/7YXqLG1bFxOlnr/aoL+ds7J2tB8B0H2M\niUDhSdEEjyF6GgDhFspEWExgsgxRTuriPvfnIl4Nn7sa+tokfW8m8zkkPbBE/Y2w\n8RFnuoo9FzvqaSWAjBvX+LqjBWN4AGHxPcBcZs/H4U7RvdO0etX2Zbpjs62K/KO3\ni3e4MXgGZtj0Vx2LYD/AYSbqEoo1v8/U1AbGmsCTTNc2EwARhyb1zUgO7yc9yft6\nUoAC6pZjxOFsJtwz26jpNdqXz9t1xml3XnNusqHe+hgStQlIL2mgU8qj18q5pqpu\nkehM9LECgYEAxiU9WA7kQTp8hGKTRqrRbcGBsLTGxsYeILFQggtJBOZ5ngOH35Nd\nUIzQ1EjKODFEzGH9qPBBfE6BNdl3naHuYgIS3Uz8FCAwsOZAW6X8tC7VU/ZrwKUA\nF3Rc2iek+J1bdaz5o3hnR2eY/6kVuNHznxqIzK+JuZ7Dq/wEMlAL4gkCgYEA7Eyb\n4uyQFMXfPLiZPn7opNlgmi4i5lNLbPAjJq0dagdP8HbhLBqQThMcyAnu9rJmNm6t\n2Wu8kkKIpcZiGOVzFQvoTWOm6KGU/nIFFH1p6AAz/hvhATFA8HpLe9B7la9T6c5R\nabbtFbUNrHyoieMsIxkrjPo1zVIThLJeIVdoUNsCgYEAwuhKyV4MpSU06rxUhsTs\nsXwRaJLKnSiw5hPFT8ZuE0XrB8YNV52LwvphSRA46sF8HVeevxlmMTK/4wqBoSty\nZDIKAGoD5IAtpTU4xW4nf845xhe1spAb4PZzh5xLqMqQ9tYp0eVUImcDlyjp1x2e\n+TiOrFlXrqE/dOO39Q3MQpECgYEA5plMd4OMh/kiBcvQIOEQf+9zCoODo2od7U3b\nv96pGdPQ+0XIMJYrxUV5jO3EuhMXFH+mQMuW1tT/LWgQS2N/j0ZziTJ6rAMjt7vl\noT1SoQmxs4XZaqR6TzPJfibStBzJsx2Y7aWKcOijU3TDtOxxIj9p9MYowxoZ2iGH\nItp9/okCgYEAh6lbVbf77NArp1FsocQoeZ2ZL1hsOXpmRwpNmePPA6DfjqJyttpH\ngSh8Z0daqMvojStilhwIkEURy9ITuPYoKt2blWQY8RY//H1zFnwKg2AJR5PvlWcT\n0JBxt4cHMYy6jW2Q8/ZTVuttPd+UVIDehTFN6oyWF6FBgKxLO5bSjzc=\n-----END RSA PRIVATE KEY-----
 BuildInfo | Specifies the build information.
 
-<!--For BuildInfo is like a Json format to specify customzied docker build information for each component
+<!--BuildInfo is like a Json format to specify customzied docker build information for each component
 
 For example:  IF you input Tenant=demo Namespace=default  EnvName=qa In DockerImage you defined the search-app  as below
 {
@@ -98,7 +122,7 @@ For example:  IF you input Tenant=demo Namespace=default  EnvName=qa In DockerIm
 
 Job description: <br>
 
-BundleCert_Base bundles third-party certificates with the target component. This job is done after the AddCert job. One component can be bundled with multiple third-party certificates.
+BundleCert_Base bundles third-party certificates with the target component. This job runs after the AddCert job. One component can be bundled with multiple third-party certificates.
 
 Job UI: <br>
 
@@ -141,12 +165,12 @@ Based on user input, this job is to install, update, or delete the WebSphere Com
 
 This job supports the following user actions:
 
-+ **Install**: Perform this action to deploy a new WebSphere Commerce V9 environment by running the `helm install` command. If the new environment is of the same Tenant, EnvName, and EnvType, the previous environment is removed before installing the new environment.
-+ **Update**: Perform this action to update existing WebSphere Commerce V9 environment by running the `helm update` command. This action can be applied in the following scenarios:
++ **Install**: This action will deploy a new WebSphere Commerce V9 environment by running the `helm install` command. If the new environment is of the same Tenant, EnvName, and EnvType, the previous environment is removed before installing the new environment.
++ **Update**: Performing this action updates existing WebSphere Commerce V9 environment by running the `helm update` command. This action can be applied in the following scenarios:
   + **Scale in**: Scaling in the replicas of pods with HelmChart_Values and then perform the update action.
   + **Scale out**: Scaling out the replicas of pods with HelmChart_Values and then perform the update action.
   + **Update the existing pods**: Refreshing the tag of the image with HelmChart_Values and then perform the update action.
-+ **Delete**: Run the `Helm delete` command to delete the WebSphere Commerce V9 environment according to Tenant, EnvName, and EnvType.
++ **Delete**: Running the `Helm delete` command to delete the WebSphere Commerce V9 environment according to Tenant, EnvName, and EnvType.
 
 Job UI: <br>
 <img src="./images/DeployWCSCloudUI.png" width = "400" height = "250" alt="Overview" align=center /><br>
@@ -206,7 +230,7 @@ Job UI parameters: <br>
 
 Parameter  |  Description
 ------------- | -------------
-Tenant | Tenant name. One tenant can have multiple enviornments. In Kubernetes, tenant can be separated with NameSpace.
+Tenant | Tenant name. One tenant can have multiple environments. In Kubernetes, tenants can be separated with NameSpace.
 EnvName  |Target environment name.
 EnvType |Target environment type.
 NameSpace | Target NameSpace that the environment is to deploy.
@@ -226,7 +250,7 @@ Job UI parameters: <br>
 
 Parameter  |  Description
 ------------- | -------------
-Tenant | Tenant name. One tenant can have multiple enviornments. In Kubernetes, tenant can be separated with NameSpace.
+Tenant | Tenant name. One tenant can have multiple environments. In Kubernetes, tenants can be separated with NameSpace.
 EnvName  |Target environment name.
 ConfigureOnVault | Automatically fetches the existing key/value on Vault based on Tenant / EnvName and displays the pairs in this field. If Vault is not configured, mandatory key paths are generated for you to input values.
 
@@ -243,7 +267,7 @@ Job UI parameters: <br>
 
 Parameter  |  Description
 ------------- | -------------
-Tenant | Tenant name. One tenant can have multiple enviornments. In Kubernetes, tenant can be separated with NameSpace.
+Tenant | Tenant name. One tenant can have multiple environments. In Kubernetes, tenants can be separated with NameSpace.
 EnvName  | Target environment name.
 EnvType | Target environment type.
 NameSpace |Target NameSpace that the environment is to deploy.
@@ -265,7 +289,7 @@ Job UI parameters: <br>
 
 Parameter  |  Description
 ------------- | -------------
-Tenant | Tenant name. One tenant can have multiple enviornments. In Kubernetes, tenant can be separated with NameSpace.
+Tenant | Tenant name. One tenant can have multiple enviornments. In Kubernetes, tenants can be separated with NameSpace.
 EnvName  | The name of the target environment that
 is to be deployed.
 SpiUser | SPI user name.
@@ -274,9 +298,9 @@ SpiPwd  | SPI user password.
 ### Utilities_DBClean_Base ###
 Job description:  <br>
 
-This job will launch a utilities docker image with specified tag and it will based on the input parameter to make utilities to do the configuration when startup. Then it will launch dbclean.sh to clean the data in specified table on Commerce database.
+This job will launch a utilities Docker image with specified tag and it will be based on the input parameter to make utilities do the configuration on startup. Then it will launch dbclean.sh to clean the data in the specified table in the Commerce database.
 
-This is a sample job for your reference. You can based on it to create more job for your daily job requirement
+This is a sample job for your reference. You can create more jobs based on it for your daily job requirement.
 
 
 Job UI: <br>
@@ -292,11 +316,11 @@ EnvName (*) |Target environment name.
 EnvType (*) | Target environment type.
 UtilitiesDockerTag (*) | Target Utilities Docker image tag. By default, the tag is input from the WebSphere Commerce project in the private Docker repository.
 ObjectName (*) | Specify target table name you want to do dbclean. cacheivl is the default table name for cache
-Type (*) | Specify what action you want to do on object you specified. obsolete is the default action for delete object
+Type (*) | Specify what action you want to do on the object you specified. obsolete is the default action for delete object
 DBName (*) | Specify target database name. mall is the default database name
 DBUser (*) | Specify database user name ( instance user ). wcs is the default database user
 DBPwd (*) | Specify database user password ( instance user password).
-Day (*) | Specify how long time of data need to be clean. one day is the default value.
+Day (*) | Specify how long time of data need to be clean. One day is the default value.
 DBType (*) | Specify database type, DB2 is the default database type
 OptionParameters | Empty as default, you can add option parameters of DBClean in this field
 
@@ -304,7 +328,7 @@ OptionParameters | Empty as default, you can add option parameters of DBClean in
 ### Utilities_StagingProp_Base ###
 Job description:  <br>
 
-This job will launch a utilities docker image with specified tag and it will based on the input parameter to make utilities to do the configuration when startup. Then it will launch stagingprop.sh
+This job will launch a utilities Docker image with specified tag and it will based on the input parameter to make utilities to do the configuration when startup. Then it will launch stagingprop.sh
 
 Job UI: <br>
 
@@ -314,7 +338,7 @@ Job UI parameters: <br>
 
 Parameter  |  Description
 ------------- | -------------
-Tenant (*)| Tenant name. One tenant can have multiple environments. In Kubernetes, tenant can be separated by NameSpace.
+Tenant (*)| Tenant name. One tenant can have multiple environments. In Kubernetes, tenants can be separated by NameSpace.
 EnvName (*) |Target environment name.
 EnvType (*) | Target environment type.
 UtilitiesDockerTag (*) | Target Utilities Docker image tag. By default, the tag is input from the WebSphere Commerce project in the private Docker repository.
@@ -343,7 +367,7 @@ Job UI parameters: <br>
 
 Parameter  |  Description
 ------------- | -------------
-Tenant (*)| Tenant name. One tenant can have multiple environments. In Kubernetes, tenant can be separated by NameSpace.
+Tenant (*)| Tenant name. One tenant can have multiple environments. In Kubernetes, tenants can be separated by NameSpace.
 EnvName (*) |Target environment name.
 EnvType (*) | Target environment type.
 UtilitiesDockerTag (*) | Target Utilities Docker image tag. By default, the tag is input from the WebSphere Commerce project in the private Docker repository.
@@ -364,12 +388,30 @@ Job UI parameters: <br>
 
 Parameter  |  Description
 ------------- | -------------
-Tenant (*)| Tenant name. One tenant can have multiple environments. In Kubernetes, tenant can be separated by NameSpace.
+Tenant (*)| Tenant name. One tenant can have multiple environments. In Kubernetes, tenants can be separated by NameSpace.
 EnvName (*) | Target environment name.
 EnvType (*) | Target NameSpace that the environment is to deploy.
 UtilitiesDockerTag (*) | SPI user name.
 FullConfig  | Specifies whether utilities need to do full configuration, which leverages predefined configuration mode to set the environment in the container. The default value is true.
 
+### KubeExec_Base ###
+Job description:  <br>
+
+Use this job to run commands in the selected pods.
+
+Job UI: <br>
+
+<img src="./images/KubeExecUI.png" width = "400" height = "250" alt="Overview" align=center /><br>
+
+Job UI parameters: <br>
+
+Parameter  |  Description
+------------- | -------------
+namespace | The target NameSpace where the environment is to be deployed.
+label | Use the label to filter the pods for running the command.
+pod | The target pods where you want to run the command. All pods under the namespace will be listed for selection.
+command | Enter the command you want to run.
+
 ## Backend Scripts ##
 
-Backend scripts located under path /commerce-devops-utilities/utilities in DeployController
+Backend scripts located under the /commerce-devops-utilities/utilities directory in DeployController
