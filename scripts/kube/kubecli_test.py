@@ -33,7 +33,7 @@ COPY ./test .
 COPY ./test /root
 COPY ./test kongyi
 '''
-    #args = parser.parse_args(["-configtype", "OutCluster", "createconfmap", "-tenant", "demo", "-name","test-dockerfile","-namespace","demo5","-rawconfig","Dockerfile::"+configMapData])
+    args = parser.parse_args(["-configtype", "OutCluster", "createconfmap", "-tenant", "demo", "-name","test-dockerfile","-namespace","demo5","-rawconfig","Dockerfile::"+configMapData])
 
 
     # testProperties = CURDIR+'test.properties'
