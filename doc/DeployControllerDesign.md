@@ -412,6 +412,8 @@ label | Use the label to filter the pods for running the command.
 pod | The target pods where you want to run the command. All pods under the namespace will be listed for selection.
 command | Enter the command you want to run.
 
+> Note: This job not support two container in one Pod. we will do the improvement later.
+
 ## Backend Scripts ##
 
 Backend scripts located under the /commerce-devops-utilities/utilities directory in DeployController
