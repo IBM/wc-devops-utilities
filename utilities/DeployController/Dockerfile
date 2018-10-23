@@ -6,12 +6,13 @@ USER root
 
 # Install Python3.6 
 
-RUN apk add --no-cache python3 && \
+RUN apk add --no-cache python3 libffi-dev openssl-dev&& \
     python3 -m ensurepip && \
     rm -r /usr/lib/python*/ensurepip && \
     pip3 install --upgrade pip setuptools && \
     if [ ! -e /usr/bin/pip ]; then ln -s pip3 /usr/bin/pip ; fi && \
-    pip install python-jenkins jinja2 hvac kubernetes argparse requests pyyaml && \
+    pip install --upgrade pip && \
+    pip install python-jenkins==1.1.0 jinja2==2.10 hvac==0.6.2 argparse==1.4.0 requests==2.19.1 pyyaml==3.13 kubernetes==6.0.0 && \
     if [[ ! -e /usr/bin/python ]]; then ln -sf /usr/bin/python3 /usr/bin/python; fi && \
     rm -r /root/.cache
 
