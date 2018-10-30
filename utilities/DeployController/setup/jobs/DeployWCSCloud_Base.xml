@@ -104,7 +104,7 @@ Common:
         Enable: false
         LoadBalanceAddress:
   VaultURL: ${vault_url}/v1
-  ExternalDomian: ibm.com
+  ExternalDomian: .ibm.com
   CommerceVersion:
   OverridePreconfig: 
   ## IngressSecrete used to specify if need Helm to auto generate the secret for ingress. For production env, customer can choose generate the secret with real CA certification
