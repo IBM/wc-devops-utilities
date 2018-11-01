@@ -10,6 +10,7 @@
     <string>{{BuildDockerName}}</string>
     <string>{{BundleCert}}</string>
     <string>{{DeployWCSCloud}}</string>
+    <string>{{KubeExec}}</string>
     <string>{{ManageConfigMap}}</string>
     <string>{{ManageDockerfile}}</string>
     <string>{{ManageVaultConfig}}</string>

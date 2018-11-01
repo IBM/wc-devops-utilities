@@ -50,6 +50,7 @@ UtilsDBCleanName = "Utilities_DBClean_" + args.tenant_id
 UtilsVersionInfoName = "Utilities_VersionInfo_" + args.tenant_id
 UtilsUpdateDBName = "Utilities_UpdateDB_" + args.tenant_id
 UtilsStagingPropName = "Utilities_StagingProp_" + args.tenant_id
+KubeExecName = "KubeExec_" + args.tenant_id
 
 server.copy_job('ManageConfigMap_Base', ManageConfigMapName)
 server.copy_job('DeployWCSCloud_Base', DeployWCSCloudName)
@@ -64,6 +65,7 @@ server.copy_job('Utilities_DBClean_Base', UtilsUpdateDBName)
 server.copy_job('Utilities_StagingProp__Base', UtilsStagingPropName)
 server.copy_job('Utilities_UpdateDB_Base', UtilsUpdateDBName)
 server.copy_job('Utilities_VersionInfo_Base', UtilsVersionInfoName)
+server.copy_job('KubeExec_Base', KubeExecName)
 
 #Create a unique group for the tenant_id.
 templateVars = {
@@ -80,6 +82,7 @@ templateVars = {
     "UtilsStagingProp": UtilsStagingPropName,
     "UtilsUpdateDB": UtilsUpdateDBName,
     "UtilsVersinInfo": UtilsVersionInfoName,
+    "KubeExec": KubeExecName,
     "name" : args.tenant_id
 }
 print(templateVars)

@@ -17,7 +17,7 @@ Docker image |  Embedded assets  | Role and description
 DeployController | Jenkins/ Pre-defined Jenkins job/ DevOps backend scripts |  A Jenkins-based tool to work as the controller to trigger related jobs and fulfill tasks such as environment deployment and Docker image build
 DeploySlave  | Dockerd / Helm client / DevOps backend scripts | Can be triggered by DeployController to build customized Docker image including your customization package and can then be deployed in the Kubernetes environment  with Helm
 SupportContainer | DevOps backend scripts | Handles Helm pre- and post-deployment hook/ Works as commander to control the startup sequence
-Jenkins Slave Plugin Container | Jenkins Agent | A Jenkins slave using JNLP to establish connection (You can download it from [jenkinsci/jnlp-slave](https://hub.docker.com/r/jenkinsci/jnlp-slave/))
+Jenkins Slave Plugin Container | Jenkins Agent | A Jenkins slave using JNLP to establish connection ( You can download it from [jenkinsci/jnlp-slave](https://hub.docker.com/r/jenkinsci/jnlp-slave/)
 
 Vault and Nexus Docker images, by default, are seamlessly integrated with the DevOps Utilities.
 

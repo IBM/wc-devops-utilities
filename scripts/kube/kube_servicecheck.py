@@ -92,7 +92,8 @@ def _checkServiceStatus(parser_args,dep_component_name):
                checkMethod = serviceCheckConfig['Others'][dep_component_name].split("@")
                if checkMethod[0] == "checklog":
                   try:
-                     return kubelog.CheckContainerLog(None,parser_args.tenant+parser_args.env+parser_args.envtype+"db",None,parser_args.namespace,checkMethod[1])
+                     isMatch , _ = kubelog.CheckContainerLog(None,parser_args.tenant+parser_args.env+parser_args.envtype+"db",None,parser_args.namespace,checkMethod[1])
+                     return isMatch
                   except Exception as error:
                      print("catch database health check expection! %s" %(repr(error)))
                      return False

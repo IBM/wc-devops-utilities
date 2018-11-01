@@ -34,6 +34,7 @@ COPY ./test /root
 COPY ./test kongyi
 '''
     args = parser.parse_args(["-configtype", "OutCluster", "createconfmap", "-tenant", "demo", "-name","test-dockerfile","-namespace","demo5","-rawconfig","Dockerfile::"+configMapData])
+    #args = parser.parse_args(["-configtype", "OutCluster", "createsampleconf", "-tenant", "demo", "-env","dev","-envtype","auth","-name","config.properties","-namespace","default","-dbhost","9.112.245.193","-dbname","mall","-dbuser","wcs","-dbpass","wcs1","-dbport","50000","-dbtype","db2","-dbauser","db2inst1","-dbapwdencrypt","u4h5LS/vJeSzsCfnt6NGfGHYPWK2fRq0+djkmB/iNWU=","-dbpwdencrypt","okFQawPB19Tkl1wKqQPDdAVtwz+mIgpJyqJQUuUWtyk="])
 
 
     # testProperties = CURDIR+'test.properties'
