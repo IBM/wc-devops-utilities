@@ -84,6 +84,47 @@ To quickly deploy DevOps Utilities, you need to use Helm Chart. For more informa
 
 Ensure to deploy WebSphere Commerce DevOps Utilities under the `default` Kubernetes namespace.
 
+> Some people may have confuse about words above. Here I want to clarify that this `DevOps utilities tool can support deploy Commerce V9 enviorment on multiple namespace. We just recommedn the user deploy this deploycontroller in default namespace.` The resason we suggest customer to deploy on `default` namespace because:
+
+1.  There have a little hard code with "default" namespace if using InCluster Mode start deploycontroler to detect Vault, so if you using InCluster mode to let deploycontroller to auto detect Vault and get Vault Token, it has limitation so far. This limitiaion is very easy to fix, but we don't have time to fix and test it so far. We welcome anyone can make this change and contribute to this project
+
+2.  We suggest the user to deploy deploycontroler in `default` namespace, becasue it don't have RBAC limitation. This can make user can quick try this solution and continouts to evolution self-host solution without worry about the RBAC 
+
+If you want to deploy deploycontroler on namespace, please create below RBAC on your target namespace with default service account.
+
+```
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: wcs-devops-deploy-role
+rules:
+- apiGroups: [""] 
+  resources: ["secrets"]
+  verbs: ["get", "watch", "list","create","delete","patch","update"]
+- apiGroups: [""] 
+  resources: ["persistentvolumeclaims"]
+  verbs: ["get", "watch", "list","create","delete","patch","update"]
+- apiGroups: [""] 
+  resources: ["pods","pods/log"]
+  verbs: ["get", "watch", "list","create","delete","patch","update"]
+- apiGroups: [""] 
+  resources: ["configmaps"]
+  verbs: ["get", "watch", "list","create","delete","patch","update"]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: wcs-devops-deploy-rolebinding
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: ${namespace}
+roleRef:
+  kind: Role
+  name: wcs-devops-deploy-role
+  apiGroup: rbac.authorization.k8s.io
+```
+
 **Note**: If you already have a WebSphere Commerce V9 environment deployed, or you do not want to deploy Utilities on the Kubernetes cluster or ICP, you can also manually deploy each DevOps utilities container to serve your existing environments.
 
 After the deployment is completed, you can access the DeployController user interface by logging into `http://IngressIPAddress:31899` with the default user name and password (`admin/admin`), and check the following pre-defined jobs:
