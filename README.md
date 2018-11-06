@@ -84,13 +84,13 @@ To quickly deploy DevOps Utilities, you need to use Helm Chart. For more informa
 
 Ensure to deploy WebSphere Commerce DevOps Utilities under the `default` Kubernetes namespace.
 
-> Some people may have confuse about words above. Here I want to clarify that this `DevOps utilities tool can support deploy Commerce V9 enviorment on multiple namespace. We just recommedn the user deploy this deploycontroller in default namespace.` The resason we suggest customer to deploy on `default` namespace because:
+Some people may have confuse about words above. Here I want to clarify that this `DevOps utilities tool can support deploy Commerce V9 enviorment on multiple namespace. We just recommed user deploy this deploycontroller in default namespace.` The resason are:
 
-1.  There have a little hard code with "default" namespace if using InCluster Mode start deploycontroler to detect Vault, so if you using InCluster mode to let deploycontroller to auto detect Vault and get Vault Token, it has limitation so far. This limitiaion is very easy to fix, but we don't have time to fix and test it so far. We welcome anyone can make this change and contribute to this project
+1.  There have a little hard code with "default" namespace if using InCluster Mode start deploycontroler to detect Vault, so if you using InCluster mode to let deploycontroller to auto detect Vault and get Vault Token, it has limitation so far. We welcome anyone can make this change to fix it and contribute to this project
 
-2.  We suggest the user to deploy deploycontroler in `default` namespace, becasue it don't have RBAC limitation. This can make user can quick try this solution and continouts to evolution self-host solution without worry about the RBAC 
+2.  We suggest the user to deploy deploycontroler in `default` namespace, becasue it don't have RBAC limitation. This can make user can quick try this solution and evolution self-host solution based on this git project without worry about How to set RBAC 
 
-If you want to deploy deploycontroler on namespace, please create below RBAC on your target namespace with default service account.
+If you want to deploy deploycontroler on non-default namespace, please create below RBAC on your target namespace with default service account.
 
 ```
 kind: Role
