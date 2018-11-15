@@ -78,7 +78,16 @@ Before you run build Docker images, ensure that your machine has Docker (DockerC
    
        ./BuildDocker.sh deploysuppor:<newtag>
 
+
 ## Deploying DevOps Utilites ##
+
+### Before You Begin ###
+
+Please follow this [Guide](doc/SetupDevOpsSystem.docx) to setup platform and all support tooling
+
+> Note: all tooling in guide are not mandatory, you can based on your understand to replace any of them you familiar with
+
+### Deploy DevOps Utilities ###
 
 To quickly deploy DevOps Utilities, you need to use Helm Chart. For more information about Helm Chart, see [Commerce DevOps Utilities Helm Charts](https://github.com/IBM/wc-helmchart/tree/master/WCSDevOps).
 
