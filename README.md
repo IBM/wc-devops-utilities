@@ -85,7 +85,10 @@ Before you run build Docker images, ensure that your machine has Docker (DockerC
 
 Please follow this [Guide](doc/SetupDevOpsSystem.docx) to setup platform and all support tooling
 
-> Note: all tooling in guide are not mandatory, you can based on your understand to replace any of them you familiar with
+> Note:
+
+1. This guide is based on ICP, but you can use pure Kubernetes
+2. All tooling in guide are not mandatory, you can based on your understand to replace any of them you familiar with
 
 ### Deploy DevOps Utilities ###
 
