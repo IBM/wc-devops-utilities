@@ -76,7 +76,7 @@ Before you run build Docker images, ensure that your machine has Docker (DockerC
    ```
    **Note**: You can specify the Docker image tag in the following pattern:
    
-       ./BuildDocker.sh deploysuppor:<newtag>
+       ./BuildDocker.sh supportcontainer:<newtag>
 
 
 ## Deploying DevOps Utilites ##
