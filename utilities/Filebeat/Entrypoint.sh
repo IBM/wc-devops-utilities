@@ -6,7 +6,7 @@ componentType="";
 #update index name in the sample filebeat.yml
 function updateIndexName(){
 	echo "Start to change Index Name to $1"
-	sed -i "s/sampleIndex/$1/g" /etc/filebeat_search_store.yml
+	sed -i "s/sampleIndex/$1/g" /etc/filebeat_search_store_xc.yml
 	sed -i "s/sampleIndex/$1/g" /etc/filebeat_ts_app.yml
 	sed -i "s/sampleIndex/$1/g" /etc/filebeat_ts_web.yml
 	echo "Update Index Name Done"
@@ -15,7 +15,7 @@ function updateIndexName(){
 #update ElasticSearch in the sample filebeat.yml
 function updateTargetELK(){
 	echo "Start to change target ElasticSearch to $1"
-	sed -i "s/targetElkHost/$1/g" /etc/filebeat_search_store.yml
+	sed -i "s/targetElkHost/$1/g" /etc/filebeat_search_store_xc.yml
 	sed -i "s/targetElkHost/$1/g" /etc/filebeat_ts_app.yml
 	sed -i "s/targetElkHost/$1/g" /etc/filebeat_ts_web.yml
 	echo "Update Target ES Done"
@@ -35,7 +35,7 @@ fi
 
 
 #change file permission
-chmod go-w /etc/filebeat_search_store.yml
+chmod go-w /etc/filebeat_search_store_xc.yml
 chmod go-w /etc/filebeat_ts_app.yml
 chmod go-w /etc/filebeat_ts_web.yml
 
