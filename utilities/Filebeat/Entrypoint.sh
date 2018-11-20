@@ -52,10 +52,11 @@ done
 
 #launch filebeat by componentType
 case $componentType in
-	search-app-master) exec filebeat -c /etc/filebeat_search_store.yml;;
-	search-app-repeater) exec filebeat -c /etc/filebeat_search_store.yml;;
-	search-app-slave) exec filebeat -c /etc/filebeat_search_store.yml;;
-	crs-app) exec filebeat -c /etc/filebeat_search_store.yml;;
+	search-app-master) exec filebeat -c /etc/filebeat_search_store_xc.yml;;
+	search-app-repeater) exec filebeat -c /etc/filebeat_search_store_xc.yml;;
+	search-app-slave) exec filebeat -c /etc/filebeat_search_store_xc.yml;;
+	xc-app) exec filebeat -c /etc/filebeat_search_store_xc.yml;;
+	crs-app) exec filebeat -c /etc/filebeat_search_store_xc.yml;;
 	ts-app) exec filebeat -c /etc/filebeat_ts_app.yml;;
 	ts-web) exec filebeat -c /etc/filebeat_ts_web.yml;;
 	*) echo incorrect componentType '"'$componentType'"'
