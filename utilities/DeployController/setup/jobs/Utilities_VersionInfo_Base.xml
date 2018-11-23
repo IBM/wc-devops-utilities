@@ -68,7 +68,7 @@ podTemplate(label: label,  containers: [
         ),
     containerTemplate(
             name: &apos;jnlp&apos;,
-            image: &quot;${dockerRepoHost}/commerce/jnlp-slave:alpine&quot;,
+            image: &quot;${dockerRepoHost}/commerce/jnlp-slave:latest&quot;,
             args: &apos;${computer.jnlpmac} ${computer.name}&apos;,
             command: &apos;&apos;
 
