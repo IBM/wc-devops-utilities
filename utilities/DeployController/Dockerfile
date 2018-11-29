@@ -50,7 +50,7 @@ COPY init.groovy /usr/share/jenkins/ref/init.groovy.d/tcp-slave-agent-port.groov
 
 # jenkins version being bundled in this docker image
 ARG JENKINS_VERSION
-ENV JENKINS_VERSION ${JENKINS_VERSION:-2.76}
+ENV JENKINS_VERSION ${JENKINS_VERSION:-2.107.3}
 
 # jenkins.war checksum, download will be validated using it
 ARG JENKINS_SHA=902d670e3a57670202e01402ca5ea1142c08d187636dd979d33ef317dbe7c6eb
@@ -60,8 +60,11 @@ ARG JENKINS_URL=https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-w
 
 # could use ADD but this one does not check Last-Modified header neither does it allow to control checksum
 # see https://github.com/docker/docker/issues/8331
+#RUN curl -fsSL ${JENKINS_URL} -o /usr/share/jenkins/jenkins.war \
+#  && echo "${JENKINS_SHA}  /usr/share/jenkins/jenkins.war" | sha256sum -c -
+
 RUN curl -fsSL ${JENKINS_URL} -o /usr/share/jenkins/jenkins.war \
-  && echo "${JENKINS_SHA}  /usr/share/jenkins/jenkins.war" | sha256sum -c -
+    && echo "${JENKINS_SHA}  /usr/share/jenkins/jenkins.war" 
 
 ENV JENKINS_UC https://updates.jenkins.io
 ENV JENKINS_UC_EXPERIMENTAL=https://updates.jenkins.io/experimental
