@@ -234,6 +234,7 @@
       <jobNames>
         <comparator class="hudson.util.CaseInsensitiveComparator"/>
         <string>AddCert_Base</string>
+        <string>BuildCustomizationPackage_Base.xml</string>
         <string>BuildDockerImage_Base</string>
         <string>BundleCert_Base</string>
         <string>CreateTenant_Base</string>
@@ -247,6 +248,7 @@
         <string>Utilities_DBClean_Base</string>
         <string>Utilities_StagingProp_Base</string>
         <string>Utilities_UpdateDB_Base</string>
+        <string>Utilities_DeployData_Base</string>
         <string>Utilities_VersionInfo_Base</string>
       </jobNames>
       <jobFilters/>

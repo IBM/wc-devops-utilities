@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.13">
+  <actions/>
+  <description>This job will launch a utilities docker image with specified tag and it will based on the input parameter to make utilities to do the configuration when startup. Then it will download the WCB package which contains data to be deployed. At last it calls WCBD data deployment to do the data deployment.&#xd;
+&#xd;
+This is a sample job for your reference. You can based on it to create more job for your daily job requirement</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>Tenant</name>
+          <description></description>
+          <defaultValue>demo</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>EnvName</name>
+          <description></description>
+          <defaultValue>qa</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>EnvType</name>
+          <description></description>
+          <defaultValue>auth</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>UtilitiesDockerTag</name>
+          <description>Tag for Utilities Docker. The default docker repository is ${dockerRepoHost}/commerce/ts-utils</description>
+          <defaultValue></defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>PackageURL</name>
+          <description>The URL of the WCB package which includes data to be load. You should have created WCB package and upload it to nexus server during running BuildCustomizationPackage_Base job. The PackageURL is where the WCB is uploaded to in BuildCustomizationPackage_Base job. </description>
+          <defaultValue></defaultValue>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+      <triggers/>
+    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.36.1">
+    <script>def label = &quot;run-utility_job-${UUID.randomUUID().toString()}&quot;
+podTemplate(label: label,  containers: [
+     containerTemplate(
+            name: &apos;utility&apos;,
+            image: &quot;${dockerRepoHost}/commerce/ts-utils:${UtilitiesDockerTag}&quot;,
+            ttyEnabled: true,
+            privileged: true,
+            command: &apos;cat&apos;,
+            alwaysPullImage: true,
+            envVars: [
+                containerEnvVar(key: &apos;VAULT_TOKEN&apos;, value: &quot;${vault_token}&quot;),
+                containerEnvVar(key: &apos;VAULT_URL&apos;, value: &quot;${vault_url}/v1&quot;),
+                containerEnvVar(key: &apos;TENANT&apos;, value: &quot;${Tenant}&quot;),
+                containerEnvVar(key: &apos;ENVIRONMENT&apos;, value: &quot;${EnvName}&quot;),
+                containerEnvVar(key: &apos;ENVTYPE&apos;, value: &quot;${EnvType}&quot;),
+                containerEnvVar(key: &apos;STOREWEB_HOST&apos;, value: &quot;Null&quot;),
+                containerEnvVar(key: &apos;CONFIGURE_MODE&apos;, value: &apos;Vault&apos;),
+                containerEnvVar(key: &apos;CONFIG_WCD&apos;, value: &apos;true&apos;),
+                containerEnvVar(key: &apos;LICENSE&apos;, value: &apos;accept&apos;),
+                containerEnvVar(key: &apos;QUICKRUN&apos;, value: &apos;true&apos;)
+            ]
+        ),
+    containerTemplate(
+            name: &apos;jnlp&apos;,
+            image: &quot;${dockerRepoHost}/commerce/jnlp-slave:latest&quot;,
+            args: &apos;${computer.jnlpmac} ${computer.name}&apos;,
+            command: &apos;&apos;
+
+        )
+  ]
+  ) 
+{
+    node (label) {
+        container(&apos;utility&apos;) {
+            stage(&apos;Deploying Data&apos;) {
+                sh(&quot;/SETUP/bin/entrypoint.sh&quot;)
+                sh(&quot;python /SETUP/scripts/downloadPK.py -pu $PackageURL&quot;)
+                sh(&quot;/opt/WebSphere/CommerceServer90/wcbd/wcbd-ant -buildfile &apos;/opt/WebSphere/CommerceServer90/wcbd/wcbd-deploy.xml&apos; -Dtarget.env=$EnvName&quot;)
+            }
+        }
+    }
+}</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>

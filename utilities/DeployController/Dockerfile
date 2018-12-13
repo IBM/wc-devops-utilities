@@ -120,6 +120,9 @@ COPY ./setup/jobs/Utilities_UpdateDB_Base.xml "$JENKINS_HOME"/jobs/Utilities_Upd
 COPY ./setup/jobs/Utilities_VersionInfo_Base.xml "$JENKINS_HOME"/jobs/Utilities_VersionInfo_Base/config.xml
 COPY ./setup/jobs/Utilities_StagingProp_Base.xml "$JENKINS_HOME"/jobs/Utilities_StagingProp_Base/config.xml
 COPY ./setup/jobs/KubeExec_Base.xml "$JENKINS_HOME"/jobs/KubeExec_Base/config.xml
+COPY ./setup/jobs/BuildCustomizationPackage_Base.xml "$JENKINS_HOME"/jobs/BuildCustomizationPackage_Base/config.xml
+COPY ./setup/jobs/Utilities_DeployData_Base.xml "$JENKINS_HOME"/jobs/Utilities_DeployData_Base/config.xml
+
 
 # Create KubeExec_Base job build number
 RUN mkdir -p "$JENKINS_HOME"/jobs/KubeExec_Base/latest/
@@ -180,6 +183,14 @@ RUN mkdir -p "$JENKINS_HOME"/jobs/Utilities_VersionInfo_Base/builds/1/
 # Create Utilities_StagingProp job build number
 RUN mkdir -p "$JENKINS_HOME"/jobs/Utilities_StagingProp_Base/latest/
 RUN mkdir -p "$JENKINS_HOME"/jobs/Utilities_StagingProp_Base/builds/1/
+
+# Create Utilities_DeployData job build number
+RUN mkdir -p "$JENKINS_HOME"/jobs/Utilities_DeployData_Base/latest/
+RUN mkdir -p "$JENKINS_HOME"/jobs/Utilities_DeployData_Base/builds/1/
+
+# Create BuildCustomizationPackage_Base job build number
+RUN mkdir -p "$JENKINS_HOME"/jobs/BuildCustomizationPackage_Base/latest/
+RUN mkdir -p "$JENKINS_HOME"/jobs/BuildCustomizationPackage_Base/builds/1/
 
 # Add Jenkins Plugin Reference
 COPY ./plugins.txt /usr/share/jenkins/ref

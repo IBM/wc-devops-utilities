@@ -59,6 +59,37 @@ IssuingCA   | Content of the trusted certificate. It is mandatory. <br> e.g ----
 KeyStorePass  | Specifies the keystore password. If no value is specified, the default value "ibmkey" will be assigned.
 DestinationHost | Specifies the destination of the certificate. For example, testhost. It is optional.
 
+### BuildCustomizationPackage_Base ###
+
+Job description: <br>
+
+This job calls wcbd to build customization package for the specified app type or environment based on user input (Tenant/EnvName/EnvType).
+For more information about wcbd packaging customization, refer to: 
+https://www.ibm.com/support/knowledgecenter/en/SSZLC2_9.0.0/com.ibm.commerce.developer.doc/concepts/cdewcbdoverview.htm
+
+
+Job UI: <br>
+
+<img src="./images/BuildCustomizationPackageUI.png" width = "400" height = "250" alt="Overview" align=center /><br>
+
+Job UI parameters: <br>
+
+Parameter  |  Description
+------------- | -------------
+Tenant | Tenant name. One tenant can contain multiple environments. In Kubernetes, tenant can be separated by NameSpace.
+NameSpace | Specifies the target NameSpace that the tenant belongs to.
+EnvName  | Environment name.
+EnvType  | Environment type.
+UtilitiesDockerTag | The tag of the utility docker. 
+AppType | The app type to package the customization for. The app type can be ts, search, crs, xc and data. 
+BuildType | The build type to extract source code. The build type can be local, svn, cvs, git.
+BuildLabel | The build label of this customization package. e.g. 20180522 
+GitName | The git project name. e.g. If the git repository url is git@test.com:customization-project.git, the GitName is customization-project.
+RepositoryURL | The git repository url. e.g. git@test.com:customization-project.git
+ConfigurationURL | The url which can be used to get the wcbd configuration zip file
+NexusURL | The nexus server url. The customization package will be pushed into this url.
+
+
 ### ManageDockerfile_Base ###
 
 Job description: <br>
@@ -117,6 +148,30 @@ For example:  IF you input Tenant=demo Namespace=default  EnvName=qa In DockerIm
      "bundle": "xxxx", // this is customization package url, you can input a http://... link directly here or you can integrate with Nexus
      "version": "xxx"   // this is the new docker image tag. For example. when finish build the docker image, it will be tag as  <dockerRepo>/<Tenant>/search-app-cus:<version> and based on this docker image name to push to dockerRepo
 }-->
+
+
+### Utilities_DeployData_Base ###
+
+Job description: <br>
+
+This job will launch a utilities docker image with specified tag and it will based on the input parameter to make utilities to do the configuration when startup. 
+Then it will download the WCB package which contains data to be deployed. At last it calls WCBD data deployment to do the data deployment.
+
+
+Job UI: <br>
+
+<img src="./images/DeployDataUI.png" width = "400" height = "250" alt="Overview" align=center /><br>
+
+Job UI parameters: <br>
+
+Parameter  |  Description
+------------- | -------------
+Tenant | Tenant name. One tenant can contain multiple environments. In Kubernetes, tenant can be separated by NameSpace.
+NameSpace | Specifies the target NameSpace that the tenant belongs to.
+EnvName  | Environment name.
+UtilitiesDockerTag | The tag of the utility docker.
+PackageURL | The URL of the WCB package which includes data to be load. 
+
 
 ### BundleCert_Base ###
 
