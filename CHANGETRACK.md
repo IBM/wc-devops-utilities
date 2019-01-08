@@ -17,3 +17,6 @@ This page use to record some function changes or big enhancement ( not include f
    * Generate release version 1.0.0, which fixed some defect caused by python module update.
    * Sync backend scripts for kube log in version 1.0.0.
    * Change the sevice dependece check for ts-app with ping api, the old api has deperated.
+   
+### 2018-12-13 ###
+   * Merge code to support build custom code in Commerce Utilities Docker through Jenkins Job
