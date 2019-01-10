@@ -93,7 +93,7 @@ Common:
   Tenant: ${Tenant}
   EnvironmentName: ${EnvName}
   EnvironmentType: ${EnvType}  
-  ImageRepo: ${dockerRepoHost}/commerce/
+  ImageRepo: ${dockerRepoHost}/
   SPIUserName: spiuser
   SPIUserPWDAES: eNdqdvMAUGRUbiuqadvrQfMELjNScudSp5CBWQ8L6aw=
   SPIUserPWDBase64: c3BpdXNlcjpwYXNzdzByZA==
@@ -129,14 +129,14 @@ Common:
 Tsdb:
   Name: ts-db
   Replica: 1
-  Image: ts-db
+  Image: commerce/ts-db
   Tag: 9.0.0.4
   EnvParameters: {}
   NodeSelector: {}
 Tsapp:
   Name: ts-app
   Replica: 1
-  Image: ts-app
+  Image: commerce/ts-app
   Tag: 9.0.0.4
   Merchantkey: eZrWIdOyaDv5FCOTK32Uni288jgIHDv/P9wxhzKmHdiGZ+n8WJ+Ah56uPbfZ9yJWtjQlGczlmr6OgvArFHCgZQ==
   EnvParameters: {}
@@ -144,48 +144,48 @@ Tsapp:
 SearchappMaster:
   Name: search-app-master
   Replica: 1
-  Image: search-app
+  Image: commerce/search-app
   Tag: 9.0.0.4
   EnvParameters: {}
   NodeSelector: {}
 SearchappRepeater:
   Name: search-app-repeater
   Replica: 1
-  Image: search-app
+  Image: commerce/search-app
   Tag: 9.0.0.4
   EnvParameters: {}
   NodeSelector: {}
 SearchappSlave:
   Name: search-app-slave
   Replica: 1
-  Image: search-app
+  Image: commerce/search-app
   Tag: 9.0.0.4
   EnvParameters: {}
   NodeSelector: {}
 Tsweb:
   Name: ts-web
   Replica: 1
-  Image: ts-web
+  Image: commerce/ts-web
   Tag: 9.0.0.4
   EnvParameters: {}
   NodeSelector: {}
 Crsapp:
   Name: crs-app
-  Image: crs-app
+  Image: commerce/crs-app
   Tag: 9.0.0.4
   Replica: 1
   EnvParameters: {}
   NodeSelector: {}
 #Just keep this for support 9.0.0.0 and 9.0.0.1
 InitC:
-  Image: init-wcs
+  Image: commerce/init-wcs
   Tag: 1.6
 SupportC:
-  Image: supportcontainer
+  Image: commerce/supportcontainer
   Tag: 1.9.6
 FileBeat:
   Enable: false
-  Image: filebeat
+  Image: commerce/filebeat
   Tag: latest
   ELKServer: ELKServer.cn.ibm.com
         &quot;&quot;&quot;
