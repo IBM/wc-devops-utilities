@@ -5,12 +5,61 @@
 &#xd;
 Before your begin:&#xd;
 1. Customize your utility docker image:&#xd;
-    1.1. install a Git client and ensure the Git commands are in the system or user path.&#xd;
-    1.2. install SSH client. Use the ssh protocol to communicate with Git. Other protocols, such as https, are not supported.&#xd;
-    1.3. make sure ssh keys files are ready in your custom utility docker image. You could put the key files in the custom utility docker for testing purpose. Or holds the key fil
-    1.4. install maven and make sure maven commands are in the system or user path.&#xd;
-Note: configGit.sh can be customized to install SSH/Git and git clone the repository. Comments out the code in configGit in OOTB utility docker driver.&#xd;
+    You need to make sure have Git, ssh, Maven installed in the utility docker and configure ssh keys in the utility docker. Git is used to hold your source code; SSH is used to access your Git repository; Maven is used to upload the packaged wcbd file into your Nexus server.
+    
+    This is the sample steps:
+    1). create a directory to hold custom docker image files
+       mkdir /opt/ts-util-image
+       
+    2). Prepare ssh keys:
+         a. run this command generate ssh keys
+            ssh-keygen
+         b. configure the ssh key in the github. 
+            1) Logon the github
+            2) Open Settings->SSH keys
+            3) Click New SSH Key in the upper right corner
+            4) Copy the content of the id_rsa.pub to text box and save
+         &#xd;
+         
+    3). Prepare maven package, maven is used to push the packaged wcbd zip file to nexus server:
+        a. Download apache-maven-3.6.0-bin.zip from http://maven.apache.org/download.cgi
+        b. Extract distribution archive in /opt/ts-util-image/
+            unzip apache-maven-3.6.0-bin.zip
+         
+    4). Create configGit.sh which is used to install Git and SSH during starting the utility docker.
+    
+       The configGit.sh looks like:
+       
+        source /SETUP/bin/utilities.sh
+        
+        /**Start of the code of customization **/
+        /**They are used to install SSH and Git. Git is used for holding the source codes to be built.SSH is used for creating connection with Git repository**/
+        yum install openssh-server -y
+        yum install git -y
+        /**End of the code of customization **/
+        
+        cd /opt/
+        git clone ${REPOSITORY_URL}
+    
+    5). Create Dockerfile
+       This is the sample docker file:
+       FROM bxv8v141.cn.ibm.com/9.0.1/ts-utils:v9-20181120-0417-pro
+
+       //Copy ssh key files to utility docker image
+       RUN mkdir -p /root/.ssh
+       COPY ./.ssh/known_hosts /root/.ssh/
+       COPY ./.ssh/id_rsa /root/.ssh/
+       COPY ./.ssh/id_rsa.pub /root/.ssh/
+       COPY ./apache-maven-3.5.4 /opt/apache-maven-3.5.4/
+       COPY ./configGit.sh /opt/WebSphere/CommerceServer90/bin/
+       
+    6). Create custom docker image
+       docker build -t myrepository.com/commerce/ts-utils:9.0.1.2.custom /opt/ts-util-image/
+
+    
+    Then you can use myrepository.com/commerce/ts-utils:9.0.1.2.custom as the utility docker to run this job.
         &#xd;
+        
 2. If you want to build ts-app, search-app, cos-app or xc-app, should configure the modules to be package in property file build-buildtype-apptype.properties&#xd;
 &#xd;
 </description>
