@@ -32,13 +32,20 @@ You can deploy the DevOps Utilities by using Helm Chart. For more information ab
 The following diagram shows the components of the WebSphere Commerce using DevOps Utilities.<br>
   <img src="./doc/images/Overview.png" width = "700" height = "450" alt="Overview" align=center /><br>
 
-<!--## Design ##
+## Design Principle ##
+1. What IBM can deliver? So far, our better option (since there is no best option) is to keep it open instead of building up the technical boundary and constraint.. This is a technical ecosystem keeps evolving extremely fast.  This is one of the most important motivation when we decided to open source it in Github as reference. Which give clients a referrable starting point to start their v9 journey.
+
+2. Is there a common topology or common deployment mechanism, in On-prem customers world?   "How To" and "Why" is more important than just know "What". It will be clients to make the serious business decision to determine the topology and mechanism to service their critical business.. Meanwhile, we need to respect the business and infrastructure diversity in real world.
+
+3. We did realize client has strong demand to customize the pipeline to fulfill their specific business requirement.. So we should and have to illustrate the technical detail in terms of how the pipeline works crossing the infrastructure. That translate to be the current delivery model in Github in terms of the granularity and the detail level we need to orchestrate and enable clients to consume.
+
+## Design ##
 
 * [Architecture Design](doc/ArchitectureDesign.md) <br>
 * [DeployController Design](doc/DeployControllerDesign.md) <br>
 * [Utilites Design](doc/UtilitiesDesign.md) <br>
 * [DeploySlave Design](doc/DeploySlaveDesign.md) <br>
-* [SupportContainer Design](doc/SupportContainerDesign.md)-->
+* [Logging Solution Design](doc/LoggingSolution.md) <br>
 
 ## Preparing Docker images for DevOps Utilities ##
 
@@ -152,7 +159,17 @@ After the deployment is completed, you can access the DeployController user inte
 
 ## Using WebSphere Commerce Utilities ##
 
-Refer to [DeployController design](doc/DeployControllerDesign.md) for detailed information.
+Suppose you already [setup the DevOps utilities env](doc/1_SetupDevOpsSystem.docx)
+
+Basiclly, Commerce environment live-cycle compose with three stages:
+
+1. [Initial deployment](doc/2_HowToDeployCommerceV9.docx)
+   
+2. [Package custom code and build custom Docker image](doc/DeployControllerDesign.md)
+    
+3. [Update existed environment with custom Docker image] (doc/3_HowToUseDevOpsUtilitiesToBuildCustomizationDockerImage.docx)
+
+4. [Optional: Run Daily Job](doc/DeployControllerDesign.md)
 
 ### Project structure  ###
 The following table shows the folders included in the project.
