@@ -167,7 +167,7 @@ Basiclly, Commerce environment live-cycle compose with three stages:
    
 2. [Package custom code and build custom Docker image](doc/DeployControllerDesign.md)
     
-3. [Update existed environment with custom Docker image] (doc/3_HowToUseDevOpsUtilitiesToBuildCustomizationDockerImage.docx)
+3. [Update existed environment with custom Docker image](doc/3_HowToUseDevOpsUtilitiesToBuildCustomizationDockerImage.docx)
 
 4. [Optional: Run Daily Job](doc/DeployControllerDesign.md)
 
