@@ -35,9 +35,9 @@ The following diagram shows the components of the WebSphere Commerce using DevOp
 ## Design Principle ##
 1. What IBM can deliver? So far, our better option (since there is no best option) is to keep it open instead of building up the technical boundary and constraint.. This is a technical ecosystem keeps evolving extremely fast.  This is one of the most important motivation when we decided to open source it in Github as reference. Which give clients a referrable starting point to start their v9 journey.
 
-2. Is there a common topology or common deployment mechanism on Cloud ?  "How To" and "Why" is more important than just know "What". It will be clients to make the serious business decision to determine the topology and mechanism to service their critical business.. Meanwhile, we need to respect the business and infrastructure diversity in real world.
+2. Is there a common topology or common deployment mechanism on Cloud ?  "How To" and "Why" is more important is equally important as "What". They will influence clients to make the serious business decision to determine the topology and mechanism to service their critical business. Meanwhile, we need to respect the business and infrastructure diversity in real world.
 
-3. We did realize client has strong demand to customize the pipeline to fulfill their specific business requirement.. So we should and have to illustrate the technical detail in terms of how the pipeline works crossing the infrastructure. That translate to be the current delivery model in Github in terms of the granularity and the detail level we need to orchestrate and enable clients to consume.
+3. We did realize client has strong demand to customize the pipeline to fulfill their specific business requirement. So we should and have to illustrate the technical detail in terms of how the pipeline works crossing the infrastructure. That translate to be the current delivery model in Github in terms of the granularity and the detail level we need to orchestrate and enable clients to consume.
 
 ## Design ##
 
@@ -183,7 +183,6 @@ utilities/DeploySupport | Includes the scripts for building SupportContainer Doc
 utilities/Filebeat | Includes scripts to build Filebeat Docker Image for Commerce V9. See [Logging Solution](doc/LoggingSolution.md)
 utilities/EventAgent | Includes source code (golang) and scripts to build EventAgent Docker Image for Commerce V9. This Docker Image support pre-defined job "KubeExec_Base" which can exec command (e.g run engine command to set trace spec) on specified Pod
 scripts |  Includes DevOps backend scripts
-
 
 ## Contributing to the project ##
 
